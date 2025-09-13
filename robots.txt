@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nglelinh.github.io/service-oriented-architecture-and-cloud-computing-iuh/sitemap.xml

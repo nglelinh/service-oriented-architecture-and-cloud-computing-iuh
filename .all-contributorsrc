@@ -1,0 +1,125 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "enfow",
+      "name": "KyeongMin WOO",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31348169?v=4",
+      "profile": "http://www.linkedin.com/in/enfow",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "RRoundTable",
+      "name": "Wontak Ryu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/27891090?v=4",
+      "profile": "https://github.com/RRoundTable",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "LEEMINJOO",
+      "name": "LEEMINJOO",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42792260?v=4",
+      "profile": "https://github.com/LEEMINJOO",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hunhoon21",
+      "name": "HoonCheol Shin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36983960?v=4",
+      "profile": "https://github.com/hunhoon21",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Curt-Park",
+      "name": "Jinwoo Park (Curt)",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14961526?v=4",
+      "profile": "https://github.com/curt-park/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "YoungJaeChoung",
+      "name": "YoungJaeChoung",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29696891?v=4",
+      "profile": "https://github.com/YoungJaeChoung",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "isingmodel",
+      "name": "Kibum Fred Kim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31462012?v=4",
+      "profile": "https://github.com/isingmodel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "cneyang",
+      "name": "Eugene Yang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50402681?v=4",
+      "profile": "https://github.com/cneyang",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "seong7",
+      "name": "Seongjin Kim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52827441?v=4",
+      "profile": "https://seong7.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hgs3896",
+      "name": "Ham Ji Seong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1921149?v=4",
+      "profile": "http://hgs3896.github.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "seolhokim",
+      "name": "seolhokim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/38997792?v=4",
+      "profile": "http://seolhokim.github.io",
+      "contributions": [
+        "maintenance"
+      ]
+    },
+    {
+      "login": "RektPunk",
+      "name": "RektPunk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/110188257?v=4",
+      "profile": "https://github.com/RektPunk",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "convex-optimization-for-all.github.io",
+  "projectOwner": "convex-optimization-for-all",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true,
+  "commitType": "docs",
+  "commitConvention": "angular"
+}
