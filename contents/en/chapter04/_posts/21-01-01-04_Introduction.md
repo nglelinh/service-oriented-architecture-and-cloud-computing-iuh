@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 04 Hadoop Ecosystem and YARN
+title: 04 Introduction to Hadoop MapReduce
 chapter: '04'
 order: 1
 owner: Nguyen Le Linh
@@ -9,35 +9,15 @@ categories:
 - chapter04
 ---
 
-This chapter explores the complete Hadoop ecosystem, focusing on YARN (Yet Another Resource Negotiator) as the resource management layer, along with HDFS (Hadoop Distributed File System) and various tools that make up the Hadoop platform.
+This chapter delves into MapReduce, the programming paradigm that popularized big data processing on commodity hardware.
 
 ## Learning Objectives
 
-- Understand Hadoop architecture and components
-- Learn YARN resource management concepts
-- Explore HDFS distributed storage system
-- Discover Hadoop ecosystem tools and frameworks
-- Set up and configure Hadoop clusters
-- Monitor and manage Hadoop applications
+- Understand the MapReduce programming model (Map, Shuffle, Reduce)
+- Write MapReduce programs to solve parallelizable problems (e.g., Word Count)
+- Analyze the flow of data: InputSplit → Mapper → Partitioner → Reducer → Output
+- Understand how MapReduce achieves fault tolerance through re-execution
 
-## Key Components
+## The Paradigm Shift
 
-1. **Hadoop Distributed File System (HDFS)**
-   - Architecture and design principles
-   - NameNode and DataNode roles
-   - Data replication and fault tolerance
-   - HDFS commands and operations
-
-2. **YARN Resource Management**
-   - ResourceManager and NodeManager
-   - Application lifecycle management
-   - Container-based execution
-   - Scheduling policies and queues
-
-3. **Hadoop Ecosystem Tools**
-   - Hive (SQL on Hadoop)
-   - Pig (Data flow scripting)
-   - HBase (NoSQL database)
-   - Sqoop (Data import/export)
-   - Flume (Log collection)
-   - Oozie (Workflow management)
+MapReduce simplified distributed computing by abstracting the complexities of parallelization, fault tolerance, data distribution, and load balancing. Programmers simply define a `Map` function (to process data) and a `Reduce` function (to aggregate results), and the framework handles the rest.

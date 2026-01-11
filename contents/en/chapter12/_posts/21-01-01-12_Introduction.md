@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 12 Containerization with Docker
+title: 12 Introduction to Cloud Providers
 chapter: '12'
 order: 1
 owner: Nguyen Le Linh
@@ -9,33 +9,15 @@ categories:
 - chapter12
 ---
 
-Containerization has revolutionized application deployment and management. This chapter covers Docker fundamentals, container orchestration concepts, and best practices for containerizing applications in cloud environments.
+This chapter compares the major public cloud providers—AWS, Azure, and Google Cloud Platform (GCP)—and explores their core service offerings.
 
 ## Learning Objectives
 
-- Understand containerization concepts and benefits
-- Master Docker fundamentals and commands
-- Learn container image creation and management
-- Explore Docker networking and storage
-- Implement container security best practices
-- Integrate containers with CI/CD pipelines
+- Compare the "Big 3" cloud providers in terms of global infrastructure and market share
+- Map core services across providers (e.g., EC2 = VM, S3 = Blob Storage)
+- Understand the pricing models and "Free Tier" offerings
+- Analyze the strengths and use cases for each provider
 
-## Key Topics
+## The Cloud Landscape
 
-1. **Container Fundamentals**
-   - Containers vs Virtual Machines
-   - Docker architecture and components
-   - Images, containers, and registries
-   - Container lifecycle management
-
-2. **Docker in Practice**
-   - Dockerfile best practices
-   - Multi-stage builds
-   - Container networking modes
-   - Volume management and data persistence
-
-3. **Container Orchestration**
-   - Docker Compose for multi-container applications
-   - Container scaling and load balancing
-   - Service discovery and configuration management
-   - Monitoring and logging strategies
+While the underlying concepts (virtualization, storage, networking) are the same, each provider wraps them in their own terminology, APIs, and management consoles. A multi-cloud architect must understand these nuances to select the right platform for the job.

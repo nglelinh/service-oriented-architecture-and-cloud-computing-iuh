@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 14 Kubernetes Container Orchestration
+title: 14 Introduction to Infrastructure as Code
 chapter: '14'
 order: 1
 owner: Nguyen Le Linh
@@ -9,34 +9,15 @@ categories:
 - chapter14
 ---
 
-Kubernetes is the de facto standard for container orchestration, providing automated deployment, scaling, and management of containerized applications at scale. This chapter covers Kubernetes fundamentals and advanced concepts for cloud-native applications.
+This chapter introduces Infrastructure as Code (IaC), the practice of managing and provisioning computing infrastructure through machine-readable definition files rather than physical hardware configuration or interactive configuration tools.
 
 ## Learning Objectives
 
-- Understand Kubernetes architecture and components
-- Learn pod, service, and deployment concepts
-- Master kubectl commands and YAML configurations
-- Explore advanced Kubernetes features
-- Implement monitoring and logging solutions
-- Deploy applications using Kubernetes best practices
+- Define Infrastructure as Code and its benefits (Version Control, Reproducibility)
+- Differentiate between Imperative and Declarative approaches
+- Learn the basics of Terraform (Providers, Resources, State)
+- Understand Ansible for configuration management
 
-## Key Topics
+## Automating the Cloud
 
-1. **Kubernetes Architecture**
-   - Master and worker node components
-   - etcd cluster store
-   - API server and controller manager
-   - kubelet and kube-proxy
-
-2. **Core Kubernetes Objects**
-   - Pods and containers
-   - Services and ingress
-   - Deployments and ReplicaSets
-   - ConfigMaps and Secrets
-
-3. **Advanced Features**
-   - StatefulSets and DaemonSets
-   - Persistent volumes and storage classes
-   - Network policies and security
-   - Horizontal Pod Autoscaler
-   - Custom Resource Definitions (CRDs)
+Manual configuration ("ClickOps") is error-prone and unscalable. IaC allows developers to treat infrastructure as software—enabling code review, testing, and automated deployment of the entire data center stack.
