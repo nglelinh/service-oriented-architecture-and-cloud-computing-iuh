@@ -3,44 +3,44 @@ layout: post
 title: "How to Contribute"
 chapter: home
 order: 3
-owner: kyeongminwoo
+owner: Nguyen Le Linh
 ---
 
 ---
 
-## 1. 컨텐츠를 직접 수정하는 방법
+## 1. Editing content directly
 
-### (1) 우선 Local의 Repository Directory로 들어갑니다. Local Repository가 없다면 [Initial Settings](<https://convex-optimization-for-all.github.io/contribution/2021/01/27/initial_settings/>)를 참고하시기 바랍니다.
+### (1) Open your local repository directory. If you do not have a local clone yet, see [Initial Settings]({{ site.baseurl }}/contribution/initial_settings/).
 
-### (2)  Remote 저장소와의 정보를 동기화합니다.
+### (2) Sync with the remote repository.
 
 ```bash
 $ git checkout main
 $ git pull --all
 ```
 
-### (3) 수정 내용을 담는 새로운 브랜치를 생성합니다. 브랜치 명은 `[Prefix]/[챕터명]/[수정하는_이유]`로 하시면 됩니다([Branch Naming Convetion](<https://convex-optimization-for-all.github.io/contribution/2021/02/03/conventions/>)). 예시는 아래와 같습니다.
+### (3) Create a new branch for your changes. Use the naming pattern `[prefix]/[chapter]-[description]` ([Branch Naming Convention]({{ site.baseurl }}/contribution/conventions/)). For example:
 
 ```bash
 $ git checkout -b bugfix/chapter01-fix-typo
 ```
 
-### (4) 파일을 편집합니다. 생성 또는 수정하고자 하는 컨텐츠는 [Convention](<https://convex-optimization-for-all.github.io/contribution/2021/02/03/conventions/>)을 지켜 작성해야 합니다.
+### (4) Edit the files. Follow the [Conventions]({{ site.baseurl }}/contribution/conventions/) when creating or updating content.
 
-### (5) Remote로 Push합니다. 예시는 아래와 같습니다.
+### (5) Push your branch to the remote. For example:
 
 ```bash
 $ git push origin bugfix/chapter01-fix-typo
 ```
 
-### (6) [Github](<https://github.com/convex-optimization-for-all/convex-optimization-for-all.github.io/pulls>)에서 main branch로의 Pull Request를 생성합니다. Pull Request 생성 방법은 아래 GitHub Docs를 참고하시기 바랍니다.
+### (6) Open a pull request to `main` on [GitHub](https://github.com/nglelinh/service-oriented-architecture-and-cloud-computing-iuh/pulls). See the GitHub docs for details:
 
-- [Creating a pull request](<https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request>)
+- [Creating a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)
 
 ---
 
-## 2. 컨텐츠 수정을 요청하는 방법
+## 2. Requesting content changes
 
-- Github Repository에 [Issue](<https://github.com/convex-optimization-for-all/convex-optimization-for-all.github.io/issues>)를 생성하실 수 있습니다.
+- You can open an [issue](https://github.com/nglelinh/service-oriented-architecture-and-cloud-computing-iuh/issues) on the GitHub repository.
 
 ---
