@@ -65,7 +65,7 @@ GitHub repo link in `_layouts/default.html` points to `nglelinh/service-oriented
 
 ## Course Content (14 Chapters)
 
-English lectures live under `contents/en/chapter01/` through `chapter14/`. Vietnamese (`contents/vi/`) is configured but not yet populated.
+English lectures live under `contents/en/chapter01/` through `chapter14/`. Vietnamese (`contents/vi/`) has Chapter 01 populated; later chapters are not translated yet.
 
 | Ch | Sidebar title (`index.html`) | Actual lecture topics (`_posts/`) |
 |----|------------------------------|-------------------------------------|
@@ -261,7 +261,7 @@ Agents should treat the following as known technical debt, not current truth:
 - `reference/index.html` — owner still listed as "Kyeongmin Woo"
 - Chapter `index.html` titles vs. `_posts/` content mismatches (see table above)
 - `img/chapter_img/` — contains optimization-course images unrelated to cloud topics
-- No `contents/vi/` or `contents/en/chapter00/` directories yet
+- `contents/vi/chapter01/` is populated (six lessons + chapter landing); Chapters 02–14 and `contents/en/chapter00/` are not yet present
 
 When creating or editing content, use the cloud computing chapter topics from `_posts/` as the source of truth.
 
