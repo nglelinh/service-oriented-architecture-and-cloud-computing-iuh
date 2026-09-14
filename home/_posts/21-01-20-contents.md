@@ -6,6 +6,10 @@ order: 1
 owner: kyeongminwoo
 ---
 
+**Language / Ngôn ngữ.** English lectures are complete for Chapters 01–14. The Vietnamese track has started with Chapter 01 — *Nền tảng điện toán đám mây*. Use the language switcher on Chapter 01 lessons to move between EN and VI.
+
+**Ngôn ngữ.** Các bài giảng tiếng Anh đã đủ 14 chương. Lộ trình tiếng Việt bắt đầu với Chương 01 — *Nền tảng điện toán đám mây*. Dùng nút chuyển ngôn ngữ trên các bài Chương 01 để xem bản tiếng Việt.
+
 An introduction to convex optimization problems, concepts in convex analysis, convex optimization algorithms, duality theory, optimality conditions, and applications of convex optimization in statistics and machine learning.
 
 # Course Objectives

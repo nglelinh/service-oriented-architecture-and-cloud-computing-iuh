@@ -39,7 +39,7 @@ The site contains 14 chapters. Lecture topics below reflect the current `_posts/
 | 13 | Deployment, security, and compliance |
 | 14 | Infrastructure as Code with Terraform |
 
-Vietnamese translations (`contents/vi/`) are configured but not yet fully populated.
+Vietnamese translations (`contents/vi/`) have started: Chapter 01 is available in Vietnamese. Chapters 02–14 remain English-only for now.
 
 ## Local Development
 
