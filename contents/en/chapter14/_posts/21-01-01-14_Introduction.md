@@ -21,3 +21,7 @@ This chapter introduces Infrastructure as Code (IaC), the practice of managing a
 ## Automating the Cloud
 
 Manual configuration ("ClickOps") is error-prone and unscalable. IaC allows developers to treat infrastructure as software—enabling code review, testing, and automated deployment of the entire data center stack.
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For OpenTofu vs Terraform BSL, OPA policies, and platform modules (2023–2026), see [14-02 OpenTofu, Policy as Code, and Platform Engineering]({{ site.baseurl }}{% multilang_post_url contents/chapter14/21-01-01-14_02_OpenTofu_and_Policy_as_Code %}).

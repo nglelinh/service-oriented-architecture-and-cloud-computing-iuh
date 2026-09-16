@@ -91,3 +91,7 @@ Clean data is essential for:
 - **Manufacturing**: Quality sensor data enables predictive maintenance
 
 Let's learn how to source and clean data effectively!
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For data contracts, quality gates, and AI/RAG corpora (2022–2026), see [11-02 Data Contracts, Quality Gates, and AI Data Pipelines]({{ site.baseurl }}{% multilang_post_url contents/chapter11/21-01-01-11_02_Data_Contracts_and_AI_Pipelines %}).

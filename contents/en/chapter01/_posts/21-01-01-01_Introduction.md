@@ -86,3 +86,7 @@ By the end of this chapter, you will understand:
 In the following lessons, we'll dive deeper into each aspect of cloud computing, exploring the technical details, practical implementations, and strategic considerations that will help you make informed decisions about cloud adoption and utilization.
 
 The journey into cloud computing is not just about understanding technology—it's about reimagining how we build, deploy, and manage applications in an increasingly connected and digital world.
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For a short 2022–2026 applications add-on (multi-cloud, FinOps, AI serving), see [01-06 Modern Cloud Applications (2022–2026)]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}).

@@ -21,3 +21,7 @@ This chapter focuses on the operational aspects of cloud computing: how to secur
 ## Operations & Security
 
 Building the application is only half the battle. Running it securely and reliably requires a deep understanding of network security groups, identity management, and automated deployment pipelines to reduce human error.
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For SLSA/SBOM supply-chain controls and OpenTelemetry on canaries (2022–2026), see [13-02 Supply-Chain Security, SLSA, and Production Observability]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_02_Supply_Chain_Security_and_Observability %}).

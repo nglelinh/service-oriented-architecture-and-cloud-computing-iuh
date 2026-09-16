@@ -21,3 +21,7 @@ This chapter moves beyond traditional Relational Database Management Systems (RD
 ## The Data Evolution
 
 As applications scaled to millions of users, the vertical scaling limits of SQL databases became a bottleneck. This led to the emergence of distributed databases that sacrifice some consistency guarantees for partition tolerance and high availability.
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For serverless databases, distributed SQL, and vector/RAG stores (2022–2026), see [07-02 Serverless, Distributed SQL, and Vector Databases]({{ site.baseurl }}{% multilang_post_url contents/chapter07/21-01-01-07_02_Serverless_and_Vector_Databases %}).
