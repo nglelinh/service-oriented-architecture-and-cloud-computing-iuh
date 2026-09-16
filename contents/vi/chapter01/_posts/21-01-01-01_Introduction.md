@@ -88,3 +88,7 @@ Kết thúc chương này, sinh viên sẽ hiểu:
 Các bài sau sẽ đi sâu từng khía cạnh của điện toán đám mây: chi tiết kỹ thuật, triển khai thực tế và các cân nhắc chiến lược giúp bạn ra quyết định có cơ sở về việc áp dụng và sử dụng đám mây.
 
 Hành trình điện toán đám mây không chỉ là hiểu công nghệ — mà còn là tái hình dung cách chúng ta xây dựng, triển khai và quản lý ứng dụng trong một thế giới ngày càng kết nối và số hóa.
+
+## Bài ứng dụng tùy chọn
+
+Phần lý thuyết bắt buộc của chương không đổi. Bài bổ sung về ứng dụng 2022–2026 (đa đám mây, FinOps, phục vụ mô hình AI) nằm ở [01-06 Ứng dụng đám mây hiện đại (2022–2026)]({% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}).

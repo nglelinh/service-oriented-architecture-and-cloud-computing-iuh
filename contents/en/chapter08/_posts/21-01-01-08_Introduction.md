@@ -87,3 +87,7 @@ Throughout this chapter, you'll see real-world examples including:
 - Building serverless functions with AWS Lambda
 
 Let's begin our journey into the world of virtualization and containerization!
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For Lambda SnapStart, Firecracker snapshots, and WebAssembly isolates (2022–2026), see [08-05 Serverless, MicroVMs, and WebAssembly Applications]({% multilang_post_url contents/chapter08/21-01-01-08_05_Serverless_MicroVMs_and_WASM %}).

@@ -94,3 +94,7 @@ Big data platforms power critical services:
 - **Network Monitoring**: 5M sensors generating 1.4B events/day
 
 Let's explore the world of big data platforms!
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For Iceberg/Delta lakehouse catalogs and multi-engine apps (2022–2026), see [10-02 Open Lakehouse Platforms and Multi-Engine Apps]({% multilang_post_url contents/chapter10/21-01-01-10_02_Open_Lakehouse_Applications %}).

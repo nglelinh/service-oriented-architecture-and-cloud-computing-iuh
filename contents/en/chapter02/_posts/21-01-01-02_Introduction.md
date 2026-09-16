@@ -24,3 +24,7 @@ In this chapter, we will:
 ## Why Distributed Systems?
 
 Single machines have reached their physical limits (vertical scaling). To handle the staggering scale of modern internet applications—serving billions of users and processing petabytes of data—we have no choice but to coordinate thousands of machines working together (horizontal scaling). This chapter explains the theoretical and practical foundations of how we achieve this coordination.
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For OpenTelemetry, traces, and chaos-style operations (2022–2026), see [02-02 Observability and Modern Distributed Applications]({% multilang_post_url contents/chapter02/21-01-01-02_02_Observability_and_Distributed_Applications %}).

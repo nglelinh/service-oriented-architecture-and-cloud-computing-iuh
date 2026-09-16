@@ -87,3 +87,7 @@ Kubernetes powers some of the world's largest applications:
 - **Pokemon Go**: Scaled to handle massive launch traffic
 
 Let's dive into the world of Kubernetes!
+
+## Optional application lesson
+
+Required theory in this chapter is unchanged. For Gateway API, Istio ambient mesh, and eBPF/Cilium (2022–2026), see [09-04 Service Mesh, Gateway API, and eBPF Networking]({% multilang_post_url contents/chapter09/21-01-01-09_04_Service_Mesh_and_Gateway_API %}).
