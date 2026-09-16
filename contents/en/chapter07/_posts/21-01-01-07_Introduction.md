@@ -24,4 +24,4 @@ As applications scaled to millions of users, the vertical scaling limits of SQL 
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For serverless databases, distributed SQL, and vector/RAG stores (2022–2026), see [07-02 Serverless, Distributed SQL, and Vector Databases]({% multilang_post_url contents/chapter07/21-01-01-07_02_Serverless_and_Vector_Databases %}).
+Required theory in this chapter is unchanged. For serverless databases, distributed SQL, and vector/RAG stores (2022–2026), see [07-02 Serverless, Distributed SQL, and Vector Databases]({{ site.baseurl }}{% multilang_post_url contents/chapter07/21-01-01-07_02_Serverless_and_Vector_Databases %}).

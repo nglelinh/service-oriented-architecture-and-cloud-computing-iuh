@@ -27,4 +27,4 @@ Single machines have reached their physical limits (vertical scaling). To handle
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For OpenTelemetry, traces, and chaos-style operations (2022–2026), see [02-02 Observability and Modern Distributed Applications]({% multilang_post_url contents/chapter02/21-01-01-02_02_Observability_and_Distributed_Applications %}).
+Required theory in this chapter is unchanged. For OpenTelemetry, traces, and chaos-style operations (2022–2026), see [02-02 Observability and Modern Distributed Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter02/21-01-01-02_02_Observability_and_Distributed_Applications %}).

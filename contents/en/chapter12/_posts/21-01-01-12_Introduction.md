@@ -24,4 +24,4 @@ While the underlying concepts (virtualization, storage, networking) are the same
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For multi-cloud constraints, FinOps, and managed AI APIs (2022–2026), see [12-02 Multi-Cloud Architectures and Managed AI Services]({% multilang_post_url contents/chapter12/21-01-01-12_02_Multicloud_and_AI_Services %}).
+Required theory in this chapter is unchanged. For multi-cloud constraints, FinOps, and managed AI APIs (2022–2026), see [12-02 Multi-Cloud Architectures and Managed AI Services]({{ site.baseurl }}{% multilang_post_url contents/chapter12/21-01-01-12_02_Multicloud_and_AI_Services %}).

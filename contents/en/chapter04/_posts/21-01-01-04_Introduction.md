@@ -24,4 +24,4 @@ MapReduce simplified distributed computing by abstracting the complexities of pa
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For lakehouse batch, Beam/Dataflow, and modern shuffle-on-object-storage (2022–2026), see [04-02 Modern Batch Processing beyond Classic MapReduce]({% multilang_post_url contents/chapter04/21-01-01-04_02_Modern_Batch_and_MapReduce %}).
+Required theory in this chapter is unchanged. For lakehouse batch, Beam/Dataflow, and modern shuffle-on-object-storage (2022–2026), see [04-02 Modern Batch Processing beyond Classic MapReduce]({{ site.baseurl }}{% multilang_post_url contents/chapter04/21-01-01-04_02_Modern_Batch_and_MapReduce %}).

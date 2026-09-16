@@ -24,4 +24,4 @@ In the early days of Hadoop (v1), MapReduce was the only processing engine. YARN
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For gRPC, CloudEvents, and Kubernetes-as-cluster-OS (2022–2026), see [03-02 Event-Driven Models, gRPC, and Cluster Schedulers]({% multilang_post_url contents/chapter03/21-01-01-03_02_Event_Driven_and_gRPC %}).
+Required theory in this chapter is unchanged. For gRPC, CloudEvents, and Kubernetes-as-cluster-OS (2022–2026), see [03-02 Event-Driven Models, gRPC, and Cluster Schedulers]({{ site.baseurl }}{% multilang_post_url contents/chapter03/21-01-01-03_02_Event_Driven_and_gRPC %}).

@@ -42,4 +42,4 @@ Apache Spark is a unified analytics engine for large-scale data processing, offe
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For Spark Connect, Spark 4.0, and Spark-on-Kubernetes applications, see [05-02 Spark Connect, Spark 4.0, and Cloud-Native Applications]({% multilang_post_url contents/chapter05/21-01-01-05_02_Spark_Connect_and_Cloud_Native %}).
+Required theory in this chapter is unchanged. For Spark Connect, Spark 4.0, and Spark-on-Kubernetes applications, see [05-02 Spark Connect, Spark 4.0, and Cloud-Native Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter05/21-01-01-05_02_Spark_Connect_and_Cloud_Native %}).

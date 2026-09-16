@@ -24,4 +24,4 @@ The true power of Spark lies in its unified stack. You can load data using Spark
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For event-driven features, serving-adjacent ML, and stream-vs-request clocks (2022–2026), see [06-05 Real-Time, Event-Driven, and Serving-Adjacent Spark Apps]({% multilang_post_url contents/chapter06/21-01-01-06_05_Realtime_Event_Driven_ML %}).
+Required theory in this chapter is unchanged. For event-driven features, serving-adjacent ML, and stream-vs-request clocks (2022–2026), see [06-05 Real-Time, Event-Driven, and Serving-Adjacent Spark Apps]({{ site.baseurl }}{% multilang_post_url contents/chapter06/21-01-01-06_05_Realtime_Event_Driven_ML %}).

@@ -24,4 +24,4 @@ Manual configuration ("ClickOps") is error-prone and unscalable. IaC allows deve
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For OpenTofu vs Terraform BSL, OPA policies, and platform modules (2023–2026), see [14-02 OpenTofu, Policy as Code, and Platform Engineering]({% multilang_post_url contents/chapter14/21-01-01-14_02_OpenTofu_and_Policy_as_Code %}).
+Required theory in this chapter is unchanged. For OpenTofu vs Terraform BSL, OPA policies, and platform modules (2023–2026), see [14-02 OpenTofu, Policy as Code, and Platform Engineering]({{ site.baseurl }}{% multilang_post_url contents/chapter14/21-01-01-14_02_OpenTofu_and_Policy_as_Code %}).
