@@ -90,4 +90,4 @@ Let's begin our journey into the world of virtualization and containerization!
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For Lambda SnapStart, Firecracker snapshots, and WebAssembly isolates (2022–2026), see [08-05 Serverless, MicroVMs, and WebAssembly Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter08/21-01-01-08_05_Serverless_MicroVMs_and_WASM %}).
+Required theory in this chapter is unchanged. For Lambda SnapStart, Firecracker snapshots, and WebAssembly isolates (2022–2026), see [08-05 Serverless, MicroVMs, and WebAssembly Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter08/21-01-01-08_05_Serverless_MicroVMs_and_WASM %}). The Docker lesson now also sketches the **manual → managed** ladder (Compose on a VM versus a container platform) used by the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/).

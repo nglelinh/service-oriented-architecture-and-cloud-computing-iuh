@@ -89,4 +89,4 @@ The journey into cloud computing is not just about understanding technology—it
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For a short 2022–2026 applications add-on (multi-cloud, FinOps, AI serving), see [01-06 Modern Cloud Applications (2022–2026)]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}).
+Required theory in this chapter is unchanged. For a short 2022–2026 applications add-on (multi-cloud, FinOps, AI serving), see [01-06 Modern Cloud Applications (2022–2026)]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}). Before containers (Chapter 08) or the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/), take the optional [01-07 Cloud Networking Crash Course]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_07_Networking_Crash_Course %}) (VPC, subnet, security group, DNS, TLS).

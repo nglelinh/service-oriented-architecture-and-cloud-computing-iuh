@@ -24,4 +24,4 @@ Building the application is only half the battle. Running it securely and reliab
 
 ## Optional application lesson
 
-Required theory in this chapter is unchanged. For SLSA/SBOM supply-chain controls and OpenTelemetry on canaries (2022–2026), see [13-02 Supply-Chain Security, SLSA, and Production Observability]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_02_Supply_Chain_Security_and_Observability %}).
+Required theory in this chapter is unchanged. For SLSA/SBOM supply-chain controls and OpenTelemetry on canaries (2022–2026), see [13-02 Supply-Chain Security, SLSA, and Production Observability]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_02_Supply_Chain_Security_and_Observability %}). For a depth pass on logs/metrics/traces and the OTel pipeline, see [13-03]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_03_Observability_Depth %}). For a working IUH CI/CD model (build once, OIDC, rollback), see [13-04]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_04_CICD_Cloud_Apps %}). Both feed the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/).

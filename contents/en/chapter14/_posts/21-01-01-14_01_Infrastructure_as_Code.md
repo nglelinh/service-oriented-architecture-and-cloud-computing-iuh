@@ -169,6 +169,24 @@ Standard file organization:
    - Manage AWS (Computing) and Cloudflare (DNS) in the same workflow.
    - Although code isn't 100% portable (AWS resources != Azure resources), the *workflow* is identical.
 
+## Same desired state, other authoring surfaces (CDK and Pulumi)
+
+Terraform/OpenTofu keep the course’s default: **HCL in Git**, `plan`, `apply`, a state file (see also [14-02]({{ site.baseurl }}{% multilang_post_url contents/chapter14/21-01-01-14_02_OpenTofu_and_Policy_as_Code %})). Two other tools show up in industry diagrams. Learn them as *concepts*, not as a second lab:
+
+| Tool | What you write | What actually changes the cloud |
+| --- | --- | --- |
+| **Terraform / OpenTofu** | HCL modules | Provider APIs; you own the state file (or a remote backend) |
+| **AWS CDK** (and CDK-for-Terraform variants) | TypeScript/Python/Java/… that *synthesizes* a template | Usually CloudFormation (AWS CDK) or Terraform JSON (CDKTF) |
+| **Pulumi** | TypeScript/Python/Go/… against Pulumi’s engine | Provider plugins; Pulumi-managed state by default |
+
+All three are still **desired-state** systems: you describe “a VPC and three security groups,” the engine diffs reality. What changes is the **authoring surface** (DSL vs general-purpose language), the **preview artifact** (`plan` vs `cdk diff` vs `pulumi preview`), and who stores **state**.
+
+IUH default remains HCL so Lab B and the capstone stay readable in one language. Reach for CDK or Pulumi in a report only if you can still draw the same Course Board graph and say where the state lives. Do not treat a screenshot of generated CloudFormation as a substitute for understanding blast radius.
+
+<div class="content-box info-box">
+<p><strong>CS 40 uses CDK in its IaC block.</strong> We keep Terraform/OpenTofu as the IUH home and map CDK/Pulumi beside it. See the <a href="{{ site.baseurl }}/contents/en/chapter15/">Deploy Track hub</a>.</p>
+</div>
+
 ## Summary
 
 Infrastructure as Code allows us to treat operations like software development:
