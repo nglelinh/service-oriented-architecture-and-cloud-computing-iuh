@@ -18,7 +18,7 @@ Use this hub when you want to **ship a small multilayer service**, not only expl
 
 1. Read four optional theory lessons (networking, observability depth, CI/CD, FinOps).
 2. Complete **two or three local-first lab checklists** (Docker; OpenTofu/Terraform *concepts*; free-tier hygiene).
-3. In a **group of two**, run the [capstone brief]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_04_Capstone %}) (also [PROJECT.md]({{ site.baseurl }}/PROJECT.md) in the repository).
+3. In a **group of two**, run the [capstone brief]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_04_Capstone %}) (also [`PROJECT.md`](https://github.com/nglelinh/service-oriented-architecture-and-cloud-computing-iuh/blob/main/PROJECT.md) in the repository).
 
 Cloud spend is **not** required. A complete track can stay on one laptop. If you touch a public cloud, Lab C and the FinOps lesson come *before* the first paid API call.
 

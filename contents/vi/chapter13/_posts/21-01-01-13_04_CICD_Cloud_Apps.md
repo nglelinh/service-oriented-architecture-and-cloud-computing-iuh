@@ -50,6 +50,7 @@ Hỏng điển hình: CI gắn thẻ `latest`, staging chạy `latest` thứ Hai
 2. Staging và prod kéo **đúng digest đó**.
 3. Rollback là trỏ môi trường về **digest trước**, không phải “build lại commit cũ rồi cầu may.”
 
+{% raw %}
 ```yaml
 jobs:
   verify:
@@ -61,6 +62,7 @@ jobs:
       - name: Build image
         run: docker build -t courseboard-api:${{ github.sha }} ./api
 ```
+{% endraw %}
 
 Không có registry vẫn học được ý: lưu ID ảnh vào `artifacts/build.json`.
 

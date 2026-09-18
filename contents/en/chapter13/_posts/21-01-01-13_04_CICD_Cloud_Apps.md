@@ -54,6 +54,7 @@ The IUH rule:
 2. Staging and prod pull **that digest**.
 3. Rollback means pointing the environment at the **previous digest**, not “rebuild an older commit and hope.”
 
+{% raw %}
 ```yaml
 # Conceptual GitHub Actions job — IUH Course Board
 # (illustrative; pin action versions in a real repo)
@@ -69,6 +70,7 @@ jobs:
       - name: Record digest
         run: docker inspect --format='{{.Id}}' courseboard-api:${{ github.sha }}
 ```
+{% endraw %}
 
 You do not need a container registry to *learn* the idea: save the image ID in `artifacts/build.json` and treat it as the digest in your report.
 
