@@ -20,7 +20,7 @@ This course introduces cloud computing technologies and distributed systems used
 
 ## Course Outline
 
-The site contains 14 chapters. Lecture topics below reflect the current `_posts/` content.
+The site contains 14 required chapters plus an optional Deploy Track (Chapter 15). Lecture topics below reflect the current `_posts/` content.
 
 | Ch | Topic |
 |----|-------|
@@ -38,8 +38,11 @@ The site contains 14 chapters. Lecture topics below reflect the current `_posts/
 | 12 | Cloud providers (AWS, Azure, GCP) |
 | 13 | Deployment, security, and compliance |
 | 14 | Infrastructure as Code with Terraform |
+| 15 | **Deploy Track** (optional) — networking, observability, CI/CD, FinOps, local labs, pair capstone |
 
-Vietnamese translations (`contents/vi/`) have started: Chapter 01 is available in Vietnamese. Chapters 02–14 remain English-only for now.
+Vietnamese translations (`contents/vi/`) have started: Chapter 01 required theory is bilingual. New Deploy Track lessons (`01-07`, `12-03`, `13-03`, `13-04`, Chapter 15) have Vietnamese companions. Required theory for Chapters 02–14 remains English-first.
+
+Optional Deploy Track theory also lives in existing chapters: `01-07` networking, `12-03` FinOps, `13-03` observability depth, `13-04` CI/CD. Capstone brief: [`PROJECT.md`](PROJECT.md). Topic map vs Stanford CS 40: [`docs/cs40-iuh-topic-map.md`](docs/cs40-iuh-topic-map.md).
 
 ## Local Development
 
@@ -84,7 +87,9 @@ Output is written to `_site/`.
 ├── contribution/_posts/     # Contributor documentation
 ├── public/                  # CSS, JavaScript, logos
 ├── img/chapter_img/         # Lecture images
-└── extracted_slides/        # Source slide decks (reference)
+├── extracted_slides/        # Source slide decks (reference)
+├── PROJECT.md               # Pair capstone brief (Deploy Track)
+└── docs/cs40-iuh-topic-map.md
 ```
 
 ## Features
@@ -114,6 +119,28 @@ Use branch names like `feature/chapter01-add-lecture` or `bugfix/chapter05-fix-t
 
 Released under the [MIT License](LICENSE.md).
 
+## Inspiration: Stanford CS 40 / infracourse.cloud
+
+The optional **Deploy Track** (Chapter 15 plus the lessons below) is *inspired by* the deployment-first arc of [Stanford CS 40: Cloud Application Deployment](https://infracourse.cloud/) (Winter 2024). IUH materials—lessons, lab checklists, and the pair capstone—are **original**. Do not copy CS 40 assignment text, rubrics, or wording.
+
+IUH stays platform- and data-first (Hadoop, Spark, NoSQL). CS 40 is a deploy-at-scale course. We reuse a **topic sequence**, not their handouts.
+
+| CS 40-style block | IUH home |
+| --- | --- |
+| Foundations / building blocks | Chapter 01 |
+| Networking, DNS, TLS | Optional `01-07`; Labs A and C |
+| Storage / databases | Chapters 07 and 10 |
+| Containers / orchestration | Chapters 08–09; Lab A |
+| Infrastructure as Code | Chapter 14; Lab B; CDK/Pulumi compare in `14-01` |
+| IAM / security | Chapter 13; optional `13-02` |
+| Observability | `02-02`, `13-02`, depth `13-03` |
+| Serverless / ML serving | `08-04`, `08-05`, `01-06`, `12-02` |
+| CI/CD | `13-01` survey; optional `13-04` |
+| Cost / ethics | `01-06`, `12-03`, Lab C |
+| Final deploy project | Chapter 15 + [`PROJECT.md`](PROJECT.md) (groups of 2) |
+
+Hub on the site: [Deploy Track](https://nglelinh.github.io/service-oriented-architecture-and-cloud-computing-iuh/contents/en/chapter15/) · [Lộ trình triển khai](https://nglelinh.github.io/service-oriented-architecture-and-cloud-computing-iuh/contents/vi/chapter15/). Longer map: [`docs/cs40-iuh-topic-map.md`](docs/cs40-iuh-topic-map.md).
+
 ## Acknowledgments
 
-Course site built on the [Lanyon](https://github.com/poole/lanyon) Jekyll theme. Originally adapted from open optimization-course templates; substantially reworked for cloud computing topics at IUH.
+Course site built on the [Lanyon](https://github.com/poole/lanyon) Jekyll theme. Originally adapted from open optimization-course templates; substantially reworked for cloud computing topics at IUH. Deploy-track topic sequencing draws inspiration from [infracourse.cloud](https://infracourse.cloud/) as credited above.

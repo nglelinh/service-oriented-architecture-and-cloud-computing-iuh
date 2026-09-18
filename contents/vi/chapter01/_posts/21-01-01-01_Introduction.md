@@ -91,4 +91,4 @@ Hành trình điện toán đám mây không chỉ là hiểu công nghệ — m
 
 ## Bài ứng dụng tùy chọn
 
-Phần lý thuyết bắt buộc của chương không đổi. Bài bổ sung về ứng dụng 2022–2026 (đa đám mây, FinOps, phục vụ mô hình AI) nằm ở [01-06 Ứng dụng đám mây hiện đại (2022–2026)]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}).
+Phần lý thuyết bắt buộc của chương không đổi. Bài bổ sung về ứng dụng 2022–2026 (đa đám mây, FinOps, phục vụ mô hình AI) nằm ở [01-06 Ứng dụng đám mây hiện đại (2022–2026)]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}). Trước container (Chương 08) hoặc [Lộ trình triển khai]({{ site.baseurl }}/contents/vi/chapter15/), đọc bài tùy chọn [01-07 Nhập môn mạng đám mây]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_07_Networking_Crash_Course %}) (VPC, subnet, security group, DNS, TLS).

@@ -394,6 +394,29 @@ Step 2:  [v2] [v2] [v2]  (create new)
 
 > **Downtime**: Recreate strategy causes downtime
 
+### 3. Canary (a pattern, not a single `strategy:` field)
+
+RollingUpdate is *unconditional*: every replica becomes the new template. A **canary** keeps most traffic on the stable ReplicaSet and sends a *slice* (5–10%) to a new Deployment or Pod set so you can compare error rate and latency before you continue.
+
+Two IUH-sized ways to draw it:
+
+1. **Two Deployments, one Service (or Gateway).** Labels `track=stable` and `track=canary`. Shift replicas or HTTP weights, then delete the old track. Kubernetes Gateway API and a mesh (see [09-04]({{ site.baseurl }}{% multilang_post_url contents/chapter09/21-01-01-09_04_Service_Mesh_and_Gateway_API %})) make weighted routes explicit; a Service with two replica counts is the poor-person’s cartoon.
+2. **Pipeline-gated rollout.** Chapter 13-04 runs smoke tests and reads an SLI (Chapter 13-03) after the first canary pods are Ready. Abort means `rollout undo` or scaling the canary to zero—not “SSH and hope.”
+
+```text
+[Service / Gateway]
+    ├── 90% → Deployment board-stable  (digest A)
+    └── 10% → Deployment board-canary  (digest B)
+                 │
+                 └── compare RED + traces (service.version=B)
+```
+
+Blue/green (Chapter 13 required notes) flips *all* traffic after a park lot of idle pods. Canary *measures* under live traffic. Rolling *replaces* without a measurement gate unless you add one.
+
+<div class="content-box insight-box">
+<p><strong>Pick one story for the capstone.</strong> A pair that writes <code>RollingUpdate</code> and also says “we did a canary” must show the second Deployment or the Gateway weight. The word alone is not the pattern.</p>
+</div>
+
 ## Working with Deployments
 
 ### Creating Deployments
@@ -629,6 +652,7 @@ Kubernetes Services and Deployments provide production-ready application managem
 - **Four service types**: ClusterIP, NodePort, LoadBalancer, ExternalName
 - **Deployments** manage pod replicas and updates
 - **Rolling updates** enable zero-downtime deployments
+- **Canary** (two tracks + a traffic slice) adds a measurement gate; Gateway API / mesh (09-04) make the slice explicit
 - **ReplicaSets** ensure desired pod count
 - **Labels and selectors** enable flexible object grouping
 

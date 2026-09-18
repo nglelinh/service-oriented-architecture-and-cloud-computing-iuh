@@ -448,6 +448,20 @@ Many organizations use multiple clouds:
 - ⚠ Higher management overhead
 - ⚠ Data transfer costs
 
+## Architect for scale and cost (Deploy Track checklist)
+
+A provider comparison that ignores the bill is a catalogue, not an architecture. Before you pick AWS vs Azure vs GCP—or before you stay on localhost—walk this list (expanded in [12-03 FinOps]({{ site.baseurl }}{% multilang_post_url contents/chapter12/21-01-01-12_03_FinOps_Billing_Literacy %})):
+
+1. **Unit of work** — what is one successful Course Board action, and what may it cost?
+2. **Elasticity vs idle** — which tier scales; what do you pay at load zero?
+3. **Egress boundaries** — who downloads the bytes, and from which region?
+4. **Failure domains** — is a second AZ a learning outcome or an accidental meter?
+5. **Managed vs DIY** — are you buying operations hours or cloud hours?
+6. **Destroy owner** — named human, same day as the demo.
+7. **Budget alert** — exists *before* the first `apply` ([Lab C]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_03_Lab_Free_Tier_Notes %})).
+
+Calculators (linked below) only help if these seven answers are written down.
+
 ## Summary
 
 Cloud providers offer similar core services with unique strengths:
