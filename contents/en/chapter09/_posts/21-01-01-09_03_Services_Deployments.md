@@ -411,7 +411,7 @@ Two IUH-sized ways to draw it:
                  └── compare RED + traces (service.version=B)
 ```
 
-Blue/green (Chapter 13 required notes) flips *all* traffic after a park lot of idle pods. Canary *measures* under live traffic. Rolling *replaces* without a measurement gate unless you add one.
+Blue/green (Chapter 13 required notes) flips *all* traffic after a parking lot of idle pods. Canary *measures* under live traffic. Rolling *replaces* without a measurement gate unless you add one.
 
 <div class="content-box insight-box">
 <p><strong>Pick one story for the capstone.</strong> A pair that writes <code>RollingUpdate</code> and also says “we did a canary” must show the second Deployment or the Gateway weight. The word alone is not the pattern.</p>
