@@ -2,7 +2,7 @@
 layout: post
 title: 06 Spark Streaming - Real-time Data Processing
 chapter: '06'
-order: 1
+order: 2
 owner: Nguyen Le Linh
 lang: en
 categories:
