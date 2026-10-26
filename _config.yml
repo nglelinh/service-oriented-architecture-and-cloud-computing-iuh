@@ -24,6 +24,7 @@ t:
     switch_language: "Switch to Vietnamese"
     required: "Required"
     optional: "Optional"
+    toggle_lessons: "Show or hide lessons"
   vi:
     title: "Kiến trúc hướng dịch vụ và Điện toán đám mây"
     description: "Kiến trúc hướng dịch vụ và Điện toán đám mây"
@@ -33,6 +34,7 @@ t:
     switch_language: "Chuyển sang tiếng Anh"
     required: "Bắt buộc"
     optional: "Tùy chọn"
+    toggle_lessons: "Hiện hoặc ẩn bài học"
 # About/contact
 author:
   name:              Nguyen Le Linh
