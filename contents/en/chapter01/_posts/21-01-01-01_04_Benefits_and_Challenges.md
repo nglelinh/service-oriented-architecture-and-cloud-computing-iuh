@@ -68,3 +68,9 @@ To navigate these challenges, organizations employ several strategic approaches:
 Cloud computing provides tangible advantages in cost, agility, and innovation, but it is not a magic bullet. Success requires a well-thought-out strategy that leverages the benefits while actively managing the risks of security, cost, and lock-in. Organizations must develop new skills and governance models to thrive in this new environment.
 
 In the next chapter, we'll explore specific cloud technologies and services that enable organizations to realize these benefits while addressing the associated challenges.
+
+## Video tham khảo
+
+- **xem trước:** [The Six Main Benefits of Cloud Computing with Amazon Web Services](https://www.youtube.com/watch?v=yMJ75k9X5_8) — Amazon Web Services, English. Watch first for the benefit side: cost, scale, and speed, which the lesson’s first half develops.
+- [Understanding Cloud Computing Benefits and Challenges (9 Minutes)](https://www.youtube.com/watch?v=rIvUlIYuW8o) — Technology Whisper, English. Walks benefits and challenges in one sitting, matching the two-sided structure of the lesson.
+- [Cloud Challenges: Security, Compliance & Vendor Lock-in Explained](https://www.youtube.com/watch?v=NBf7ZViOmOg) — CodeLucky, English. Focuses on security, compliance, and vendor lock-in, the challenge sections later in the lesson.

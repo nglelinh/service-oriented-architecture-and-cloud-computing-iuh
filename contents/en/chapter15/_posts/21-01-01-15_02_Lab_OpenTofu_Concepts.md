@@ -74,3 +74,9 @@ Write answers in `NOTES.md`—these *are* the lab if the tooling misbehaves:
 ## Done when
 
 Both pair members can walk a third student through the plan output without reading it for the first time. Destroy evidence exists if anything was applied.
+
+## Video tham khảo
+
+- **xem trước:** [Introduction to HashiCorp Terraform with Armon Dadgar](https://www.youtube.com/watch?v=h970ZBgKINg) — HashiCorp, an IBM Company, English. Watch first for plan, then apply. This lab stops at understanding the plan so a real account is not changed by surprise.
+- [What is OpenTofu Project?](https://www.youtube.com/watch?v=J2JKxY2elSo) — Oleksiy Pototskyy, English. What OpenTofu is, the tool named in the lab title beside Terraform.
+- [Terraform Basics](https://www.youtube.com/watch?v=_45W3Z8XWL4) — HashiCorp, an IBM Company, English. HashiCorp’s basics of the Terraform workflow the lab asks you to rehearse without a bill.

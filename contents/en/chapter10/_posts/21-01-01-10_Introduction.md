@@ -98,3 +98,9 @@ Let's explore the world of big data platforms!
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For Iceberg/Delta lakehouse catalogs and multi-engine apps (2022–2026), see [10-02 Open Lakehouse Platforms and Multi-Engine Apps]({{ site.baseurl }}{% multilang_post_url contents/chapter10/21-01-01-10_02_Open_Lakehouse_Applications %}).
+
+## Video tham khảo
+
+- **xem trước:** [Big Data Explained](https://www.youtube.com/watch?v=HRfR4dJoKDc) — IBM Technology, English. Watch first: IBM’s explanation of big data, the definition this chapter overview opens with.
+- [What is Apache Hadoop?](https://www.youtube.com/watch?v=JWX5Inb--ig) — IBM Technology, English. Hadoop as one platform that made those volumes processable, for the platform section.
+- [Big Data Architecture Patterns \| Lambda vs Kappa Architecture](https://www.youtube.com/watch?v=waDJcSCXz_Y) — Software Architecture Academy, English. Lambda versus Kappa, the processing models the chapter overview lists.

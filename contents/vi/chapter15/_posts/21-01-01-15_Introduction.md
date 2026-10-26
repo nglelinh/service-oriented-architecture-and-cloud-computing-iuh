@@ -65,6 +65,12 @@ CS 40 là khóa *triển khai*. IUH vẫn là khóa *nền tảng + dữ liệu*
 - Không bí mật trong Git. Không `0.0.0.0/0` trên SSH hoặc cổng CSDL.
 - Không chép đề trường khác vào báo cáo. Trích ý, viết thiết kế của mình.
 
+## Video tham khảo
+
+- **xem trước:** [What is Docker Compose? \| Docker Concepts](https://www.youtube.com/watch?v=f3xb7kt_dH4) — Docker, tiếng Anh. Xem trước Compose là gì, vì lộ trình triển khai bắt đầu từ ứng dụng đa tầng trên máy local.
+- [Introduction to HashiCorp Terraform with Armon Dadgar](https://www.youtube.com/watch?v=h970ZBgKINg) — HashiCorp, an IBM Company, tiếng Anh. Plan và apply là bước hạ tầng dưới dạng mã mà lộ trình đặt sau lab local.
+- [How to use GitHub Actions \| GitHub for Beginners](https://www.youtube.com/watch?v=BQrohJ3PT7I) — GitHub, tiếng Anh. GitHub Actions cho chủ đề CI/CD lộ trình xếp cạnh mạng, định danh và chi phí.
+
 ## Tài liệu
 
 1. [infracourse.cloud](https://infracourse.cloud/) — CS 40 Winter 2024, Stanford.

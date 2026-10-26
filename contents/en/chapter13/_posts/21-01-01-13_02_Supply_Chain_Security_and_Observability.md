@@ -76,6 +76,12 @@ Identity (workload identity / SPIFFE via a mesh, Chapter 09), least-privilege IA
 - SBOM noise (thousands of CVEs) without VEX / reachability.
 - Sampling traces so canary analysis still sees rare errors.
 
+## Video tham khảo
+
+- **xem trước:** [SLSA: Industry-Driven Guidelines for Software Supply Chain Security \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=gdYlSuH5Srs) — OpenSSF, English. Watch first: OpenSSF on SLSA, the supply-chain levels this lesson adds as another pipeline stage.
+- [Sigstore: A Wax Seal of Security for the Digital Era \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=m5eTw4x33kU) — OpenSSF, English. Sigstore as the signing layer the lesson pairs with SBOMs.
+- [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], English. OpenTelemetry in five minutes, the production-observability contract the lesson refuses to bolt on after go-live.
+
 ## Exercises
 
 1. For a student project image, list what would appear in a CycloneDX SBOM vs. a SLSA provenance statement.

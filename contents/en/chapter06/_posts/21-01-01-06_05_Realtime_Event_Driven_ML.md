@@ -85,6 +85,12 @@ That split is how you keep Structured Streaming’s exactly-once *sink* semantic
 - Dual writes (Kafka + table) without a transactional outbox.
 - Training/serving skew when Streaming features differ from batch backfill.
 
+## Video tham khảo
+
+- **xem trước:** [Event-Driven Architecture(EDA) vs. Request/Response (RR): System Design Explained](https://www.youtube.com/watch?v=7fkS-18KBlw) — Confluent, an IBM Company, English. Watch first: event-driven versus request/response, the lesson’s warning not to put Spark on the user request path.
+- [What is a Feature Store for Machine Learning?](https://www.youtube.com/watch?v=DESBDukN9gw) — Hopsworks, English. What a feature store is for, the online path the lesson splits from the streaming job.
+- [Introduction to Vertex AI Feature Store](https://www.youtube.com/watch?v=jXD8Sfx4hvQ) — Google Cloud Tech, English. Vertex AI Feature Store as a managed example of that online feature path.
+
 ## Exercises
 
 1. For a payments app, list three metrics that belong in Streaming vs three that belong in a nightly Spark SQL job.

@@ -53,3 +53,9 @@ Xu hướng hiện đại để tăng tốc triển khai là **trung tâm dữ l
 
 ### Trung tâm dữ liệu phân tán
 Với dịch vụ toàn cầu, một trung tâm dữ liệu đơn lẻ là không đủ vì các định luật vật lý. **Độ trễ (latency)** — thời gian dữ liệu di chuyển — bị giới hạn bởi tốc độ ánh sáng. Người dùng ở châu Á truy cập trung tâm dữ liệu tại Mỹ sẽ cảm nhận độ trễ rõ. Hơn nữa, phụ thuộc một vị trí tạo rủi ro: thiên tai có thể xóa sổ toàn bộ dịch vụ. Để giải quyết, công ty triển khai **mạng trung tâm dữ liệu phân tán toàn cầu**, nhân bản dữ liệu giữa các vùng và định tuyến lưu lượng người dùng tới vị trí gần nhất (“Edge”). Cách này bảo đảm cả hiệu năng cao cho người dùng lẫn khả năng phục hồi cho doanh nghiệp.
+
+## Video tham khảo
+
+- **xem trước:** [Infra Coffee Time #30: Trung tâm dữ liệu là gì? Các loại TTDL phổ biến](https://www.youtube.com/watch?v=oDUHJxuVLiE) — Viettel IDC, tiếng Việt. Xem trước: trung tâm dữ liệu là gì và các loại phổ biến, bằng tiếng Việt.
+- [Google Data Center 360° Tour](https://www.youtube.com/watch?v=zDAYZU4A3w0) — Google Cloud Tech, tiếng Anh. Tham quan sàn máy, điện và làm mát — phần trung tâm dữ liệu vật lý của bài.
+- [Vertical Vs Horizontal Scaling: Key Differences You Should Know](https://www.youtube.com/watch?v=dvRFHG2-uYs) — ByteByteGo, tiếng Anh. Scale up và scale out, đúng hai hướng mở rộng quy mô của bài.

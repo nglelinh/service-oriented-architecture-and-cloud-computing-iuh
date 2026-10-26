@@ -91,6 +91,12 @@ CNCF’s 2024 survey (published April 2025) reports **80%** Kubernetes productio
 - Tracing 100% of traffic is expensive; tail-based sampling needs a collector that sees the full trace.
 - Chaos without a rollback plan is just an outage.
 
+## Video tham khảo
+
+- **xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], English. Watch first: OpenTelemetry in five minutes, the correlation tool this lesson adds on top of “is the host up?”
+- [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve, English. Logs, metrics, and traces as three different jobs, which is the lesson’s “three signals, one correlation key.”
+- [Understanding Chaos Engineering](https://www.youtube.com/watch?v=mfEMXKSFtaQ) — Microsoft Developer, English. Chaos engineering as a way to practice independent failure, the property the required chapter already defined.
+
 ## Exercises
 
 1. Draw a sequence diagram of a three-service call. Mark where a `traceparent` header must be copied.

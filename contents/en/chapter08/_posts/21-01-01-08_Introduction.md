@@ -91,3 +91,9 @@ Let's begin our journey into the world of virtualization and containerization!
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For Lambda SnapStart, Firecracker snapshots, and WebAssembly isolates (2022–2026), see [08-05 Serverless, MicroVMs, and WebAssembly Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter08/21-01-01-08_05_Serverless_MicroVMs_and_WASM %}). The Docker lesson now also sketches the **manual → managed** ladder (Compose on a VM versus a container platform) used by the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/).
+
+## Video tham khảo
+
+- **xem trước:** [What is a Hypervisor?](https://www.youtube.com/watch?v=LMAEbB2a50M) — IBM Technology, English. Watch first: what a hypervisor is, the starting point of this chapter’s virtualization half.
+- [What Is Docker - and why it’s EVERYWHERE](https://www.youtube.com/watch?v=W5fK8BmgBow) — Techquickie, English. What Docker is, for the container half the chapter overview promises.
+- [Introduction to AWS Lambda - Serverless Compute on Amazon Web Services](https://www.youtube.com/watch?v=eOBq__h4OJ4) — Amazon Web Services, English. AWS Lambda as the serverless step the chapter lists after containers.

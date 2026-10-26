@@ -53,3 +53,9 @@ A modern trend to address deployment speed is the **Modular Data Center**. In th
 
 ### Distributed Data Centers
 For global services, a single data center is insufficient due to the laws of physics. **Latency**—the time it takes for data to travel—is limited by the speed of light. Users in Asia accessing a US data center will experience noticeable lag. Furthermore, relying on a single location creates risk; a natural disaster could wipe out the entire service. To solve this, companies deploy a **global network of distributed data centers**, replicating data across regions and routing user traffic to the nearest location (the "Edge"). This ensures both high performance for users and resilience for the business.
+
+## Video tham khảo
+
+- **xem trước:** [Google Data Center 360° Tour](https://www.youtube.com/watch?v=zDAYZU4A3w0) — Google Cloud Tech, English. Watch first: a floor tour of power, cooling, and rows of machines, which is the physical “data center as a computer” in this lesson.
+- [Vertical Vs Horizontal Scaling: Key Differences You Should Know](https://www.youtube.com/watch?v=dvRFHG2-uYs) — ByteByteGo, English. Vertical versus horizontal scaling, the two approaches the lesson contrasts before it reaches distributed sites.
+- [Google Data Center Security: 6 Layers Deep](https://www.youtube.com/watch?v=kd33UVZhnAA) — Google Cloud Tech, English. Security layers around a data-center campus, for the physical-control side of the same tour.

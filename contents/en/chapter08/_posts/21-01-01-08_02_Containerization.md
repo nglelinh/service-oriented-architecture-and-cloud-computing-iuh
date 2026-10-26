@@ -437,6 +437,12 @@ Containers provide **lightweight isolation** with lower overhead than VMs:
 
 In the next lecture, we'll explore **Docker** in depth, including how to create, manage, and deploy containerized applications.
 
+## Video tham khảo
+
+- **xem trước:** [Containers: cgroups, Linux kernel namespaces, ufs, Docker, and intro to Kubernetes pods](https://www.youtube.com/watch?v=el7768BNUPw) — Sean, English. Watch first: cgroups, namespaces, and how they differ from a virtual machine, which is this lesson’s Linux-primitives core.
+- [Cgroups, namespaces, and beyond: what are containers made from?](https://www.youtube.com/watch?v=sK5i-N34im8) — Docker, English. Docker’s own talk on what containers are made from. It is a long conference session; watch it as a whole.
+- [What Is Docker - and why it’s EVERYWHERE](https://www.youtube.com/watch?v=W5fK8BmgBow) — Techquickie, English. A short picture of Docker after the kernel primitives, so the lesson’s “container solution” has a product name.
+
 ## Further Reading
 
 - [Namespaces in operation (lwn.net)](https://lwn.net/Articles/531114/)

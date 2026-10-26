@@ -70,6 +70,12 @@ Hình 2024–2026 sinh viên sẽ gặp:
 - Khóa hệ sinh thái WASM (API host khác nhau).
 - Chi phí: tính tiền theo ms vs. Deployment 1 replica rẻ hơn ở QPS ổn định.
 
+## Video tham khảo
+
+- **xem trước:** [How AWS’s Firecracker virtual machines work \| Amazon Science](https://www.youtube.com/watch?v=BIRv2FnHJAg) — Amazon Science, tiếng Anh. Xem trước Amazon Science nói microVM Firecracker hoạt động thế nào, thay đổi cô lập bài theo dõi quanh Lambda.
+- [Introducing AWS Lambda SnapStart \| Amazon Web Services](https://www.youtube.com/watch?v=AgxvrZLI1mc) — Amazon Web Services, tiếng Anh. Giới thiệu ngắn của AWS về Lambda SnapStart, tính năng snapshot ở mục đầu bài.
+- [Introduction to WebAssembly and WASI](https://www.youtube.com/watch?v=Of07IsplHPY) — Root Access, tiếng Anh. WebAssembly và WASI là cô lập không cần kernel khách, đúng mục thứ hai của bài.
+
 ## Bài tập
 
 1. Liệt kê ba đối tượng lúc init phải xây lại sau restore SnapStart.

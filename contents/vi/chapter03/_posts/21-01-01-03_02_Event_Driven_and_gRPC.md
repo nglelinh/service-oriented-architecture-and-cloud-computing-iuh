@@ -84,6 +84,12 @@ YARN không biến mất: nhiều nền tảng dữ liệu vẫn lập lịch Sp
 - gRPC qua trình duyệt/Internet công cộng thường cần proxy (Connect/gRPC-Web, Gateway API).
 - Chạy cả YARN và Kubernetes trong một tổ chức tạo hai hàng đợi, hai mô hình định danh.
 
+## Video tham khảo
+
+- **xem trước:** [gRPC in 5 minutes \| Eric Anderson & Ivy Zhuang, Google](https://www.youtube.com/watch?v=njC24ts24Pg) — gRPC, tiếng Anh. Xem trước gRPC trong năm phút từ chính dự án, cho mục SOA đồng bộ.
+- [What is the Cloud Events Specification & Why You Should Care!](https://www.youtube.com/watch?v=Sjw0PFwTvek) — James Eastham, tiếng Anh. Đặc tả CloudEvents là gì, cho mục hợp đồng bất đồng bộ.
+- [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, tiếng Anh. Kubernetes là bộ lập lịch cụm mà bài nói đã thế chỗ YARN ngoài các hệ Hadoop.
+
 ## Bài tập
 
 1. Phân loại năm lời gọi trong ứng dụng gọi xe (báo giá, luồng vị trí tài xế, chuyến xong, email hóa đơn, điểm gian lận) thành RPC vs sự kiện.

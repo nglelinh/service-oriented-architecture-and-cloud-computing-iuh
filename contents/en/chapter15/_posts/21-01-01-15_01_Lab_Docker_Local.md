@@ -93,3 +93,9 @@ The edge can be Caddy, nginx, or a tiny static UI served by the API. Pick one. P
 ## Instructor note
 
 Evidence is `NOTES.md` + Compose file + the 503 screenshot/log. No rubric is copied from another university; grade locally if you use this as a marked lab.
+
+## Video tham khảo
+
+- **xem trước:** [What is Docker Compose? \| Docker Concepts](https://www.youtube.com/watch?v=f3xb7kt_dH4) — Docker, English. Watch first: Docker’s definition of Compose, the tool this lab uses for a local multilayer app.
+- [Docker Compose in 12 Minutes](https://www.youtube.com/watch?v=Qw9zlE3t8Ko) — Jake Wright, English. A Compose file with more than one service, close to the edge, app, and data roles in the lab.
+- [What Is Docker - and why it’s EVERYWHERE](https://www.youtube.com/watch?v=W5fK8BmgBow) — Techquickie, English. What a container is, if the Compose file is the first Docker artifact in the lab.

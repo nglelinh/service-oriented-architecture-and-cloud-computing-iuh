@@ -194,3 +194,9 @@ Infrastructure as Code allows us to treat operations like software development:
 - **Peer Review** changes before applying.
 - **Automate** testing and deployment.
 - **Terraform** provides a powerful, declarative way to manage massive scale across any cloud provider.
+
+## Video tham khảo
+
+- **xem trước:** [Introduction to Terraform](https://www.youtube.com/watch?v=ZFLWA1kQ3ls) — HashiCorp, an IBM Company, English. Watch first: plan versus apply, the workflow the lesson’s essential commands implement.
+- [Terraform Basics](https://www.youtube.com/watch?v=_45W3Z8XWL4) — HashiCorp, an IBM Company, English. Terraform basics from HashiCorp, for HCL resources and the command sequence.
+- [Introduction to HashiCorp Terraform with Armon Dadgar](https://www.youtube.com/watch?v=h970ZBgKINg) — HashiCorp, an IBM Company, English. Why teams move console clicks into versioned configuration, the motivation section of the lesson.

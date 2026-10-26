@@ -104,3 +104,9 @@ counts.saveAsTextFile("output")
 ## Summary
 
 Apache Spark is the successor to MapReduce for most modern big data workloads. Its in-memory capability and rich ecosystem (SQL, Streaming, MLlib) make it a versatile tool for data engineers and data scientists.
+
+## Video tham khảo
+
+- **xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, English. Watch first for what Spark is, before the lesson’s driver, executor, and RDD sections.
+- [02 How Spark Works - Driver & Executors \| How Spark divide Job in Stages \| What is Shuffle in Spark](https://www.youtube.com/watch?v=nKM4f1olwsI) — Ease With Data, English. How a job splits across a driver and executors, including shuffle, matching the execution-flow section.
+- [What Are RDDs in Apache Spark? \| RDD Explained in 10 Minutes for Beginners \| PySpark](https://www.youtube.com/watch?v=46WOZ1Kcles) — Data Forge, English. What an RDD is, for the resilient distributed dataset section and the word-count example.

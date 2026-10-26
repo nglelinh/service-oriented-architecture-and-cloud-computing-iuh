@@ -80,6 +80,12 @@ graph TB
 - A shared Connect server is a **noisy-neighbor** and a security boundary.
 - Kubernetes shuffle/local disk is easier to get wrong than HDFS locality.
 
+## Video tham khảo
+
+- **xem trước:** [Spark Connect: Flexible, Local Access to Apache Spark at Scale](https://www.youtube.com/watch?v=Poz63cOyp-Q) — Databricks, English. Watch first: Databricks on Spark Connect as remote access to a cluster, the fat-driver problem this lesson opens with.
+- [What is Spark Connect and Getting started Spark Connect Hello World](https://www.youtube.com/watch?v=7sn_DgUMlMQ) — Soumil Shah, English. A short hello-world of Spark Connect so the client/server switch is not only a conference talk.
+- [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, English. What Kubernetes is, because the lesson’s cluster section runs Spark there instead of a standing YARN cluster.
+
 ## Exercises
 
 1. From the Spark 4.0 release notes, list three Connect items that help a *non-JVM* team.

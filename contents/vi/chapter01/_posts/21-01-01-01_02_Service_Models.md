@@ -121,3 +121,9 @@ Khi điện toán đám mây phát triển, ranh giới giữa các mô hình ng
 Hiểu ba mô hình dịch vụ đám mây chính — IaaS, PaaS và SaaS — là nền tảng để ra quyết định áp dụng đám mây có cơ sở. Mỗi mô hình đánh đổi khác nhau giữa kiểm soát, linh hoạt và chi phí quản trị. Lựa chọn phụ thuộc vào năng lực kỹ thuật, yêu cầu nghiệp vụ và mục tiêu chiến lược của tổ chức.
 
 Bài tiếp theo sẽ tìm hiểu các mô hình triển khai đám mây và cách chúng bổ sung cho các mô hình dịch vụ để tạo nên giải pháp đám mây toàn diện.
+
+## Video tham khảo
+
+- **xem trước:** [3 dịch vụ của cloud - IAAS, PAAS, SAAS](https://www.youtube.com/watch?v=KGvoeQE1aG0) — Mai DE, tiếng Việt. Xem trước: ba dịch vụ IaaS, PaaS, SaaS bằng tiếng Việt, đúng khung bài.
+- [AZ-900 Episode 5 \| IaaS vs PaaS vs SaaS cloud service models \| Microsoft Azure Fundamentals Course](https://www.youtube.com/watch?v=9CVBohl6w0Q) — Adam Marczak - Azure for Everyone, tiếng Anh. So sánh IaaS, PaaS và SaaS và ai vận hành từng tầng trong chồng dịch vụ.
+- [Mô hình cloud - On premises - Iaas - PaaS - SaaS](https://www.youtube.com/watch?v=as7_vyJ3qvA) — Trophy Vietnam, tiếng Việt. Đặt on-premises cạnh IaaS, PaaS và SaaS, đúng phần trách nhiệm mà bài so sánh.

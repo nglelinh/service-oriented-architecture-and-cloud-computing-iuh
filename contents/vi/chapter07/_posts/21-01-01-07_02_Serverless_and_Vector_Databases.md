@@ -86,6 +86,12 @@ LIMIT 8;
 - Xây lại chỉ mục vector sau khi đổi mô hình embedding (là di trú, không trivia reindex).
 - Nhân bản đa đám mây cả SQL lẫn vector (hai câu chuyện nhất quán).
 
+## Video tham khảo
+
+- **xem trước:** [What is a Vector Database? Powering Semantic Search & AI Applications](https://www.youtube.com/watch?v=gl1r1XV0SLw) — IBM Technology, tiếng Anh. Xem trước cơ sở vector là gì, đường truy cập AI bài tùy chọn thêm cạnh bốn họ NoSQL.
+- [What is a serverless database? (in under 3 minutes)](https://www.youtube.com/watch?v=GxjKsKSOWJk) — CockroachDB, tiếng Anh. Cơ sở serverless là dung lượng co giãn theo mức dùng, đúng mục đàn hồi của bài.
+- [What is Serverless?](https://www.youtube.com/watch?v=vxJobGtqKVM) — IBM Technology, tiếng Anh. Serverless nghĩa là gì khi chính cơ sở dữ liệu, không chỉ hàm, có thể tạm dừng và co giãn.
+
 ## Bài tập
 
 1. Chọn một hệ thống campus (thư viện, LMS, gửi xe). Họ nào + sản phẩm những năm 2020 nào, và đau CAP nào bạn chấp nhận?

@@ -25,3 +25,8 @@ The true power of Spark lies in its unified stack. You can load data using Spark
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For event-driven features, serving-adjacent ML, and stream-vs-request clocks (2022–2026), see [06-05 Real-Time, Event-Driven, and Serving-Adjacent Spark Apps]({{ site.baseurl }}{% multilang_post_url contents/chapter06/21-01-01-06_05_Realtime_Event_Driven_ML %}).
+
+## Video tham khảo
+
+- **xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, English. Watch first: what Spark is, the unified engine this introduction says SQL, streaming, and MLlib share.
+- [PySpark Tutorial: Spark SQL & DataFrame Basics](https://www.youtube.com/watch?v=3-pnWVWyH-s) — Greg Hogg, English. DataFrame and Spark SQL basics, one of the three libraries the introduction names.

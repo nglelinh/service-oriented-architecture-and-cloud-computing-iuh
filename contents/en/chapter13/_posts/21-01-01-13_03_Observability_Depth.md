@@ -158,6 +158,12 @@ Enough for the capstone, not a platform career:
 - Privacy: traces can carry query strings with student names. Drop or hash attributes in the SDK.
 - Vendor lock-in: if you only use a vendor agent API, the Chapter 12 multi-cloud story repeats in telemetry.
 
+## Video tham khảo
+
+- **xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], English. Watch first: OpenTelemetry as a pipeline, which is how this depth lesson says telemetry actually moves.
+- [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve, English. Logs, metrics, and traces as three jobs, the opening split of the lesson.
+- [OpenTelemetry: Simplifying Hybrid Cloud Monitoring](https://www.youtube.com/watch?v=hLvwoow3XTk) — IBM Technology, English. IBM’s picture of OpenTelemetry across a hybrid estate, for the collector-and-backend section.
+
 ## Exercises
 
 1. For Course Board `POST /api/posts`, write one RED SLI, one USE SLI for Postgres, and an SLO for a one-week lab demo.

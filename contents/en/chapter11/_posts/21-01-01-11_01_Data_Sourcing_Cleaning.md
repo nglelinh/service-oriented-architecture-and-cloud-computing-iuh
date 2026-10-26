@@ -501,6 +501,12 @@ Data sourcing and cleaning are critical steps in the data pipeline:
 
 **Remember**: Data scientists spend 60-80% of their time on data preparation - it's worth doing well!
 
+## Video tham khảo
+
+- **xem trước:** [What is Data Cleaning? \| Data Fundamentals for Beginners](https://www.youtube.com/watch?v=WpX2F2BS3Qc) — Alex The Analyst, English. Watch first for what cleaning is trying to fix, before the lesson’s sourcing and scraping sections.
+- [Dealing with Missing Values in Machine Learning: Easy Explanation for Data Science Interviews](https://www.youtube.com/watch?v=FPvMBl8LvGA) — Emma Ding, English. Ways to deal with missing values, the strategy list in the lesson.
+- [Data Cleaning Explained in 1 Video. Missing Values, Outliers & Imputation \| #datascience](https://www.youtube.com/watch?v=MgjxaTqXdRE) — Neural Notes, English. Outliers and imputation next to missing values, so normalization is not the only cleaning step.
+
 ## Further Reading
 
 - [Pandas Documentation](https://pandas.pydata.org/docs/)

@@ -77,6 +77,12 @@ def handle(req):
 - Nhiễu SBOM (hàng nghìn CVE) không có VEX / reachability.
 - Sampling trace sao cho phân tích canary vẫn thấy lỗi hiếm.
 
+## Video tham khảo
+
+- **xem trước:** [SLSA: Industry-Driven Guidelines for Software Supply Chain Security \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=gdYlSuH5Srs) — OpenSSF, tiếng Anh. Xem trước OpenSSF nói về SLSA, các mức chuỗi cung ứng bài thêm như một chặng pipeline.
+- [Sigstore: A Wax Seal of Security for the Digital Era \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=m5eTw4x33kU) — OpenSSF, tiếng Anh. Sigstore là lớp ký mà bài đặt cạnh SBOM.
+- [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], tiếng Anh. OpenTelemetry trong năm phút, hợp đồng quan sát production bài không gắn thêm sau khi lên sóng.
+
 ## Bài tập
 
 1. Với ảnh dự án sinh viên, liệt kê thứ gì vào SBOM CycloneDX vs. tuyên bố provenance SLSA.

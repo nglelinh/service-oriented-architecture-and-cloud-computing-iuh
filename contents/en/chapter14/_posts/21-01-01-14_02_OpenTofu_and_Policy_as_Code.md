@@ -77,6 +77,12 @@ graph LR
 - Module version pinning vs. “always latest” security patches.
 - Policy packs that reject every student lab by accident.
 
+## Video tham khảo
+
+- **xem trước:** [What is OpenTofu Project?](https://www.youtube.com/watch?v=J2JKxY2elSo) — Oleksiy Pototskyy, English. Watch first: what the OpenTofu project is, the fork this lesson studies beside Terraform.
+- [OPA Rego Tutorial: Write and Test Policy as Code](https://www.youtube.com/watch?v=x_IfmWXlHbI) — Spacelift, English. Writing and testing a Rego policy, the policy-as-code section.
+- [What is a Platform Engineer?](https://www.youtube.com/watch?v=q6vbxk3hq-o) — HashiCorp, an IBM Company, English. HashiCorp on what a platform engineer does, the internal-product section at the end of the lesson.
+
 ## Exercises
 
 1. Write a policy: every resource must have `tags.owner` and `tags.cost_center`.

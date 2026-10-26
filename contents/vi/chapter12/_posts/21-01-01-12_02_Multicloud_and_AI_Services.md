@@ -82,6 +82,12 @@ Với hệ thống kiểu IUH, câu hỏi từng tùy chọn năm 2018 nay là �
 - Mô hình IAM khác nhau (khóa thật).
 - Vận tốc tính năng AI: adapter hôm nay là model id bị deprecated ngày mai.
 
+## Video tham khảo
+
+- **xem trước:** [What is Multicloud? How Do You Manage It?](https://www.youtube.com/watch?v=AjtdZ3gFRjU) — IBM Technology, tiếng Anh. Xem trước đa đám mây như thứ phải vận hành, đúng ý trong dữ liệu chứ không chỉ trên slide.
+- [Introducing Amazon Bedrock \| Amazon Web Services](https://www.youtube.com/watch?v=_vdK5PgcNvc) — Amazon Web Services, tiếng Anh. Amazon Bedrock là hàng AI tạo sinh được quản lý, một trong ba catalog bài thêm.
+- [What is Vertex AI](https://www.youtube.com/watch?v=Rl9Gz1Yf6wM) — Google Cloud, tiếng Anh. Vertex AI là gì, hàng AI được quản lý của Google trong cùng bảng so sánh.
+
 ## Bài tập
 
 1. Mở rộng bảng ánh xạ dịch vụ bắt buộc thêm *một* hàng AI và *một* hàng quan sát (collector OTel).

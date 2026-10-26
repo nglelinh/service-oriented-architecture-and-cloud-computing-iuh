@@ -166,6 +166,12 @@ Compose on a student laptop implements the *same tiers* with user-defined networ
 - “Temporary” `0.0.0.0/0` rules that land in a screenshot and then in production.
 - Certificates that expire on a Sunday because nobody owned renewal.
 
+## Video tham khảo
+
+- **xem trước:** [AWS VPC & Subnets For Beginners](https://www.youtube.com/watch?v=TUTqYEZZUdc) — Sam Meech-Ward, English. Watch first for VPC and subnets, the first objects this crash course says you will keep meeting.
+- [How DNS Works - Computerphile](https://www.youtube.com/watch?v=uOfonONtIuk) — Computerphile, English. How DNS resolution works, for the lesson’s point that a name is how clients find the service.
+- [SSL, TLS, HTTPS Explained](https://www.youtube.com/watch?v=j9QmMEWmcfo) — ByteByteGo, English. TLS and HTTPS as the contract on that name, which is the lesson’s certificate check.
+
 ## Exercises
 
 1. Draw the Course Board diagram with three security groups and *no* public IP on the database. Label the route that makes the public subnet public.

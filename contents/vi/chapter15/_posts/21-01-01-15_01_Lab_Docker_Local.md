@@ -90,3 +90,9 @@ Cạnh có thể là Caddy, nginx, hoặc UI tĩnh do API phục vụ. Ghim th�
 ## Ghi chú giảng viên
 
 Minh chứng: `NOTES.md` + Compose + ảnh/log 503. Không dùng rubrics trường khác.
+
+## Video tham khảo
+
+- **xem trước:** [Tự học Docker siêu tốc trong 10 phút (Có code mẫu và ví dụ) - Code Dạo Dễ Òm](https://www.youtube.com/watch?v=1k8pox8mkxc) — Phạm Huy Hoàng, tiếng Việt. Xem trước các lệnh Docker bằng tiếng Việt trước khi ghép nhiều dịch vụ bằng Compose.
+- [What is Docker Compose? \| Docker Concepts](https://www.youtube.com/watch?v=f3xb7kt_dH4) — Docker, tiếng Anh. Định nghĩa Compose của chính Docker, công cụ lab dùng cho ứng dụng đa tầng trên máy local.
+- [Docker Compose in 12 Minutes](https://www.youtube.com/watch?v=Qw9zlE3t8Ko) — Jake Wright, tiếng Anh. Một file Compose có nhiều dịch vụ, gần các vai trò edge, app và data của lab.

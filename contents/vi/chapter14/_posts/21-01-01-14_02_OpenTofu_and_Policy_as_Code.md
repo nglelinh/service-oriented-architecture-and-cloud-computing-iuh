@@ -77,6 +77,12 @@ graph LR
 - Ghim phiên bản module vs. vá bảo mật “luôn latest.”
 - Gói chính sách từ chối mọi lab sinh viên tình cờ.
 
+## Video tham khảo
+
+- **xem trước:** [What is OpenTofu Project?](https://www.youtube.com/watch?v=J2JKxY2elSo) — Oleksiy Pototskyy, tiếng Anh. Xem trước dự án OpenTofu là gì, nhánh bài học cạnh Terraform.
+- [OPA Rego Tutorial: Write and Test Policy as Code](https://www.youtube.com/watch?v=x_IfmWXlHbI) — Spacelift, tiếng Anh. Viết và kiểm thử một chính sách Rego, đúng mục chính sách dưới dạng mã.
+- [What is a Platform Engineer?](https://www.youtube.com/watch?v=q6vbxk3hq-o) — HashiCorp, an IBM Company, tiếng Anh. HashiCorp nói kỹ sư nền tảng làm gì, đúng mục sản phẩm nội bộ ở cuối bài.
+
 ## Bài tập
 
 1. Viết chính sách: mọi resource phải có `tags.owner` và `tags.cost_center`.

@@ -79,6 +79,12 @@ You do **not** need to reproduce a three-tier VPC in a personal account. A diagr
 
 You can explain, without a slide, the difference between “always free,” “credits,” and “I left a NAT on.” If you never opened a cloud account, your `NOTES.md` still lists the ten ticks and **which ones blocked you**—that is a valid Lab C.
 
+## Video tham khảo
+
+- **xem trước:** [Introducing the new AWS Free Tier Program \| Amazon Web Services](https://www.youtube.com/watch?v=pisDsIgXGUI) — Amazon Web Services, English. Watch first: AWS’s own announcement of the current free-tier program, which this lab says to re-check on the provider page.
+- [AWS Free Tier and the New AWS Experience](https://www.youtube.com/watch?v=7aOb0vZHT5k) — AWS Developers, English. A longer AWS Developers walkthrough of the free tier and the console around it.
+- [AWS Cost Optimisation Series: Cost Explorer \| Amazon Web Services](https://www.youtube.com/watch?v=oE8TNKGmc40) — Amazon Web Services, English. Cost Explorer, so the meters behind a “free” account are visible before anything is left running.
+
 ## References
 
 1. Current AWS Free Tier, Azure free services, and GCP free program pages (open on the lab date).

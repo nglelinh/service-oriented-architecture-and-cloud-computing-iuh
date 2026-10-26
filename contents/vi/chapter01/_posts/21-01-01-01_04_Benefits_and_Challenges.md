@@ -65,3 +65,9 @@ Dữ liệu trên đám mây có thể nằm vật lý trên máy chủ ở nhi�
 Điện toán đám mây mang lại lợi thế cụ thể về chi phí, sự nhanh nhẹn và đổi mới, nhưng không phải giải pháp thần kỳ. Thành công đòi hỏi chiến lược được tính toán kỹ: tận dụng lợi ích đồng thời chủ động quản lý rủi ro bảo mật, chi phí và khóa nhà cung cấp. Tổ chức cần phát triển kỹ năng và mô hình quản trị mới để phát triển trong môi trường này.
 
 Chương tiếp theo sẽ tìm hiểu các công nghệ và dịch vụ đám mây cụ thể, giúp tổ chức hiện thực hóa các lợi ích này đồng thời xử lý những thách thức đi kèm.
+
+## Video tham khảo
+
+- **xem trước:** [The Six Main Benefits of Cloud Computing with Amazon Web Services](https://www.youtube.com/watch?v=yMJ75k9X5_8) — Amazon Web Services, tiếng Anh. Xem trước phần lợi ích: chi phí, quy mô và tốc độ, đúng nửa đầu bài.
+- [Understanding Cloud Computing Benefits and Challenges (9 Minutes)](https://www.youtube.com/watch?v=rIvUlIYuW8o) — Technology Whisper, tiếng Anh. Đi cả lợi ích và thách thức trong một video, cùng cấu trúc hai mặt của bài.
+- [Cloud Challenges: Security, Compliance & Vendor Lock-in Explained](https://www.youtube.com/watch?v=NBf7ZViOmOg) — CodeLucky, tiếng Anh. Tập trung bảo mật, tuân thủ và khóa nhà cung cấp, đúng các mục thách thức phía sau.

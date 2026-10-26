@@ -87,6 +87,12 @@ LIMIT 8;
 - Vector index rebuilds after embedding-model changes (a migration, not a reindex trivia).
 - Multi-cloud replication of both SQL and vectors (two consistency stories).
 
+## Video tham khảo
+
+- **xem trước:** [What is a Vector Database? Powering Semantic Search & AI Applications](https://www.youtube.com/watch?v=gl1r1XV0SLw) — IBM Technology, English. Watch first: what a vector database is, the AI access path this optional lesson adds beside the four NoSQL families.
+- [What is a serverless database? (in under 3 minutes)](https://www.youtube.com/watch?v=GxjKsKSOWJk) — CockroachDB, English. Serverless databases as capacity that scales with use, the elasticity section of the lesson.
+- [What is Serverless?](https://www.youtube.com/watch?v=vxJobGtqKVM) — IBM Technology, English. What serverless means when the database, not only the function, can pause and scale.
+
 ## Exercises
 
 1. Pick one campus system (library, LMS, parking). Which family + which 2020s product would you choose, and which CAP pain do you accept?

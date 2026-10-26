@@ -101,3 +101,9 @@ The landscape is evolving toward **Multi-Cloud**, where organizations use servic
 Understanding cloud deployment models is essential for making informed decisions about cloud strategy. Each model offers different trade-offs in terms of cost, control, security, and complexity. The choice depends on your organization's specific requirements, including data sensitivity, budget, and scalability needs.
 
 In the next lesson, we'll explore the benefits and challenges of cloud computing, helping you understand the full impact of cloud adoption on your organization.
+
+## Video tham khảo
+
+- **xem trước:** [AZ-900 Episode 6 \| Public, Private & Hybrid cloud deployment models \| Azure Fundamentals Course](https://www.youtube.com/watch?v=XlNR7myQydI) — Adam Marczak - Azure for Everyone, English. Watch first for public, private, and hybrid deployment, including who owns the infrastructure.
+- [Cloud Deployment Models - Public Cloud, Private Cloud, Hybrid Cloud & Community Cloud](https://www.youtube.com/watch?v=GZsUFbLTH6s) — Software Architecture Academy, English. Adds community cloud next to public, private, and hybrid, which this lesson treats as the fourth model.
+- [Public Cloud vs Private Cloud vs Hybrid Cloud](https://www.youtube.com/watch?v=3WIJ4axzFlU) — IntelCanada, English. A short contrast of public, private, and hybrid so the decision framework at the end of the lesson has a picture.

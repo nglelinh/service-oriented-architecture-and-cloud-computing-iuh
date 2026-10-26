@@ -82,6 +82,12 @@ Sometimes the answer is **one** hyperscaler + an on-prem or national cloud for t
 - Different IAM models (the real lock-in).
 - AI feature velocity: today’s adapter is tomorrow’s deprecated model id.
 
+## Video tham khảo
+
+- **xem trước:** [What is Multicloud? How Do You Manage It?](https://www.youtube.com/watch?v=AjtdZ3gFRjU) — IBM Technology, English. Watch first for multi-cloud as something you operate, which is this lesson’s “in the data, not in the slide.”
+- [Introducing Amazon Bedrock \| Amazon Web Services](https://www.youtube.com/watch?v=_vdK5PgcNvc) — Amazon Web Services, English. Amazon Bedrock as a managed generative-AI row, one of the three catalogs the lesson adds.
+- [What is Vertex AI](https://www.youtube.com/watch?v=Rl9Gz1Yf6wM) — Google Cloud, English. What Vertex AI is, the Google managed-AI row in the same comparison.
+
 ## Exercises
 
 1. Extend the required service-mapping table with *one* AI row and *one* observability row (OTel collectors).

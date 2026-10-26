@@ -84,3 +84,9 @@ A softer consistency model for NoSQL systems:
 ## Summary
 
 Distributed databases and NoSQL systems sacrifice strict ACID properties (specifically consistency) to achieve high availability and partition tolerance (scalability). Understanding the CAP theorem and the specific data model (Key-Value, Document, etc.) is crucial for choosing the right tool for the job.
+
+## Video tham khảo
+
+- **xem trước:** [What is CAP Theorem?](https://www.youtube.com/watch?v=eWMgsk7mpFc) — IBM Technology, English. Watch first for CAP, the theorem the lesson uses to separate consistency, availability, and partition tolerance.
+- [How do NoSQL databases work? Simply Explained!](https://www.youtube.com/watch?v=0buKQHokLK8) — Simply Explained, English. How NoSQL databases differ in shape, for the key-value, document, column, and graph section.
+- [Consistent Hashing \| Algorithms You Should Know #1](https://www.youtube.com/watch?v=UF9Iqmg94tk) — ByteByteGo, English. Consistent hashing, the distribution strategy the lesson names for spreading keys.

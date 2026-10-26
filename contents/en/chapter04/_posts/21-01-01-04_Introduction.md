@@ -25,3 +25,9 @@ MapReduce simplified distributed computing by abstracting the complexities of pa
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For lakehouse batch, Beam/Dataflow, and modern shuffle-on-object-storage (2022–2026), see [04-02 Modern Batch Processing beyond Classic MapReduce]({{ site.baseurl }}{% multilang_post_url contents/chapter04/21-01-01-04_02_Modern_Batch_and_MapReduce %}).
+
+## Video tham khảo
+
+- **xem trước:** [MapReduce - Computerphile](https://www.youtube.com/watch?v=cvhKoniK5Uo) — Computerphile, English. Watch first: Computerphile’s MapReduce explanation, the paradigm shift this introduction names.
+- [What is MapReduce?](https://www.youtube.com/watch?v=43fqzaSH0CQ) — internet-class, English. A second, shorter definition of MapReduce before the word-count lesson.
+- [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, English. The optional lesson is batch after classic MapReduce; this is Databricks’ short answer to what Spark is.

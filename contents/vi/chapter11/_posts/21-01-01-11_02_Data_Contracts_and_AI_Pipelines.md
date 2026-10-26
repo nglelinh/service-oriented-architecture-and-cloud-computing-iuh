@@ -88,6 +88,12 @@ Mẫu ứng dụng: **hai vùng**. Vùng A là hệ thống ghi sổ (hợp đ�
 - Làm sạch làm rơi đúng các hàng quan trọng (thiên lệch).
 - LLM-như-bộ-làm-sạch: rẻ để demo, đắt để kiểm toán.
 
+## Video tham khảo
+
+- **xem trước:** [What is a Data Contract?](https://www.youtube.com/watch?v=-n3OD-ml_k0) — IBM Technology, tiếng Anh. Xem trước định nghĩa hợp đồng dữ liệu của IBM, đúng hình ảnh WSDL còn thiếu của phân tích.
+- [What Are Data Contracts? (And How They Actually Work in Production)](https://www.youtube.com/watch?v=6svVYbAcfHc) — The Data and AI Guy, tiếng Anh. Hợp đồng vận hành thế nào giữa bên tạo và bên dùng trong pipeline, đúng mục cổng chất lượng.
+- [What is a Data Contract?](https://www.youtube.com/watch?v=3DU6vuES5eQ) — Monte Carlo, tiếng Anh. Định nghĩa hợp đồng dữ liệu ngắn hơn, từ một hãng chuyên độ tin cậy dữ liệu.
+
 ## Bài tập
 
 1. Viết hợp đồng 12 dòng cho `wifi_sessions` mà nhóm mạng không được phá.

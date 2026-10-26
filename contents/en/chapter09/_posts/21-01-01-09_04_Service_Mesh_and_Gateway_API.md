@@ -69,6 +69,12 @@ Add a mesh when you need **portable identity** (SPIFFE), consistent timeouts, or
 - Ambient + kube-proxy-replacement CNIs need documented flags so socket load-balancing does not bypass the mesh.
 - GRPCRoute support lags HTTPRoute in some implementations—check the controller matrix.
 
+## Video tham khảo
+
+- **xem trước:** [Istio & Service Mesh - simply explained in 15 mins](https://www.youtube.com/watch?v=16fgzklcF7Y) — TechWorld with Nana, English. Watch first: what a service mesh is, before the lesson’s ambient-mode and “when not to add a mesh” sections.
+- [The Differences between Ingress & Gateway API](https://www.youtube.com/watch?v=GhIrz-V9X6k) — That DevOps Guy, English. Ingress versus the Gateway API, the portable edge the lesson’s first section describes.
+- [What is Cilium?](https://www.youtube.com/watch?v=ELyib78vjRY) — eBPF & Cilium Community, English. What Cilium is, the eBPF data plane the lesson names beside Istio.
+
 ## Exercises
 
 1. Rewrite a simple Ingress YAML as Gateway + HTTPRoute. Who owns each object?

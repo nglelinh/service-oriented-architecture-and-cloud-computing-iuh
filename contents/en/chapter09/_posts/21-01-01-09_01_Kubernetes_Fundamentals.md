@@ -395,6 +395,12 @@ Kubernetes is a powerful container orchestration platform that:
 
 In the next lecture, we'll dive deep into **Pods** - the fundamental building block of Kubernetes applications.
 
+## Video tham khảo
+
+- **xem trước:** [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, English. Watch first for what Kubernetes is and why containers need an orchestrator, the opening of this lesson.
+- [Kubernetes architecture: Nodes and control plane](https://www.youtube.com/watch?v=VQUZF6k6g88) — Google Cloud Tech, English. Control plane and worker nodes, the architecture diagrams in the lesson.
+- [How Kubernetes works](https://www.youtube.com/watch?v=daVUONZqn88) — Microsoft Azure, English. How the reconciliation loop keeps the cluster at the desired state the lesson describes.
+
 ## Further Reading
 
 - [Kubernetes Official Documentation](https://kubernetes.io/docs/)

@@ -89,6 +89,12 @@ Khảo sát CNCF 2024 (công bố 4/2025) ghi **80%** dùng Kubernetes trên pro
 - Trace 100% lưu lượng thì đắt; sampling theo đuôi cần collector thấy cả trace.
 - Chaos không có kế hoạch rollback chỉ là sự cố.
 
+## Video tham khảo
+
+- **xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], tiếng Anh. Xem trước OpenTelemetry trong năm phút, công cụ tương quan bài thêm lên trên câu hỏi máy chủ còn sống không.
+- [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve, tiếng Anh. Log, metric và trace là ba việc khác nhau, đúng mục ba tín hiệu một khóa tương quan.
+- [Understanding Chaos Engineering](https://www.youtube.com/watch?v=mfEMXKSFtaQ) — Microsoft Developer, tiếng Anh. Chaos engineering để chủ động tập lỗi độc lập, tính chất chương bắt buộc đã định nghĩa.
+
 ## Bài tập
 
 1. Vẽ sequence diagram ba dịch vụ. Đánh dấu chỗ phải sao chép header `traceparent`.

@@ -79,6 +79,12 @@ Khảo sát cộng đồng Iceberg 2025 (kết quả 2026) ghi Iceberg là đị
 - Nhóm “chỉ SQL” không giải thích được lệch dữ liệu cho đến khi hóa đơn tới.
 - Sink “exactly-once” thực ra là “at-least-once + merge idempotent.”
 
+## Video tham khảo
+
+- **xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, tiếng Anh. Xem trước Spark là engine vẫn chạy hình dạng map/shuffle/reduce, đúng ý mô hình được biên dịch.
+- [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology, tiếng Anh. Apache Iceberg, bảng mở bài dùng cho lô lakehouse trên object storage.
+- [Big Data Architecture Patterns \| Lambda vs Kappa Architecture](https://www.youtube.com/watch?v=waDJcSCXz_Y) — Software Architecture Academy, tiếng Anh. Lambda đối chiếu Kappa, để đường lô và đường luồng trong bài là hai kiến trúc khác nhau.
+
 ## Bài tập
 
 1. Viết lại Word Count bằng Spark SQL và đánh dấu biên shuffle.

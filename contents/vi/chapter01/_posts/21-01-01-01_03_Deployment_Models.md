@@ -101,3 +101,9 @@ Bức tranh đang tiến tới **đa đám mây (Multi-Cloud)**: tổ chức dù
 Hiểu các mô hình triển khai đám mây là cần thiết để ra quyết định chiến lược đám mây có cơ sở. Mỗi mô hình đánh đổi khác nhau về chi phí, kiểm soát, bảo mật và độ phức tạp. Lựa chọn phụ thuộc yêu cầu cụ thể của tổ chức, gồm độ nhạy cảm dữ liệu, ngân sách và nhu cầu mở rộng.
 
 Bài tiếp theo sẽ xem lợi ích và thách thức của điện toán đám mây, giúp bạn hiểu tác động toàn diện khi tổ chức áp dụng đám mây.
+
+## Video tham khảo
+
+- **xem trước:** [AZ-900 Episode 6 \| Public, Private & Hybrid cloud deployment models \| Azure Fundamentals Course](https://www.youtube.com/watch?v=XlNR7myQydI) — Adam Marczak - Azure for Everyone, tiếng Anh. Xem trước: public, private và hybrid, gồm ai sở hữu hạ tầng.
+- [Cloud Deployment Models - Public Cloud, Private Cloud, Hybrid Cloud & Community Cloud](https://www.youtube.com/watch?v=GZsUFbLTH6s) — Software Architecture Academy, tiếng Anh. Thêm community cloud cạnh ba mô hình kia, đúng mô hình thứ tư của bài.
+- [Public Cloud vs Private Cloud vs Hybrid Cloud](https://www.youtube.com/watch?v=3WIJ4axzFlU) — IntelCanada, tiếng Anh. Đối chiếu ngắn public, private và hybrid cho khung chọn mô hình ở cuối bài.

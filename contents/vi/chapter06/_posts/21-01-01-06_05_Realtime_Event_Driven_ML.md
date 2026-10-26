@@ -86,6 +86,12 @@ Sự tách đó giữ ngữ nghĩa sink exactly-once của Structured Streaming 
 - Ghi kép (Kafka + bảng) không có outbox giao dịch.
 - Lệch train/serve khi đặc trưng Streaming khác backfill lô.
 
+## Video tham khảo
+
+- **xem trước:** [Event-Driven Architecture(EDA) vs. Request/Response (RR): System Design Explained](https://www.youtube.com/watch?v=7fkS-18KBlw) — Confluent, an IBM Company, tiếng Anh. Xem trước hướng sự kiện đối chiếu request/response, đúng cảnh báo không đặt Spark trên đường yêu cầu của người dùng.
+- [What is a Feature Store for Machine Learning?](https://www.youtube.com/watch?v=DESBDukN9gw) — Hopsworks, tiếng Anh. Feature store để làm gì, đường trực tuyến bài tách khỏi job streaming.
+- [Introduction to Vertex AI Feature Store](https://www.youtube.com/watch?v=jXD8Sfx4hvQ) — Google Cloud Tech, tiếng Anh. Vertex AI Feature Store là ví dụ được quản lý của đường đặc trưng trực tuyến đó.
+
 ## Bài tập
 
 1. Với ứng dụng thanh toán, liệt kê ba metric thuộc Streaming và ba metric thuộc job Spark SQL đêm.

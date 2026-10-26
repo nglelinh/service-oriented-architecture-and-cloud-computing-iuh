@@ -441,6 +441,12 @@ Big data platforms are essential infrastructure for modern data-driven applicati
 
 Understanding big data platforms is fundamental for building scalable, data-intensive applications.
 
+## Video tham khảo
+
+- **xem trước:** [Big Data Explained](https://www.youtube.com/watch?v=HRfR4dJoKDc) — IBM Technology, English. Watch first for a definition of big data that lines up with the volume, velocity, and variety discussion.
+- [Big Data Architecture Patterns \| Lambda vs Kappa Architecture](https://www.youtube.com/watch?v=waDJcSCXz_Y) — Software Architecture Academy, English. Lambda versus Kappa architectures, for the batch-plus-stream platform patterns later in the lesson.
+- [Lambda vs Kappa vs Data Streaming Platform — Which One Wins? \| Modern Data Engineering Pipelines](https://www.youtube.com/watch?v=vOYpLg5uB2g) — Confluent Developer, English. A modern streaming-platform take on the same Lambda/Kappa choice, closer to the pipeline sections.
+
 ## Further Reading
 
 - [The Unreasonable Effectiveness of Data](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35179.pdf)

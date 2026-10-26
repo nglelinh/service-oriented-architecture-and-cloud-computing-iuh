@@ -25,3 +25,8 @@ As applications scaled to millions of users, the vertical scaling limits of SQL 
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For serverless databases, distributed SQL, and vector/RAG stores (2022–2026), see [07-02 Serverless, Distributed SQL, and Vector Databases]({{ site.baseurl }}{% multilang_post_url contents/chapter07/21-01-01-07_02_Serverless_and_Vector_Databases %}).
+
+## Video tham khảo
+
+- **xem trước:** [What is CAP Theorem?](https://www.youtube.com/watch?v=eWMgsk7mpFc) — IBM Technology, English. Watch first for the CAP theorem, the limit this introduction gives for leaving a single-node RDBMS.
+- [SQL vs. NoSQL: What's the difference?](https://www.youtube.com/watch?v=Q5aTUc7c4jg) — IBM Technology, English. SQL versus NoSQL, the data-evolution story the introduction sketches.

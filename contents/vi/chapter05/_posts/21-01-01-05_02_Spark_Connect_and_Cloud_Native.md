@@ -81,6 +81,12 @@ graph TB
 - Connect server dùng chung là **hàng xóm ồn** và biên bảo mật.
 - Shuffle/ổ cục bộ Kubernetes dễ sai hơn locality HDFS.
 
+## Video tham khảo
+
+- **xem trước:** [Spark Connect: Flexible, Local Access to Apache Spark at Scale](https://www.youtube.com/watch?v=Poz63cOyp-Q) — Databricks, tiếng Anh. Xem trước Databricks nói về Spark Connect như truy cập cụm từ xa, đúng vấn đề driver nặng ở đầu bài.
+- [What is Spark Connect and Getting started Spark Connect Hello World](https://www.youtube.com/watch?v=7sn_DgUMlMQ) — Soumil Shah, tiếng Anh. Hello-world ngắn của Spark Connect, để phần client/server không chỉ nằm trong bài nói hội nghị.
+- [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, tiếng Anh. Kubernetes là gì, vì mục cụm của bài chạy Spark ở đó thay cho cụm YARN thường trực.
+
 ## Bài tập
 
 1. Từ ghi chú Spark 4.0, liệt kê ba mục Connect giúp nhóm *không-JVM*.
