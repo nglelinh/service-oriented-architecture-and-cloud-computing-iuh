@@ -138,3 +138,9 @@ This allows you to "stamp out" compliant environments rapidly.
 - **Compliance**: Adhere to standards (HIPAA, SOX, ISO) relevant to your industry.
 
 In the next chapter, we will dive deep into **Infrastructure as Code** with Terraform.
+
+## Video tham khảo
+
+- **xem trước:** [Identity & Access Management (IAM)](https://www.youtube.com/watch?v=aNj36g7fSsU) — IBM Technology, English. Watch first: what IAM is, before the lesson’s RBAC and compliance sections.
+- [Role-based access control (RBAC) vs. Attribute-based access control (ABAC)](https://www.youtube.com/watch?v=rvZ35YW4t5k) — IBM Technology, English. RBAC versus ABAC, for the access-control models the lesson names.
+- [Top 5 Most-Used Deployment Strategies](https://www.youtube.com/watch?v=AWVTKBUnoIg) — ByteByteGo, English. Common deployment strategies, including the blue-green and canary patterns in the lesson’s pipeline section.

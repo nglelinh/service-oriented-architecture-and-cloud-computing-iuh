@@ -121,3 +121,9 @@ As cloud computing evolves, the lines between these models are blurring, and new
 Understanding the three primary cloud service models—IaaS, PaaS, and SaaS—is fundamental to making informed decisions about cloud adoption. Each model offers different trade-offs between control, flexibility, and management overhead. The choice depends on your organization's technical expertise, business requirements, and strategic objectives.
 
 In the next lesson, we'll explore cloud deployment models and how they complement these service models to provide comprehensive cloud solutions.
+
+## Video tham khảo
+
+- **xem trước:** [AZ-900 Episode 5 \| IaaS vs PaaS vs SaaS cloud service models \| Microsoft Azure Fundamentals Course](https://www.youtube.com/watch?v=9CVBohl6w0Q) — Adam Marczak - Azure for Everyone, English. Watch first for a side-by-side of IaaS, PaaS, and SaaS and who operates each layer of the stack.
+- [IaaS Explained](https://www.youtube.com/watch?v=XRdmfo4M_YA) — IBM Technology, English. Zooms in on infrastructure as a service: you keep the OS, runtime, and application; the provider keeps the hardware.
+- [Software as a Service (SaaS) Explained in 5 mins](https://www.youtube.com/watch?v=20QUNgFIrK0) — IBM Technology, English. The SaaS end of the same stack, where the consumer uses the application and does not patch the platform.

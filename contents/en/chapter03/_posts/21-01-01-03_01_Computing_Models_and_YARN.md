@@ -100,3 +100,9 @@ This lecture covers fundamental distributed computing models and introduces the 
 - **Computing Models** (Client-Server, P2P) define how distributed components interact.
 - **Hadoop** revolutionized big data by combining storage (HDFS) and processing on commodity hardware.
 - **YARN** enables Hadoop to support multiple processing engines (MapReduce, Spark, Tez) by separating resource management from execution logic.
+
+## Video tham khảo
+
+- **xem trước:** [Event-Driven Architecture(EDA) vs. Request/Response (RR): System Design Explained](https://www.youtube.com/watch?v=7fkS-18KBlw) — Confluent, an IBM Company, English. Watch first for event-driven versus request/response, the computing-model half of the lesson before Hadoop.
+- [What is Apache Hadoop?](https://www.youtube.com/watch?v=JWX5Inb--ig) — IBM Technology, English. What Hadoop is, including the stack this lesson then splits into HDFS and YARN.
+- [How Apache Hadoop YARN Works?](https://www.youtube.com/watch?v=GCFCohlmWgs) — HandsonERP, English. How YARN accepts an application and hands out containers, matching the architecture and scheduler sections.

@@ -66,6 +66,12 @@ Kappa said “stream is the source of truth.” Lakehouse practice is: stream **
 - Small files and streaming ingest without scheduled rewrite jobs.
 - Cross-cloud *egress* when the “open” table is in one hyperscaler’s bucket.
 
+## Video tham khảo
+
+- **xem trước:** [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology, English. Watch first: what Apache Iceberg is, the table contract this lesson says replaced “HDFS plus Hive.”
+- [Apache Iceberg: What It Is and Why Everyone’s Talking About It.](https://www.youtube.com/watch?v=TsmhRZElPvM) — Confluent Developer, English. Why Iceberg shows up across engines, for the multi-engine application section.
+- [Lambda vs Kappa vs Data Streaming Platform — Which One Wins? \| Modern Data Engineering Pipelines](https://www.youtube.com/watch?v=vOYpLg5uB2g) — Confluent Developer, English. Batch and streaming against one platform, the “streaming plus batch on one table” section.
+
 ## Exercises
 
 1. Map Hive Metastore + HDFS to Iceberg REST + object storage. What failure modes stay the same?

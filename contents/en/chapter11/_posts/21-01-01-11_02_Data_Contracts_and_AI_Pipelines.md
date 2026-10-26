@@ -87,6 +87,12 @@ Application pattern: **two zones**. Zone A is the system of record (contracts, A
 - Cleaning that drops the only rows that matter (bias).
 - LLM-as-cleaner: cheap to demo, expensive to audit.
 
+## Video tham khảo
+
+- **xem trước:** [What is a Data Contract?](https://www.youtube.com/watch?v=-n3OD-ml_k0) — IBM Technology, English. Watch first: IBM’s definition of a data contract, the “missing WSDL of analytics” in this lesson.
+- [What Are Data Contracts? (And How They Actually Work in Production)](https://www.youtube.com/watch?v=6svVYbAcfHc) — The Data and AI Guy, English. How contracts behave between producers and consumers in a pipeline, the quality-gate section.
+- [What is a Data Contract?](https://www.youtube.com/watch?v=3DU6vuES5eQ) — Monte Carlo, English. A second, shorter definition of a data contract from a data-reliability vendor.
+
 ## Exercises
 
 1. Write a 12-line contract for `wifi_sessions` that a networking team must not break.

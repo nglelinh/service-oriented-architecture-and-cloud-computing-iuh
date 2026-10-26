@@ -119,6 +119,12 @@ owner=<github-handle>
 - ClickOps làm trôi thẻ (Chương 14).
 - Dòng thuế / tỷ giá bị bỏ qua.
 
+## Video tham khảo
+
+- **xem trước:** [What is FinOps? The Operating Model & Cultural Practice to Maximize the Value of Technology](https://www.youtube.com/watch?v=Y-c_xw9bHFw) — FinOps Foundation, tiếng Anh. Xem trước định nghĩa FinOps của FinOps Foundation, bài thu nhỏ xuống hóa đơn của sinh viên.
+- [What is FinOps and 3 reasons why you should care about it](https://www.youtube.com/watch?v=hP5rhIcx9Ck) — Google Cloud Tech, tiếng Anh. Ba lý do Google Cloud đưa ra để quan tâm FinOps, cho mục vòng phản hồi.
+- [AWS Cost Optimisation Series: Cost Explorer \| Amazon Web Services](https://www.youtube.com/watch?v=oE8TNKGmc40) — Amazon Web Services, tiếng Anh. AWS Cost Explorer, màn hình đo bài muốn mở trước thí nghiệm free-tier.
+
 ## Bài tập
 
 1. Thêm NAT quên 200 giờ vào mô hình `invoice_total`. $$N_{\text{success}} = 40$$ thì đơn giá còn trung thực?

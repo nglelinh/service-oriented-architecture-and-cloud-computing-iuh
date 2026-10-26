@@ -16,3 +16,9 @@ Lý thuyết bắt buộc của **Chương 13 (triển khai và bảo mật)** h
 - [13-04 CI/CD cho ứng dụng đám mây]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_04_CICD_Cloud_Apps %})
 - [Lộ trình triển khai]({{ site.baseurl }}/contents/vi/chapter15/)
 - [Bản tiếng Anh của chương]({{ site.baseurl }}/contents/en/chapter13/)
+
+## Video tham khảo
+
+- **xem trước:** [CI/CD Explained in 5 Minutes](https://www.youtube.com/watch?v=ddDJxFnv-qs) — TechWorld with Nana, tiếng Anh. CI/CD trong năm phút, ý tưởng pipeline lời mở nói giúp giảm lỗi người.
+- [SLSA: Industry-Driven Guidelines for Software Supply Chain Security \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=gdYlSuH5Srs) — OpenSSF, tiếng Anh. SLSA, vì trang tiếng Việt trỏ tiếp sang bài chuỗi cung ứng.
+- [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], tiếng Anh. OpenTelemetry trong năm phút, bài quan sát mà lời mở này cũng liên kết.

@@ -160,6 +160,12 @@ Policy as code in Chapter 14-02 is the grown-up form of these gates.
 - Deploying from `latest` on two environments.
 - Approvals that are a second GitHub account in the same pair… who never looks at the diff.
 
+## Video tham khảo
+
+- **xem trước:** [CI/CD Explained in 5 Minutes](https://www.youtube.com/watch?v=ddDJxFnv-qs) — TechWorld with Nana, English. Watch first: CI and CD as a pipeline, the split this lesson insists are different jobs.
+- [How to use GitHub Actions \| GitHub for Beginners](https://www.youtube.com/watch?v=BQrohJ3PT7I) — GitHub, English. GitHub’s own beginner walkthrough of Actions, the CI system the lesson’s example uses.
+- [Authenticate GitHub Actions with AWS Using OIDC — No Secrets Needed](https://www.youtube.com/watch?v=Sdzd4N6L5Hg) — Integrations Ninjas, English. GitHub Actions authenticating to AWS with OIDC, the “no long-lived cloud password in the repo” section.
+
 ## Exercises
 
 1. Split a one-job “build and SSH and docker compose up” script into CI vs CD. What artifact crosses the boundary?

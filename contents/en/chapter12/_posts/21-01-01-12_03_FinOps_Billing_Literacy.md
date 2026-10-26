@@ -153,6 +153,12 @@ Billing literacy includes **saying no** to architecture that is only impressive 
 - Tag drift when someone clicks in the console (ClickOps vs Chapter 14).
 - Currency and tax lines on invoices that students skip when they only look at the big number.
 
+## Video tham khảo
+
+- **xem trước:** [What is FinOps? The Operating Model & Cultural Practice to Maximize the Value of Technology](https://www.youtube.com/watch?v=Y-c_xw9bHFw) — FinOps Foundation, English. Watch first: the FinOps Foundation’s definition of the practice, which this lesson scales down to a student invoice.
+- [What is FinOps and 3 reasons why you should care about it](https://www.youtube.com/watch?v=hP5rhIcx9Ck) — Google Cloud Tech, English. Three reasons Google Cloud gives for caring about FinOps, for the feedback-loop section.
+- [AWS Cost Optimisation Series: Cost Explorer \| Amazon Web Services](https://www.youtube.com/watch?v=oE8TNKGmc40) — Amazon Web Services, English. AWS Cost Explorer, the meter view the lesson wants you to open before a free-tier experiment.
+
 ## Exercises
 
 1. Using the toy `invoice_total` model, add a forgotten NAT (200 hours) and say whether the Course Board unit cost is still honest if $$N_{\text{success}}$$ is 40 demo clicks.

@@ -89,3 +89,9 @@ Chẳng hạn, **gom nhóm tài nguyên** tạo ra dung lượng dư lớn cần
 Hiểu năm đặc trưng cốt yếu này là nền tảng để đánh giá dịch vụ đám mây và ra quyết định áp dụng có cơ sở. Mỗi đặc trưng góp phần vào giá trị tổng thể của điện toán đám mây: tăng sự linh hoạt, giảm chi phí và cải thiện khả năng mở rộng.
 
 Bài tiếp theo sẽ xem các đặc trưng này thể hiện thế nào trong các mô hình dịch vụ: Hạ tầng như một dịch vụ (Infrastructure as a Service, IaaS), Nền tảng như một dịch vụ (Platform as a Service, PaaS) và Phần mềm như một dịch vụ (Software as a Service, SaaS).
+
+## Video tham khảo
+
+- **xem trước:** [The 5 Essential Characteristics of Cloud Computing - NIST Framework](https://www.youtube.com/watch?v=W7miGLWRFgc) — Hamza, tiếng Anh. Khung năm đặc trưng cốt yếu của NIST đúng với danh mục kiểm tra của bài.
+- [The 5 Key Characteristics of Cloud Computing](https://www.youtube.com/watch?v=JYq1AQkMdhE) — The Cloud Mentor, tiếng Anh. Lượt thứ hai qua năm đặc trưng, để tách tự phục vụ, gom tài nguyên, đàn hồi và đo lường.
+- [What is Cloud Computing? \| Amazon Web Services](https://www.youtube.com/watch?v=mxT233EdY5c) — Amazon Web Services, tiếng Anh. AWS mô tả cấp phát theo nhu cầu và trả theo mức dùng, đúng hai đặc trưng bài nhấn mạnh.

@@ -87,6 +87,12 @@ Public / private / hybrid / community still apply, but *where the bytes live* no
 - **AI bill shock**: token and GPU hours are harder to forecast than VM hours.
 - **Skills split**: FinOps, platform, and ML serving teams speak different SLOs.
 
+## Video tham khảo
+
+- **xem trước:** [What is Multicloud? How Do You Manage It?](https://www.youtube.com/watch?v=AjtdZ3gFRjU) — IBM Technology, English. Watch first for multi-cloud as an operating problem, which is the opening claim of this optional lesson.
+- [What is FinOps? The Operating Model & Cultural Practice to Maximize the Value of Technology](https://www.youtube.com/watch?v=Y-c_xw9bHFw) — FinOps Foundation, English. FinOps as a practice around measured spend, matching the lesson’s “measured service with a feedback loop.”
+- [Introducing Amazon Bedrock \| Amazon Web Services](https://www.youtube.com/watch?v=_vdK5PgcNvc) — Amazon Web Services, English. A short official introduction to a managed generative-AI service, the “AI serving as a cloud workload” pattern in the lesson.
+
 ## Exercises
 
 1. Take one required-lesson example (e.g. an e-commerce burst). Add a second provider *only* for object storage. List the identity, latency, and egress costs you just accepted.

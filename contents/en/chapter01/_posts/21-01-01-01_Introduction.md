@@ -90,3 +90,9 @@ The journey into cloud computing is not just about understanding technology—it
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For a short 2022–2026 applications add-on (multi-cloud, FinOps, AI serving), see [01-06 Modern Cloud Applications (2022–2026)]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_06_Modern_Cloud_Applications %}). Before containers (Chapter 08) or the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/), take the optional [01-07 Cloud Networking Crash Course]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_07_Networking_Crash_Course %}) (VPC, subnet, security group, DNS, TLS).
+
+## Video tham khảo
+
+- **xem trước:** [What is Cloud Computing? \| Amazon Web Services](https://www.youtube.com/watch?v=mxT233EdY5c) — Amazon Web Services, English. Watch first for the on-demand, internet-delivered, pay-as-you-go definition that this introduction uses to open the course.
+- [The Six Main Benefits of Cloud Computing with Amazon Web Services](https://www.youtube.com/watch?v=yMJ75k9X5_8) — Amazon Web Services, English. Connects the introduction’s “why it matters” section to six concrete benefits AWS uses in production stories.
+- [What is Google Cloud?](https://www.youtube.com/watch?v=kzKFuHk8ovk) — Google Cloud Tech, English. A second provider’s picture of the same idea, before the chapter splits into characteristics, service models, and deployment models.

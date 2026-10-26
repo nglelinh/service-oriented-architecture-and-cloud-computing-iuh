@@ -67,6 +67,12 @@ Kappa nói “luồng là nguồn sự thật.” Thực hành lakehouse: luồn
 - Tệp nhỏ và ingest streaming không có job rewrite theo lịch.
 - *Egress* xuyên đám mây khi bảng “mở” nằm trong bucket một hyperscaler.
 
+## Video tham khảo
+
+- **xem trước:** [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology, tiếng Anh. Xem trước Apache Iceberg là gì, hợp đồng bảng bài nói đã thay cho HDFS cộng Hive.
+- [Apache Iceberg: What It Is and Why Everyone’s Talking About It.](https://www.youtube.com/watch?v=TsmhRZElPvM) — Confluent Developer, tiếng Anh. Vì sao Iceberg xuất hiện trên nhiều engine, cho mục ứng dụng đa engine.
+- [Lambda vs Kappa vs Data Streaming Platform — Which One Wins? \| Modern Data Engineering Pipelines](https://www.youtube.com/watch?v=vOYpLg5uB2g) — Confluent Developer, tiếng Anh. Lô và streaming trên một nền tảng, đúng mục streaming cộng lô trên một bảng.
+
 ## Bài tập
 
 1. Ánh xạ Hive Metastore + HDFS sang Iceberg REST + object storage. Chế độ lỗi nào còn nguyên?

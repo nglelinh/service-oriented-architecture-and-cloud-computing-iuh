@@ -43,3 +43,8 @@ Apache Spark is a unified analytics engine for large-scale data processing, offe
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For Spark Connect, Spark 4.0, and Spark-on-Kubernetes applications, see [05-02 Spark Connect, Spark 4.0, and Cloud-Native Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter05/21-01-01-05_02_Spark_Connect_and_Cloud_Native %}).
+
+## Video tham khảo
+
+- **xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, English. Watch first: Databricks’ two-minute answer to what Spark is, the engine this chapter introduction names.
+- [02 How Spark Works - Driver & Executors \| How Spark divide Job in Stages \| What is Shuffle in Spark](https://www.youtube.com/watch?v=nKM4f1olwsI) — Ease With Data, English. Driver, executors, and shuffle, the architecture terms the introduction lists under Spark Core.

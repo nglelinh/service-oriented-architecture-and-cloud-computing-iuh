@@ -75,6 +75,12 @@ Không cần dựng VPC ba tầng trên tài khoản cá nhân. Sơ đồ + plan
 
 Bạn giải thích được, không cần slide, khác biệt “always free,” “tín dụng,” và “tôi để NAT bật.” Nếu không mở tài khoản, `NOTES.md` vẫn liệt kê mười tick và **tick nào chặn bạn** — đó là Lab C hợp lệ.
 
+## Video tham khảo
+
+- **xem trước:** [Introducing the new AWS Free Tier Program \| Amazon Web Services](https://www.youtube.com/watch?v=pisDsIgXGUI) — Amazon Web Services, tiếng Anh. Xem trước thông báo của chính AWS về chương trình free-tier hiện tại; lab yêu cầu đối chiếu lại trên trang nhà cung cấp.
+- [AWS Free Tier and the New AWS Experience](https://www.youtube.com/watch?v=7aOb0vZHT5k) — AWS Developers, tiếng Anh. Phần dài hơn của AWS Developers về free tier và console xung quanh nó.
+- [AWS Cost Optimisation Series: Cost Explorer \| Amazon Web Services](https://www.youtube.com/watch?v=oE8TNKGmc40) — Amazon Web Services, tiếng Anh. Cost Explorer, để các đồng hồ sau một tài khoản “miễn phí” hiện ra trước khi để tài nguyên chạy.
+
 ## Tài liệu
 
 1. Trang AWS Free Tier, Azure free, GCP free (mở đúng ngày lab).

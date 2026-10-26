@@ -68,3 +68,9 @@ Chỉ khi đã có tài khoản **và** xong ngân sách [Lab C]({{ site.baseurl
 ## Xong khi
 
 Cả hai dẫn được người thứ ba qua output plan. Có minh chứng destroy nếu đã apply.
+
+## Video tham khảo
+
+- **xem trước:** [Introduction to HashiCorp Terraform with Armon Dadgar](https://www.youtube.com/watch?v=h970ZBgKINg) — HashiCorp, an IBM Company, tiếng Anh. Xem trước để thấy plan rồi mới apply. Lab dừng ở việc hiểu plan, để tài khoản thật không bị đổi bất ngờ.
+- [What is OpenTofu Project?](https://www.youtube.com/watch?v=J2JKxY2elSo) — Oleksiy Pototskyy, tiếng Anh. OpenTofu là gì, công cụ tiêu đề lab đặt cạnh Terraform.
+- [Terraform là gì? Nhập môn Infrastructure as Code - Sử dụng Terraform để provision infra trên GCP](https://www.youtube.com/watch?v=ORnsaa7wDv8) — FullstacKAGE, tiếng Việt. Nhập môn Terraform bằng tiếng Việt: workflow và lệnh, trước khi chạy plan.

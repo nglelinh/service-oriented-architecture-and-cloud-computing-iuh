@@ -82,3 +82,9 @@ Managing this complexity requires structure. We use **Layers** of abstraction to
 ## Summary
 
 Distributed systems are the foundation of modern computing, enabling everything from the web to the cloud. While they offer immense benefits in reliability, performance, and scale, they introduce significant complexity. Mastering the challenges of coordination, failure handling, and consistency is essential for any cloud engineer.
+
+## Video tham khảo
+
+- **xem trước:** [Explaining Distributed Systems Like I'm 5](https://www.youtube.com/watch?v=CESKgdNiKJw) — HashiCorp, an IBM Company, English. Watch first for a plain definition of a distributed system before the lesson’s naming, communication, and latency issues.
+- [Distributed Systems Explained \| System Design Interview Basics](https://www.youtube.com/watch?v=IJWwfMyPu1c) — ByteMonk, English. A short system-design pass over the same idea: several machines, partial failure, no single view.
+- [Distributed Systems in One Lesson by Tim Berglund](https://www.youtube.com/watch?v=Y6Ev8GIlbxc) — Devoxx Poland, English. The canonical one-lesson talk by Tim Berglund. It is a full lecture; watch it whole rather than a guessed minute mark.

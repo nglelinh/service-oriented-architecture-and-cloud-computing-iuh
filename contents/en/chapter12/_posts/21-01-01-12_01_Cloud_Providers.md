@@ -478,6 +478,12 @@ Cloud providers offer similar core services with unique strengths:
 
 Choose based on your specific requirements, existing infrastructure, and team expertise.
 
+## Video tham khảo
+
+- **xem trước:** [What is AWS? \| Amazon Web Services](https://www.youtube.com/watch?v=a9__D53WsUs) — Amazon Web Services, English. Watch first for AWS itself, then use the next two videos for the Azure and Google columns of the comparison.
+- [How does Microsoft Azure work?](https://www.youtube.com/watch?v=KXkBZCe699A) — Microsoft Azure, English. Azure’s own short explanation of how its cloud is organized.
+- [Introduction to Google Cloud](https://www.youtube.com/watch?v=IeMYQ-qJeK4) — Google Cloud Tech, English. A longer Google Cloud introduction for the GCP services the lesson lines up against EC2 and Azure VMs.
+
 ## Further Reading
 
 - [AWS Services Overview](https://aws.amazon.com/products/)

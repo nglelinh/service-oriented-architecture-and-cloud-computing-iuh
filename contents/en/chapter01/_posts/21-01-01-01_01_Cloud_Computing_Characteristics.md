@@ -89,3 +89,9 @@ To determine if a service truly embodies cloud computing, you can ask the follow
 Understanding these five essential characteristics provides the foundation for evaluating cloud services and making informed decisions about cloud adoption. Each characteristic contributes to the overall value proposition of cloud computing: increased agility, reduced costs, and improved scalability.
 
 In the next lesson, we'll explore how these characteristics manifest in different service models: Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS).
+
+## Video tham khảo
+
+- **xem trước:** [The 5 Essential Characteristics of Cloud Computing - NIST Framework](https://www.youtube.com/watch?v=W7miGLWRFgc) — Hamza, English. Watch first: the five NIST essential characteristics named in the title, which are the checklist in this lesson.
+- [The 5 Key Characteristics of Cloud Computing](https://www.youtube.com/watch?v=JYq1AQkMdhE) — The Cloud Mentor, English. A second pass over the same five characteristics so the on-demand, pooling, elasticity, and metering sections stay distinct.
+- [What is Cloud Computing? \| Amazon Web Services](https://www.youtube.com/watch?v=mxT233EdY5c) — Amazon Web Services, English. Shows on-demand delivery and measured, pay-as-you-go use as AWS describes them in practice.

@@ -1402,3 +1402,9 @@ Spark Streaming provides a powerful platform for real-time data processing with 
 - **Log Processing**: Real-time log analysis and alerting
 
 In the next chapter, we'll explore Spark SQL for structured data processing and how it complements streaming workloads.
+
+## Video tham khảo
+
+- **xem trước:** [Spark Streaming APIs   DStream Vs Structured Streaming](https://www.youtube.com/watch?v=YDbYmaMSEic) — Learning Journal, English. Watch first: DStreams versus Structured Streaming, because this lesson teaches DStreams and later shows a writeStream pipeline.
+- [7.3 Spark Streaming Tutorial \| Basics, Dstream, streaming context](https://www.youtube.com/watch?v=3PmJhQis3GY) — Data Savvy, English. Streaming context and DStream basics, for the discretized-stream sections and the socket examples.
+- [DStream in Spark Streaming](https://www.youtube.com/watch?v=Rd8ixUzEEuA) — TutorialsPoint, English. A short definition of a DStream in Spark Streaming to replay after the micro-batch explanation.

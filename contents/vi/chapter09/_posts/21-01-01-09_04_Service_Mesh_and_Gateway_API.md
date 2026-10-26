@@ -71,6 +71,12 @@ Thêm mesh khi cần **định danh di động** (SPIFFE), timeout nhất quán,
 - Ambient + CNI thay kube-proxy cần cờ đã tài liệu hóa để socket load-balancing không bỏ qua mesh.
 - Hỗ trợ GRPCRoute chậm hơn HTTPRoute ở một số implementation — kiểm tra ma trận controller.
 
+## Video tham khảo
+
+- **xem trước:** [Istio & Service Mesh - simply explained in 15 mins](https://www.youtube.com/watch?v=16fgzklcF7Y) — TechWorld with Nana, tiếng Anh. Xem trước service mesh là gì, trước mục ambient và khi không nên thêm mesh.
+- [The Differences between Ingress & Gateway API](https://www.youtube.com/watch?v=GhIrz-V9X6k) — That DevOps Guy, tiếng Anh. Ingress đối chiếu Gateway API, lớp biên di động mà mục đầu bài mô tả.
+- [What is Cilium?](https://www.youtube.com/watch?v=ELyib78vjRY) — eBPF & Cilium Community, tiếng Anh. Cilium là gì, data plane eBPF bài nêu cạnh Istio.
+
 ## Bài tập
 
 1. Viết lại YAML Ingress đơn giản thành Gateway + HTTPRoute. Ai sở hữu từng đối tượng?

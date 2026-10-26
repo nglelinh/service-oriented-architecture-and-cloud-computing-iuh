@@ -658,6 +658,12 @@ Kubernetes Services and Deployments provide production-ready application managem
 
 Together, these objects form the foundation of Kubernetes application deployment.
 
+## Video tham khảo
+
+- **xem trước:** [Kubernetes Services explained \| ClusterIP vs NodePort vs LoadBalancer vs Headless Service](https://www.youtube.com/watch?v=T4Z7visMM4E) — TechWorld with Nana, English. Watch first: ClusterIP, NodePort, LoadBalancer, and headless Services, the types this lesson enumerates.
+- [How Kubernetes deployments work](https://www.youtube.com/watch?v=mNK14yXIZF4) — Microsoft Azure, English. How a Deployment rolls pods, for the replica and update half of the lesson.
+- [Kubernetes Deployments: Get Started Fast](https://www.youtube.com/watch?v=Sulw5ndbE88) — IBM Technology, English. A shorter Deployment getting-started, useful after the Service types if the Microsoft walkthrough is enough context.
+
 ## Further Reading
 
 - [Kubernetes Services](https://kubernetes.io/docs/concepts/services-networking/service/)

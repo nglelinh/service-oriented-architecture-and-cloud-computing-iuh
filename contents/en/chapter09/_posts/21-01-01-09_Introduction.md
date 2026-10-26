@@ -91,3 +91,8 @@ Let's dive into the world of Kubernetes!
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For Gateway API, Istio ambient mesh, and eBPF/Cilium (2022–2026), see [09-04 Service Mesh, Gateway API, and eBPF Networking]({{ site.baseurl }}{% multilang_post_url contents/chapter09/21-01-01-09_04_Service_Mesh_and_Gateway_API %}). The Services/Deployments lesson now contrasts **rolling vs canary** (and points at Gateway weights) for the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/).
+
+## Video tham khảo
+
+- **xem trước:** [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, English. Watch first: Google Cloud’s short definition of Kubernetes, the orchestrator this chapter is about.
+- [Kubernetes architecture: Nodes and control plane](https://www.youtube.com/watch?v=VQUZF6k6g88) — Google Cloud Tech, English. Nodes and the control plane, the architecture section the chapter overview lists.

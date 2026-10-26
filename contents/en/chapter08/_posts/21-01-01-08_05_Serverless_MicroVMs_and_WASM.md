@@ -73,6 +73,12 @@ Do not put a 30-second LLM generate inside an API Gateway timeout without an asy
 - WASM ecosystem lock-in (host APIs differ).
 - Cost: per-ms billing vs. a 1-replica Deployment that is cheaper at steady QPS.
 
+## Video tham khảo
+
+- **xem trước:** [How AWS’s Firecracker virtual machines work \| Amazon Science](https://www.youtube.com/watch?v=BIRv2FnHJAg) — Amazon Science, English. Watch first: Amazon Science on how Firecracker microVMs work, the isolation change this lesson tracks around Lambda.
+- [Introducing AWS Lambda SnapStart \| Amazon Web Services](https://www.youtube.com/watch?v=AgxvrZLI1mc) — Amazon Web Services, English. AWS’s short introduction of Lambda SnapStart, the snapshot feature the lesson’s first section is about.
+- [Introduction to WebAssembly and WASI](https://www.youtube.com/watch?v=Of07IsplHPY) — Root Access, English. WebAssembly and WASI as isolation without a guest kernel, the lesson’s second section.
+
 ## Exercises
 
 1. List three init-time objects that must be rebuilt after a SnapStart restore.

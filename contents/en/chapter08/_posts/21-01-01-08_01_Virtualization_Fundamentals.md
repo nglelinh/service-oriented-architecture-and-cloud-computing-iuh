@@ -331,3 +331,9 @@ Virtualization is a cornerstone technology that:
 ✓ **Powers modern cloud computing** platforms  
 
 In the next lecture, we'll dive deeper into **how virtualization works internally**, including binary translation and dynamic translation techniques.
+
+## Video tham khảo
+
+- **xem trước:** [Virtualization Explained](https://www.youtube.com/watch?v=FZR0rG3HKIk) — IBM Technology, English. Watch first: IBM’s virtualization overview, before the lesson splits guest, host, and hypervisor types.
+- [What is a Hypervisor?](https://www.youtube.com/watch?v=LMAEbB2a50M) — IBM Technology, English. What a hypervisor is, the term the terminology section depends on.
+- [Type 1 vs. Type 2 Hypervisors](https://www.youtube.com/watch?v=UEk0CKoeUnA) — Pluralsight, English. Type 1 versus Type 2 hypervisors, the bare-metal and hosted split in the lesson.

@@ -95,3 +95,8 @@ Let's learn how to source and clean data effectively!
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For data contracts, quality gates, and AI/RAG corpora (2022–2026), see [11-02 Data Contracts, Quality Gates, and AI Data Pipelines]({{ site.baseurl }}{% multilang_post_url contents/chapter11/21-01-01-11_02_Data_Contracts_and_AI_Pipelines %}).
+
+## Video tham khảo
+
+- **xem trước:** [What is Data Cleaning? \| Data Fundamentals for Beginners](https://www.youtube.com/watch?v=WpX2F2BS3Qc) — Alex The Analyst, English. Watch first: what data cleaning is, the job this chapter overview says analytics depends on.
+- [Dealing with Missing Values in Machine Learning: Easy Explanation for Data Science Interviews](https://www.youtube.com/watch?v=FPvMBl8LvGA) — Emma Ding, English. Missing values, one of the quality problems the chapter says it will cover.

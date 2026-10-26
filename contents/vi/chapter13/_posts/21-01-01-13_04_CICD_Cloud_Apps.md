@@ -136,6 +136,12 @@ Pipeline xanh mà chưa chạy trên runner sạch là sân khấu local. Hãy l
 - Hai môi trường cùng kéo `latest`.
 - Người duyệt không đọc diff.
 
+## Video tham khảo
+
+- **xem trước:** [CI/CD Explained in 5 Minutes](https://www.youtube.com/watch?v=ddDJxFnv-qs) — TechWorld with Nana, tiếng Anh. Xem trước CI và CD như một pipeline, đúng chỗ bài nhấn chúng là hai việc khác nhau.
+- [How to use GitHub Actions \| GitHub for Beginners](https://www.youtube.com/watch?v=BQrohJ3PT7I) — GitHub, tiếng Anh. Phần nhập môn Actions của chính GitHub, hệ CI ví dụ của bài dùng.
+- [Authenticate GitHub Actions with AWS Using OIDC — No Secrets Needed](https://www.youtube.com/watch?v=Sdzd4N6L5Hg) — Integrations Ninjas, tiếng Anh. GitHub Actions xác thực tới AWS bằng OIDC, đúng mục không để mật khẩu đám mây sống lâu trong repo.
+
 ## Bài tập
 
 1. Tách script “build rồi SSH rồi compose up” thành CI và CD. Artifact nào vượt ranh giới?

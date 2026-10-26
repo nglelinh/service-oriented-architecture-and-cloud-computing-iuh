@@ -28,3 +28,8 @@ Single machines have reached their physical limits (vertical scaling). To handle
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For OpenTelemetry, traces, and chaos-style operations (2022–2026), see [02-02 Observability and Modern Distributed Applications]({{ site.baseurl }}{% multilang_post_url contents/chapter02/21-01-01-02_02_Observability_and_Distributed_Applications %}).
+
+## Video tham khảo
+
+- **xem trước:** [Explaining Distributed Systems Like I'm 5](https://www.youtube.com/watch?v=CESKgdNiKJw) — HashiCorp, an IBM Company, English. Watch first: a short account of why one machine is not the system, before the chapter’s design issues.
+- [Distributed Systems in One Lesson by Tim Berglund](https://www.youtube.com/watch?v=Y6Ev8GIlbxc) — Devoxx Poland, English. Tim Berglund’s full lecture on distributed-systems design. It is long; watch the whole talk, there is no separate timestamp.

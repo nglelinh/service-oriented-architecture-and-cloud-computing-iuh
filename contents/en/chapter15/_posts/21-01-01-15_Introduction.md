@@ -69,6 +69,12 @@ CS 40 is a *deployment* course. IUH remains a *platform + data* course with this
 
 New Deploy Track lessons have Vietnamese mirrors (`lang: vi`, same `chapter` + `order`). Required theory for Chapters 02–14 is still English-first; Chapter 01 required theory is bilingual.
 
+## Video tham khảo
+
+- **xem trước:** [What is Docker Compose? \| Docker Concepts](https://www.youtube.com/watch?v=f3xb7kt_dH4) — Docker, English. Watch first: what Compose is, because this deploy track starts from a local multilayer app.
+- [Introduction to HashiCorp Terraform with Armon Dadgar](https://www.youtube.com/watch?v=h970ZBgKINg) — HashiCorp, an IBM Company, English. Plan and apply as the IaC step the track puts after the local lab.
+- [How to use GitHub Actions \| GitHub for Beginners](https://www.youtube.com/watch?v=BQrohJ3PT7I) — GitHub, English. GitHub Actions for the CI/CD topic the track lists beside networking, identity, and cost.
+
 ## References
 
 1. [infracourse.cloud](https://infracourse.cloud/) — CS 40: Cloud Application Deployment (Winter 2024), Stanford.

@@ -82,6 +82,12 @@ YARN did not disappear: many data platforms still schedule Spark on YARN. But CN
 - gRPC across browser and public internet often needs a proxy (Connect/gRPC-Web, Gateway API).
 - Running both YARN and Kubernetes in one company creates two queues, two identity models, and two sets of limits.
 
+## Video tham khảo
+
+- **xem trước:** [gRPC in 5 minutes \| Eric Anderson & Ivy Zhuang, Google](https://www.youtube.com/watch?v=njC24ts24Pg) — gRPC, English. Watch first: gRPC in five minutes from the project, for the synchronous SOA section.
+- [What is the Cloud Events Specification & Why You Should Care!](https://www.youtube.com/watch?v=Sjw0PFwTvek) — James Eastham, English. What the CloudEvents specification is, for the asynchronous contract section.
+- [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, English. Kubernetes as the cluster scheduler the lesson says largely succeeded YARN outside Hadoop estates.
+
 ## Exercises
 
 1. Classify five calls in a ride-hailing app (quote price, driver location stream, trip finished, receipt email, fraud score) as RPC vs event.

@@ -80,6 +80,12 @@ That is the required lesson’s re-execution story, applied to a 2020s complianc
 - “SQL-only” teams that cannot explain a data skew until the bill arrives.
 - Exactly-once sinks that are actually “at-least-once + idempotent merge.”
 
+## Video tham khảo
+
+- **xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, English. Watch first: Spark as the engine that still runs a map/shuffle/reduce shape, which is the lesson’s “the paradigm got compilers.”
+- [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology, English. Apache Iceberg, the open table the lesson uses for lakehouse batch on object storage.
+- [Big Data Architecture Patterns \| Lambda vs Kappa Architecture](https://www.youtube.com/watch?v=waDJcSCXz_Y) — Software Architecture Academy, English. Lambda versus Kappa, so the batch path and the stream path in the lesson stay different architectures.
+
 ## Exercises
 
 1. Rewrite Word Count as Spark SQL and mark the shuffle boundary.

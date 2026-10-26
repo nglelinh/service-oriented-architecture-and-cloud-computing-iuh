@@ -15,3 +15,9 @@ Lý thuyết bắt buộc của **Chương 12 (nhà cung cấp đám mây)** hi�
 - [12-03 FinOps và đọc hóa đơn đám mây]({{ site.baseurl }}{% multilang_post_url contents/chapter12/21-01-01-12_03_FinOps_Billing_Literacy %})
 - [Lộ trình triển khai]({{ site.baseurl }}/contents/vi/chapter15/)
 - [Bản tiếng Anh của chương]({{ site.baseurl }}/contents/en/chapter12/)
+
+## Video tham khảo
+
+- **xem trước:** [What is AWS? \| Amazon Web Services](https://www.youtube.com/watch?v=a9__D53WsUs) — Amazon Web Services, tiếng Anh. Xem trước AWS là gì, nhà cung cấp đầu tiên trong ba nhà lời mở so sánh.
+- [How does Microsoft Azure work?](https://www.youtube.com/watch?v=KXkBZCe699A) — Microsoft Azure, tiếng Anh. Azure trình bày cùng ý tưởng đám mây bằng từ vựng của Microsoft.
+- [What is Google Cloud?](https://www.youtube.com/watch?v=kzKFuHk8ovk) — Google Cloud Tech, tiếng Anh. Google Cloud là gì, để so sánh ba nhà trong chương có nguồn thứ ba.

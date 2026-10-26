@@ -138,6 +138,12 @@ Gắn cảnh báo với **runbook** năm dòng: xem gì, rollback ra sao (Chươ
 - Quyền riêng tư: query string mang tên sinh viên.
 - Khóa nhà cung cấp trên API agent.
 
+## Video tham khảo
+
+- **xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], tiếng Anh. Xem trước OpenTelemetry như một pipeline, đúng cách bài độ sâu nói dữ liệu đo di chuyển.
+- [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve, tiếng Anh. Log, metric và trace là ba việc, đúng cách bài tách ở đầu.
+- [OpenTelemetry: Simplifying Hybrid Cloud Monitoring](https://www.youtube.com/watch?v=hLvwoow3XTk) — IBM Technology, tiếng Anh. IBM mô tả OpenTelemetry trên hệ hybrid, cho mục collector và backend.
+
 ## Bài tập
 
 1. Với `POST /api/posts`, viết một SLI RED, một SLI USE cho Postgres, một SLO cho demo một tuần.

@@ -86,6 +86,12 @@ Public / private / hybrid / community vẫn đúng, nhưng *byte nằm ở đâu
 - **Sốc hóa đơn AI**: token và giờ GPU khó dự báo hơn giờ VM.
 - **Tách kỹ năng**: FinOps, nền tảng và phục vụ ML nói các SLO khác nhau.
 
+## Video tham khảo
+
+- **xem trước:** [What is Multicloud? How Do You Manage It?](https://www.youtube.com/watch?v=AjtdZ3gFRjU) — IBM Technology, tiếng Anh. Xem trước đa đám mây như một bài toán vận hành, đúng mở đầu bài tùy chọn.
+- [What is FinOps? The Operating Model & Cultural Practice to Maximize the Value of Technology](https://www.youtube.com/watch?v=Y-c_xw9bHFw) — FinOps Foundation, tiếng Anh. FinOps quanh chi tiêu được đo, đúng mục measured service có vòng phản hồi.
+- [Introducing Amazon Bedrock \| Amazon Web Services](https://www.youtube.com/watch?v=_vdK5PgcNvc) — Amazon Web Services, tiếng Anh. Giới thiệu ngắn một dịch vụ AI tạo sinh được quản lý, đúng mẫu phục vụ AI trong bài.
+
 ## Bài tập
 
 1. Lấy một ví dụ bài bắt buộc (ví dụ burste thương mại điện tử). Thêm nhà cung cấp thứ hai *chỉ* cho object storage. Liệt kê chi phí định danh, độ trễ và egress vừa chấp nhận.

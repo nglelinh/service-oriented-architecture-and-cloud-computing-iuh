@@ -161,6 +161,12 @@ Compose trên laptop hiện *cùng các tầng* bằng mạng do người dùng 
 - Luật `0.0.0.0/0` “tạm” đi vào ảnh chụp rồi vào production.
 - Chứng chỉ hết hạn Chủ nhật vì không ai sở hữu gia hạn.
 
+## Video tham khảo
+
+- **xem trước:** [AWS VPC & Subnets For Beginners](https://www.youtube.com/watch?v=TUTqYEZZUdc) — Sam Meech-Ward, tiếng Anh. Xem trước VPC và subnet, những đối tượng mạng bài yêu cầu gọi tên được.
+- [How DNS Works - Computerphile](https://www.youtube.com/watch?v=uOfonONtIuk) — Computerphile, tiếng Anh. Cách phân giải DNS, đúng ý bài: tên là cách máy khách tìm dịch vụ.
+- [SSL, TLS, HTTPS Explained](https://www.youtube.com/watch?v=j9QmMEWmcfo) — ByteByteGo, tiếng Anh. TLS và HTTPS là hợp đồng trên tên đó, đúng phần kiểm tra chứng thư của bài.
+
 ## Bài tập
 
 1. Vẽ Bảng tin với ba security group, *không* IP công trên cơ sở dữ liệu. Ghi tuyến khiến subnet công là công.

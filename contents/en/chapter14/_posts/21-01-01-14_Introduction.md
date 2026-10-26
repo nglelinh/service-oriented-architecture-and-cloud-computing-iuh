@@ -25,3 +25,8 @@ Manual configuration ("ClickOps") is error-prone and unscalable. IaC allows deve
 ## Optional application lesson
 
 Required theory in this chapter is unchanged. For OpenTofu vs Terraform BSL, OPA policies, and platform modules (2023–2026), see [14-02 OpenTofu, Policy as Code, and Platform Engineering]({{ site.baseurl }}{% multilang_post_url contents/chapter14/21-01-01-14_02_OpenTofu_and_Policy_as_Code %}). The Terraform lesson now includes a short **CDK / Pulumi concept compare** (same desired state, different authoring surface) for the [Deploy Track]({{ site.baseurl }}/contents/en/chapter15/).
+
+## Video tham khảo
+
+- **xem trước:** [Introduction to HashiCorp Terraform with Armon Dadgar](https://www.youtube.com/watch?v=h970ZBgKINg) — HashiCorp, an IBM Company, English. Watch first: Armon Dadgar on what Terraform is for, the automation this introduction promises.
+- [Introduction to Terraform](https://www.youtube.com/watch?v=ZFLWA1kQ3ls) — HashiCorp, an IBM Company, English. A later HashiCorp introduction that shows plan and apply as the lifecycle.
