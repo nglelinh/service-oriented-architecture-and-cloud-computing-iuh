@@ -10,22 +10,22 @@ categories:
 lesson_type: optional
 ---
 
-Bài bắt buộc phủ CAP, BASE vs ACID, và bốn họ NoSQL. Ghi chú tùy chọn thêm các kho xuất hiện cạnh các họ đó trong 2022–2026: CSDL vận hành **serverless**, **SQL phân tán** muốn vừa ACID vừa scale, và **chỉ mục vector** cho ứng dụng RAG/AI.
+Phần lý thuyết bắt buộc trình bày định lý CAP, so sánh BASE với ACID và bốn họ cơ sở dữ liệu NoSQL. Bài tùy chọn này bổ sung ba dòng hệ quản trị dữ liệu nổi bật giai đoạn 2022–2026: cơ sở dữ liệu vận hành theo mô hình **serverless**, **SQL phân tán** kết hợp giao dịch ACID với khả năng mở rộng ngang, và **chỉ mục vector** phục vụ ứng dụng tìm kiếm ngữ nghĩa và RAG/AI.
 
-> Lý thuyết bắt buộc đang ở bản tiếng Anh. Đây là phần ứng dụng tùy chọn bằng tiếng Việt.
+> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
 ## Mục tiêu học tập
 
-- Đặt sản phẩm kiểu Aurora/Cosmos/Firestore serverless lên trục IaaS–PaaS.
-- Đối chiếu “NoSQL để scale” với SQL phân tán (hạng Spanner).
-- Giải thích chỉ mục vector như *đường truy cập mới*, không thay hệ thống ghi sổ.
+- Xác định vị trí của các dịch vụ cơ sở dữ liệu serverless (như Aurora, Cosmos DB, Firestore) trên trục IaaS–PaaS.
+- Đối chiếu hướng tiếp cận "dùng NoSQL để mở rộng" với mô hình SQL phân tán (nhóm hệ thống kiểu Spanner).
+- Hiểu đúng vai trò của chỉ mục vector như một *tầng truy xuất bổ trợ*, không thay thế hệ thống cơ sở dữ liệu ghi sổ chính (system of record).
 
-## 1. Serverless là đàn hồi áp vào cơ sở dữ liệu
+## 1. Serverless: áp dụng tính đàn hồi vào tầng cơ sở dữ liệu
 
-Đàn hồi nhanh NIST từng nghĩa “thêm VM.” CSDL serverless scale **dung lượng theo kết nối và lưu trữ**, thường có tạm dừng scale-to-zero:
+Trước đây, đặc trưng *đàn hồi nhanh* của NIST thường gắn với việc tự động thêm hoặc bớt máy ảo. Với cơ sở dữ liệu serverless, năng lực tính toán và lưu trữ co giãn trực tiếp theo lưu lượng kết nối, thậm chí hỗ trợ tạm dừng khi không có tải (`scale-to-zero`):
 
-- Amazon Aurora Serverless v2 (scale ACU), Cloud Spanner / AlloyDB, Azure Cosmos DB serverless, Neon/PlanetScale-style nhánh Postgres.
-- Đánh đổi CAP không biến mất: bạn vẫn chọn nhất quán vs. độ trễ khi một vùng chết.
+- Các đại diện phổ biến gồm Amazon Aurora Serverless v2 (co giãn theo đơn vị ACU), Cloud Spanner / AlloyDB, Azure Cosmos DB serverless, và các nền tảng Postgres hỗ trợ phân nhánh kiểu Neon hay PlanetScale.
+- Sự đánh đổi của định lý CAP vẫn giữ nguyên: khi xảy ra phân vùng mạng hoặc mất một vùng sẵn sàng, hệ thống vẫn phải lựa chọn giữa tính nhất quán và độ trễ/tính sẵn sàng.
 
 ```python
 import os
@@ -40,17 +40,17 @@ def fetch_order(order_id: str):
             return cur.fetchone()
 ```
 
-Cold start chuyển từ hàm (Chương 08) sang **câu truy vấn đầu sau khi tạm dừng**. Timeout và pooling nay thuộc hợp đồng SOA truy cập dữ liệu.
+Hiện tượng khởi động nguội (cold start) lúc này dịch chuyển từ hàm FaaS (Chương 08) sang **truy vấn đầu tiên sau trạng thái tạm dừng**. Do đó, cấu hình timeout và bộ gom kết nối (connection pooling) trở thành một phần quan trọng trong hợp đồng truy cập dữ liệu của kiến trúc SOA.
 
-## 2. SQL phân tán: ACID không cần một primary (khi làm được)
+## 2. SQL phân tán: giao dịch ACID vượt ra ngoài một nút chính đơn lẻ
 
-CockroachDB, Yugabyte, Google Spanner và hệ tương tự quảng bá SQL **serializable** (hoặc mạnh) trên shard. Chúng không bãi bỏ CAP: dùng đồng thuận (Paxos/Raft) và đồng hồ (TrueTime hoặc HLC) để đường *thường gặp* trông như một Postgres. Thắng lợi ứng dụng: ít shard tự chế hơn playbook MongoDB 2015.
+Các hệ thống như CockroachDB, YugabyteDB và Google Spanner cung cấp giao dịch SQL với mức cô lập cao (thường là serializable) trên nhiều phân mảnh (shard). Chúng không vượt qua định lý CAP mà kết hợp thuật toán đồng thuận (Paxos hoặc Raft) cùng cơ chế đồng bộ thời gian (TrueTime hoặc Hybrid Logical Clock — HLC) để trong điều kiện bình thường, ứng dụng có thể tương tác gần như với một máy chủ PostgreSQL duy nhất. Lợi ích thực tế là giảm đáng kể công sức tự quản lý phân mảnh thủ công.
 
-Dùng khi cần **ghi đa vùng** và join SQL. Đừng dùng như cache rẻ.
+Nên chọn SQL phân tán khi ứng dụng thực sự cần **ghi dữ liệu đa vùng** và các phép nối SQL phức tạp; không nên dùng nó như một lớp bộ nhớ đệm giá rẻ.
 
-## 3. CSDL vector: đường truy cập AI
+## 3. Cơ sở dữ liệu vector: tầng truy xuất cho ứng dụng AI
 
-RAG và tìm embedding thêm hình thứ năm cạnh KV/tài liệu/cột/đồ thị: **láng giềng gần đúng (ANN)** trên vector float (`pgvector`, Pinecone, Weaviate, Milvus, MongoDB Atlas Vector Search).
+Các hệ thống RAG và tìm kiếm ngữ nghĩa dựa trên embedding bổ sung một dạng chỉ mục thứ năm bên cạnh bốn họ NoSQL truyền thống (key–value, tài liệu, cột, đồ thị): **tìm kiếm láng giềng gần đúng (Approximate Nearest Neighbor — ANN)** trên vector số thực (`pgvector`, Pinecone, Weaviate, Milvus, MongoDB Atlas Vector Search).
 
 ```sql
 CREATE TABLE docs (
@@ -65,43 +65,43 @@ ORDER BY embedding <-> $1
 LIMIT 8;
 ```
 
-**Quy tắc ứng dụng:** kho vector là *dịch vụ truy xuất*. Hệ thống ghi sổ (đơn hàng, điểm, thanh toán) ở kho ACID hoặc NoSQL chọn kỹ. Trộn chúng trong một chỉ mục không xác thực là cách RAG rò tenant.
+**Nguyên tắc kiến trúc:** Kho vector đóng vai trò là *dịch vụ truy xuất*. Dữ liệu ghi sổ cốt lõi (đơn hàng, điểm số, giao dịch thanh toán) vẫn phải nằm trong hệ quản trị ACID hoặc NoSQL được kiểm soát chặt chẽ. Việc gộp chung dữ liệu nhiều khách hàng vào một chỉ mục vector mà thiếu lớp kiểm tra quyền truy cập là nguyên nhân phổ biến gây rò rỉ dữ liệu giữa các tenant trong hệ thống RAG.
 
 <div class="content-box warning-box">
-<p><strong>Lọc rồi ANN, hay ANN rồi lọc?</strong> Bộ lọc trước (tenant, ACL) phải nằm trên đường chỉ mục, nếu không bạn lấy láng giềng rồi bỏ — hoặc tệ hơn, trả về. Đây là ủy quyền, không chỉ recall@k.</p>
+<p><strong>Lọc trước khi tìm ANN hay tìm ANN rồi mới lọc?</strong> Điều kiện lọc theo quyền truy cập (tenant, ACL) cần được áp dụng gắn liền với quá trình duyệt chỉ mục; nếu lọc sau, kết quả trả về có thể bị thiếu hụt hoặc tệ hơn là lọt dữ liệu không được phép. Đây là bài toán phân quyền bảo mật, không chỉ là chỉ số chất lượng truy xuất <code>recall@k</code>.</p>
 </div>
 
-## 4. Ánh xạ lại phân loại bắt buộc
+## 4. Ánh xạ vào phân loại lý thuyết
 
-| Khối lượng | Mặc định những năm 2020 | Ghi chú CAP |
+| Nhóm khối lượng công việc | Lựa chọn phổ biến thập niên 2020 | Ghi chú theo CAP |
 | --- | --- | --- |
-| Phiên / giỏ | KV hoặc Redis | Cache nghiêng AP |
-| Danh mục | Document | Lược đồ linh hoạt |
-| Sổ cái / ghi danh | SQL phân tán hoặc RDBMS | Nghiêng CP |
-| Tìm ngữ nghĩa | Vector + lọc metadata | Xấp xỉ |
+| Phiên đăng nhập / giỏ hàng | Key–Value hoặc Redis | Ưu tiên tính sẵn sàng (AP) |
+| Danh mục sản phẩm | Document database | Lược đồ dữ liệu linh hoạt |
+| Sổ cái / đăng ký học phần | SQL phân tán hoặc RDBMS | Ưu tiên tính nhất quán (CP) |
+| Tìm kiếm ngữ nghĩa | Chỉ mục vector + lọc metadata | Tìm kiếm gần đúng |
 
 ## Thách thức
 
-- Hóa đơn *min capacity* serverless khiến nhóm tưởng “scale to zero là miễn phí.”
-- Xây lại chỉ mục vector sau khi đổi mô hình embedding (là di trú, không trivia reindex).
-- Nhân bản đa đám mây cả SQL lẫn vector (hai câu chuyện nhất quán).
+- Chi phí dung lượng tối thiểu (`min capacity`) của cơ sở dữ liệu serverless dễ khiến đội ngũ nhầm lẫn rằng `scale-to-zero` hoàn toàn miễn phí.
+- Thay đổi mô hình sinh embedding đồng nghĩa với việc phải tính toán lại toàn bộ vector và xây dựng lại chỉ mục — đây là một đợt di chuyển dữ liệu thực thụ chứ không chỉ là thao tác reindex đơn giản.
+- Nhân bản đồng bộ trên đa đám mây cho cả cơ sở dữ liệu SQL và kho vector tạo ra hai bài toán nhất quán song song.
 
 ## Video tham khảo
 
-- **xem trước:** [What is a Vector Database? Powering Semantic Search & AI Applications](https://www.youtube.com/watch?v=gl1r1XV0SLw) — IBM Technology, tiếng Anh. Xem trước cơ sở vector là gì, đường truy cập AI bài tùy chọn thêm cạnh bốn họ NoSQL.
-- [What is a serverless database? (in under 3 minutes)](https://www.youtube.com/watch?v=GxjKsKSOWJk) — CockroachDB, tiếng Anh. Cơ sở serverless là dung lượng co giãn theo mức dùng, đúng mục đàn hồi của bài.
-- [What is Serverless?](https://www.youtube.com/watch?v=vxJobGtqKVM) — IBM Technology, tiếng Anh. Serverless nghĩa là gì khi chính cơ sở dữ liệu, không chỉ hàm, có thể tạm dừng và co giãn.
+- **Xem trước:** [What is a Vector Database? Powering Semantic Search & AI Applications](https://www.youtube.com/watch?v=gl1r1XV0SLw) — IBM Technology (tiếng Anh). Giải thích cơ sở dữ liệu vector — tầng truy xuất AI bổ sung cạnh bốn họ NoSQL.
+- [What is a serverless database? (in under 3 minutes)](https://www.youtube.com/watch?v=GxjKsKSOWJk) — CockroachDB (tiếng Anh). Tóm tắt cơ chế co giãn dung lượng của cơ sở dữ liệu serverless.
+- [What is Serverless?](https://www.youtube.com/watch?v=vxJobGtqKVM) — IBM Technology (tiếng Anh). Bổ sung góc nhìn tổng thể về mô hình serverless khi áp dụng cho cả tầng dữ liệu.
 
 ## Bài tập
 
-1. Chọn một hệ thống campus (thư viện, LMS, gửi xe). Họ nào + sản phẩm những năm 2020 nào, và đau CAP nào bạn chấp nhận?
-2. Viết kế hoạch ba bước từ “mọi embedding trong cột JSON” sang `pgvector` có lọc tenant.
-3. Giải thích vì sao CSDL serverless cộng hàm serverless vẫn cần pooler kết nối.
+1. Chọn một hệ thống quy mô trường đại học (thư viện, hệ thống quản lý học tập LMS hoặc bãi giữ xe). Đề xuất họ cơ sở dữ liệu và sản phẩm cụ thể phù hợp, đồng thời chỉ rõ đánh đổi CAP mà bạn chấp nhận.
+2. Phác thảo kế hoạch ba bước để chuyển đổi từ "lưu toàn bộ embedding trong cột JSON" sang dùng `pgvector` có áp dụng lọc theo `tenant_id`.
+3. Giải thích vì sao khi kết hợp hàm serverless với cơ sở dữ liệu serverless, hệ thống vẫn cần một bộ gom kết nối (connection pooler).
 
 ## Tài liệu tham khảo
 
-1. Hướng dẫn Amazon Aurora Serverless v2 (scale ACU).
+1. Hướng dẫn Amazon Aurora Serverless v2 (co giãn theo ACU).
 2. Dự án `pgvector`: [github.com/pgvector/pgvector](https://github.com/pgvector/pgvector).
 3. Google, *Spanner* (OSDI 2012).
-4. Tài liệu MongoDB Atlas Vector Search; Pinecone / Weaviate (so ANN + lọc metadata).
-5. NIST SP 800-145 — đàn hồi và dịch vụ đo lường vẫn áp cho *dung lượng CSDL*, không chỉ VM.
+4. Tài liệu MongoDB Atlas Vector Search; Pinecone / Weaviate (so sánh ANN kết hợp lọc metadata).
+5. NIST SP 800-145 — đặc trưng đàn hồi và đo lường áp dụng cho cả tầng *dung lượng cơ sở dữ liệu*.

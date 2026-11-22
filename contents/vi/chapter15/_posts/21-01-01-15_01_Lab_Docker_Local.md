@@ -10,89 +10,89 @@ categories:
 lesson_type: optional
 ---
 
-**Hình thức:** lab checklist (không tính điểm trừ khi giảng viên nói khác).  
-**Khung giờ:** khoảng 2–3 giờ tập trung cho một cặp.  
-**Đám mây:** không. Nếu chưa có Docker, dừng lại và cài Docker Engine *hoặc* Docker Desktop; đừng thay bằng VM công cộng.
+**Hình thức:** Bài thực hành dạng checklist (không tính điểm trừ khi giảng viên quy định khác).  
+**Thời lượng dự kiến:** Khoảng 2–3 giờ tập trung cho một nhóm hai sinh viên.  
+**Yêu cầu đám mây:** Không. Nếu máy chưa cài Docker, hãy cài Docker Engine *hoặc* Docker Desktop; không thay thế bằng máy ảo đám mây công cộng.
 
-Lab nguyên tác IUH. **Không** phải đề Stanford CS 40.
+Bài thực hành này được biên soạn riêng cho IUH, **không** sử dụng đề bài của Stanford CS 40.
 
 ## Mục đích
 
-Dựng **Bảng tin học phần ba tiến trình** trên laptop: cạnh trình duyệt, API, và kho dữ liệu. Chỉ được từng tiến trình và nói nó tương ứng tầng nào trong bài 01-07 (cạnh / ứng dụng / dữ liệu).
+Xây dựng ứng dụng **Bảng tin học phần gồm ba tầng** chạy cục bộ trên máy tính cá nhân: lớp biên (edge/trình duyệt), lớp API và lớp cơ sở dữ liệu. Sau khi chạy thành công, bạn cần chỉ rõ từng tiến trình tương ứng với tầng kiến trúc nào trong bài 01-07 (biên / ứng dụng / dữ liệu).
 
 ## Chuẩn đầu ra
 
-- File Compose với **hai mạng do người dùng định nghĩa** (hoặc một frontend + một backend) để cổng kho dữ liệu không mở ra LAN máy chủ.
-- `/healthz` trên API thất bại nếu kho dữ liệu tắt.
-- Log stdout có `request_id` (có `trace_id` càng tốt).
-- Ghi chú nửa trang kèm sơ đồ.
+- Một tệp `docker-compose.yml` định nghĩa **hai mạng tách biệt** (ví dụ `edge` và `persist`) sao cho cổng cơ sở dữ liệu không mở ra mạng LAN của máy chủ.
+- Endpoint `/healthz` trên API trả về lỗi khi container cơ sở dữ liệu bị dừng.
+- Nhật ký (log) xuất ra `stdout` có đính kèm `request_id` (khuyến khích bổ sung `trace_id`).
+- Bản ghi chú `NOTES.md` dài khoảng nửa trang kèm sơ đồ kiến trúc.
 
-## Ứng dụng gợi ý (tự viết mã)
+## Ứng dụng gợi ý (tự lập trình)
 
-**Bảng tin IUH (local):** liệt kê và tạo *bài nhờ hỗ trợ học phần* (mã học phần, tiêu đề, nội dung). Không thông tin sinh viên thật. Tên tổng hợp (`sv0001`, không phải MSSV bạn cùng lớp).
+**Bảng tin học phần IUH (bản cục bộ):** Cho phép xem danh sách và đăng *bài nhờ hỗ trợ học phần* (gồm mã học phần, tiêu đề và nội dung). Tuyệt đối không dùng thông tin sinh viên thật; chỉ dùng dữ liệu giả lập (như `sv0001`).
 
-| Phương thức | Đường | Hành vi |
+| Phương thức | Đường dẫn | Hành vi mong đợi |
 | --- | --- | --- |
-| GET | `/healthz` | 200 nếu ping DB được; 503 nếu không |
-| GET | `/api/posts` | danh sách JSON |
-| POST | `/api/posts` | tạo JSON; từ chối tiêu đề rỗng |
+| GET | `/healthz` | Trả về 200 nếu kết nối cơ sở dữ liệu thành công; trả về 503 nếu thất bại |
+| GET | `/api/posts` | Trả về danh sách bài đăng dạng JSON |
+| POST | `/api/posts` | Tạo bài đăng mới từ JSON; từ chối nếu tiêu đề rỗng |
 
-Cạnh có thể là Caddy, nginx, hoặc UI tĩnh do API phục vụ. Ghim thẻ ảnh (không `latest`).
+Lớp biên có thể dùng Caddy, nginx hoặc giao diện tĩnh phục vụ qua API. Cần cố định phiên bản thẻ ảnh container cụ thể (không dùng thẻ `latest`).
 
-## Checklist
+## Danh sách kiểm tra (Checklist)
 
-### 0. Vệ sinh
+### 0. Chuẩn bị môi trường
 
-- [ ] Tên cặp và ngày trên đầu `NOTES.md`.
-- [ ] `.gitignore` loại `.env`, `*.pem`, `__pycache__`.
-- [ ] Chạy được `docker version` và `docker compose version`.
+- [ ] Ghi tên hai thành viên và ngày thực hành ở đầu tệp `NOTES.md`.
+- [ ] Cấu hình `.gitignore` loại trừ `.env`, `*.pem` và `__pycache__`.
+- [ ] Xác nhận hai lệnh `docker version` và `docker compose version` hoạt động bình thường.
 
-### 1. Mạng, không chỉ cổng
+### 1. Phân tách mạng thay vì mở cổng tràn lan
 
-- [ ] `docker-compose.yml` có mạng kiểu `edge` và `persist`.
-- [ ] Dịch vụ kho dữ liệu: **không** `ports: ["5432:5432"]` (hoặc Redis `6379`) trên `0.0.0.0`. Chỉ API vào mạng persist.
-- [ ] Cạnh publish `127.0.0.1:8080:80` nếu Compose cho phép, thay vì `8080:80` trần.
+- [ ] `docker-compose.yml` khai báo hai mạng riêng biệt kiểu `edge` và `persist`.
+- [ ] Container cơ sở dữ liệu **không** khai báo `ports: ["5432:5432"]` (hoặc Redis `6379`) trên `0.0.0.0`; chỉ dịch vụ API kết nối vào mạng `persist`.
+- [ ] Dịch vụ lớp biên ánh xạ cổng `127.0.0.1:8080:80` thay vì `8080:80` mở công khai trên mọi giao diện mạng.
 
-### 2. Sức khỏe và sự cố
+### 2. Kiểm tra trạng thái hoạt động và mô phỏng sự cố
 
-- [ ] `healthcheck` Compose trên kho dữ liệu *và* API.
-- [ ] `docker compose ps` healthy trước khi gọi API.
-- [ ] **Tắt kho dữ liệu**, xác nhận `/healthz` là 503, lưu log API. Rồi bật lại.
+- [ ] Cấu hình `healthcheck` trong Compose cho cả cơ sở dữ liệu *và* API.
+- [ ] Xác nhận `docker compose ps` hiển thị trạng thái `healthy` trước khi gửi yêu cầu thử nghiệm.
+- [ ] **Chủ động dừng container cơ sở dữ liệu**, xác nhận `/healthz` trả về mã 503 và lưu lại đoạn log của API, sau đó khởi động lại.
 
-### 3. Quan sát (tối thiểu)
+### 3. Khả năng quan sát tối thiểu
 
-- [ ] API log một dòng JSON mỗi request: `method`, `path`, `status`, `duration_ms`, `request_id`.
-- [ ] Không log thân request có thể chứa dữ liệu cá nhân.
+- [ ] API ghi một dòng log JSON cho mỗi yêu cầu gồm: `method`, `path`, `status`, `duration_ms`, `request_id`.
+- [ ] Không ghi nội dung thân yêu cầu (request body) có thể chứa thông tin cá nhân vào log.
 
-### 4. Biếm họa đàn hồi
+### 4. Mô phỏng mở rộng ngang (elasticity)
 
-- [ ] `docker compose up --scale api=2` chạy *hoặc* bạn viết vì sao cạnh chưa cân bằng hai API.
-- [ ] Nếu scale-out thất bại (trạng thái trong bộ nhớ), ghi thành phát hiện.
+- [ ] Chạy thử `docker compose up --scale api=2` *hoặc* giải thích rõ trong ghi chú lý do lớp biên hiện tại chưa cân bằng tải được giữa hai phiên bản API.
+- [ ] Nếu việc mở rộng ngang gặp lỗi (ví dụ do lưu trạng thái trong bộ nhớ tiến trình), hãy ghi nhận lại như một phát hiện kỹ thuật.
 
-### 5. Xong khi
+### 5. Tiêu chí hoàn thành
 
-- [ ] Trình duyệt trên **máy bạn** vào `http://127.0.0.1:8080` và tạo được bài.
-- [ ] `NOTES.md` có sơ đồ ba tầng và hai mạng.
-- [ ] `docker compose down -v` được ghi chú. Bạn biết volume sẽ mất.
+- [ ] Truy cập `http://127.0.0.1:8080` từ trình duyệt trên **máy của bạn** và tạo được bài đăng mới.
+- [ ] `NOTES.md` có sơ đồ thể hiện rõ ba tầng dịch vụ và hai mạng.
+- [ ] Ghi chú rõ lệnh `docker compose down -v` và hiểu rằng cờ `-v` sẽ xóa dữ liệu volume.
 
-## Kéo giãn (vẫn local)
+## Mục tiêu mở rộng (vẫn chạy cục bộ)
 
-- TLS trên cạnh bằng `mkcert` cho `courseboard.localhost`.
-- `Makefile` với `make up`, `make test`, `make down`.
-- Smoke test bài 13-04 trên `/healthz`.
+- Cấu hình TLS cục bộ tại lớp biên bằng `mkcert` cho tên miền `courseboard.localhost`.
+- Viết tệp `Makefile` với các lệnh `make up`, `make test` và `make down`.
+- Tích hợp kiểm thử nhanh (smoke test) từ bài 13-04 cho endpoint `/healthz`.
 
-## Không làm
+## Những điều không nên làm
 
-- Không mở kho dữ liệu ra Wi-Fi nhà trường.
-- Không đẩy ảnh chứa `.env`.
-- Không lấy `network_mode: host` từ blog ngẫu nhiên làm lối tắt.
+- Không mở cổng cơ sở dữ liệu ra mạng Wi-Fi của trường.
+- Không đẩy ảnh container có chứa tệp `.env` lên registry.
+- Không dùng `network_mode: host` như một đường tắt để bỏ qua bước cấu hình mạng.
 
-## Ghi chú giảng viên
+## Minh chứng gợi ý cho giảng viên
 
-Minh chứng: `NOTES.md` + Compose + ảnh/log 503. Không dùng rubrics trường khác.
+Bộ minh chứng gồm tệp `NOTES.md`, tệp `docker-compose.yml` và ảnh chụp hoặc log khi hệ thống trả về mã 503 trong kịch bản tắt cơ sở dữ liệu.
 
 ## Video tham khảo
 
-- **xem trước:** [Tự học Docker siêu tốc trong 10 phút (Có code mẫu và ví dụ) - Code Dạo Dễ Òm](https://www.youtube.com/watch?v=1k8pox8mkxc) — Phạm Huy Hoàng, tiếng Việt. Xem trước các lệnh Docker bằng tiếng Việt trước khi ghép nhiều dịch vụ bằng Compose.
-- [What is Docker Compose? \| Docker Concepts](https://www.youtube.com/watch?v=f3xb7kt_dH4) — Docker, tiếng Anh. Định nghĩa Compose của chính Docker, công cụ lab dùng cho ứng dụng đa tầng trên máy local.
-- [Docker Compose in 12 Minutes](https://www.youtube.com/watch?v=Qw9zlE3t8Ko) — Jake Wright, tiếng Anh. Một file Compose có nhiều dịch vụ, gần các vai trò edge, app và data của lab.
+- **Xem trước:** [Tự học Docker siêu tốc trong 10 phút (Có code mẫu và ví dụ) - Code Dạo Dễ Òm](https://www.youtube.com/watch?v=1k8pox8mkxc) — Phạm Huy Hoàng (tiếng Việt). Ôn nhanh các lệnh Docker cơ bản bằng tiếng Việt trước khi ghép nhiều dịch vụ bằng Compose.
+- [What is Docker Compose? \| Docker Concepts](https://www.youtube.com/watch?v=f3xb7kt_dH4) — Docker (tiếng Anh). Giải thích mục đích của Docker Compose trong bài toán chạy ứng dụng đa tầng cục bộ.
+- [Docker Compose in 12 Minutes](https://www.youtube.com/watch?v=Qw9zlE3t8Ko) — Jake Wright (tiếng Anh). Minh họa tệp Compose gồm nhiều dịch vụ, gần với cấu trúc biên – ứng dụng – dữ liệu của bài lab.

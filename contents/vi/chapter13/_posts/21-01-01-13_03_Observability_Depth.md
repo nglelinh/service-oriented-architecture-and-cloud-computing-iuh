@@ -10,24 +10,24 @@ categories:
 lesson_type: optional
 ---
 
-Bài bắt buộc Chương 13 nhắc giám sát và nhật ký. Bài tùy chọn Chương 02 giải thích vì sao cần trace khi không có đồng hồ toàn cục. Bài 13-02 gắn OpenTelemetry với canary và artifact đã ký. Bài này là **lượt sâu**: mỗi tín hiệu *để trả lời câu gì*, OpenTelemetry chuyển dữ liệu ra sao, và nhóm IUH tránh bảng điều khiển không trả lời được “vì sao checkout chậm?”
+Phần bắt buộc của Chương 13 giới thiệu giám sát và ghi log; bài tùy chọn Chương 02 lý giải vai trò của trace trong hệ thống không có đồng hồ toàn cục; còn bài 13-02 gắn OpenTelemetry với phát hành canary và xác minh artifact. Bài học này đi sâu hơn vào kỹ thuật thực hành: mỗi loại tín hiệu *trả lời câu hỏi nào*, dữ liệu di chuyển qua kiến trúc OpenTelemetry ra sao, và cách xây dựng hệ thống giám sát trả lời trực tiếp câu hỏi "vì sao thao tác thanh toán bị chậm?".
 
 ## Mục tiêu học tập
 
-- Tách **log, metric, trace** theo câu hỏi, rồi tương quan bằng một ngữ cảnh (`trace_id` / `service.version`).
-- Mô tả đường OpenTelemetry: SDK → (Collector tùy chọn) → backend, gồm header W3C `traceparent`.
-- Chọn một bộ **SLI/SLO** nhỏ và nói thứ bạn *không* cảnh báo.
-- Gọi tên cardinality và sampling — hai cách quan sát vừa tính tiền vừa nói dối.
+- Phân biệt **log, metric, trace** theo câu hỏi cần giải đáp và liên kết chúng qua ngữ cảnh chung (`trace_id` và `service.version`).
+- Mô tả luồng dữ liệu OpenTelemetry: SDK → Collector (tùy chọn) → hệ thống lưu trữ, bao gồm header W3C `traceparent`.
+- Lựa chọn một bộ chỉ số **SLI/SLO** gọn nhẹ và xác định rõ những cảnh báo *không* nên bật.
+- Nhận diện hai nguồn sai lệch và phát sinh chi phí phổ biến: bùng nổ cardinality và lấy mẫu (sampling) không phù hợp.
 
-## 1. Ba tín hiệu, ba việc
+## 1. Ba loại tín hiệu và vai trò riêng biệt
 
-| Tín hiệu | Câu hỏi | Hỏng nếu chỉ có cái này |
+| Tín hiệu | Câu hỏi chính | Hạn chế nếu chỉ dùng riêng tín hiệu này |
 | --- | --- | --- |
-| **Metric** | Dịch vụ có khỏe *trong tổng thể* phút này? | Thấy “p95 = 800 ms” mà không chỉ ra phụ thuộc chậm. |
-| **Log** | Tiến trình này nói gì về sự kiện này? | Ngập dòng, không theo một người dùng qua bốn container. |
-| **Trace** | Yêu cầu đi *đường nhân quả* nào? | Có đồ thị đẹp, không có tín hiệu năng lực (CPU, hàng đợi). |
+| **Metric** | Trạng thái *tổng thể* của dịch vụ lúc này ra sao? | Biết "p95 = 800 ms" nhưng không chỉ ra được dịch vụ phụ thuộc nào gây chậm. |
+| **Log** | Tiến trình cụ thể này đã ghi nhận sự kiện gì? | Khối lượng lớn, khó lần theo một yêu cầu đi qua nhiều container. |
+| **Trace** | Yêu cầu đi theo *chuỗi nhân quả* nào? | Nhìn rõ luồng gọi nhưng thiếu cái nhìn tổng hợp về tải tài nguyên (CPU, hàng đợi). |
 
-Hợp đồng những năm 2020: **nhúng một lần**, xuất nhiều nơi. OpenTelemetry (OTel) vào CNCF năm 2019, ủ năm 2021, **tốt nghiệp 11 tháng 5 năm 2026**.
+Nguyên tắc chuẩn hóa của thập niên 2020 là **gắn mã đo đạc một lần**, xuất dữ liệu tới nhiều hệ thống phân tích khác nhau. OpenTelemetry (OTel) gia nhập CNCF năm 2019, đạt trạng thái incubating năm 2021 và **chính thức graduated ngày 11 tháng 5 năm 2026**.
 
 ```text
 request ──► span "edge"
@@ -37,14 +37,14 @@ request ──► span "edge"
                └── span "worker.publish"
 ```
 
-**Span** là một thao tác có thời gian. **Trace** là cây span chung `trace_id`. Log nên mang `trace_id`. Metric nên mang `service.name` và `service.version` để canary hiện thành *chuỗi thời gian mới*.
+**Span** đại diện cho một thao tác có thời điểm bắt đầu và kết thúc. **Trace** là cây gồm các span liên kết nhau qua cùng một `trace_id`. Để tương quan hiệu quả, log cần đính kèm `trace_id`, còn metric cần gắn nhãn `service.name` và `service.version` để mỗi phiên bản canary hiện lên thành một *chuỗi thời gian tách biệt*.
 
-## 2. RED, USE, và metric thật sự cần
+## 2. Phương pháp RED, USE và các chỉ số thiết yếu
 
-- **RED** (dịch vụ theo yêu cầu): **R**ate, **E**rrors, **D**uration.
-- **USE** (tài nguyên): **U**tilization, **S**aturation, **E**rrors.
+- **RED** (dành cho dịch vụ xử lý yêu cầu): **R**ate (tần suất yêu cầu), **E**rrors (tỷ lệ lỗi), **D**uration (thời gian phản hồi).
+- **USE** (dành cho tài nguyên hệ thống): **U**tilization (mức sử dụng), **S**aturation (mức bão hòa/hàng đợi), **E**rrors (lỗi tài nguyên).
 
-API Bảng tin cần RED trên cạnh HTTP và USE trên container cơ sở dữ liệu. Ngày đầu không cần 400 metric tự viết.
+Với ứng dụng Bảng tin học phần, bạn chỉ cần thu thập nhóm RED tại tầng HTTP API và nhóm USE trên container cơ sở dữ liệu, thay vì tạo hàng trăm metric không cần thiết ngay từ đầu.
 
 ```python
 import time
@@ -62,25 +62,27 @@ def observe(route: str, status: int, started: float) -> None:
 ```
 
 <div class="content-box insight-box">
-<p><strong>SLI / SLO / SLA.</strong> SLI là phép đo. SLO là đích bạn chọn (ví dụ 99,5% GET Bảng tin dưới 300 ms trong một tuần). SLA là <em>hợp đồng</em> có hậu quả. Sinh viên viết SLO. Đừng bịa SLA cho một lab.</p>
+<p><strong>Phân biệt SLI, SLO và SLA.</strong> SLI là phép đo định lượng thực tế. SLO là mục tiêu nội bộ bạn đặt ra (ví dụ 99,5% yêu cầu GET Bảng tin phản hồi dưới 300 ms trong một tuần). SLA là <em>cam kết hợp đồng</em> kèm điều khoản bồi thường. Trong đồ án sinh viên, hãy định nghĩa rõ SLI và SLO, không cần đặt ra SLA giả định.</p>
 </div>
 
-## 3. Log rẻ khi viết, đắt khi dùng
+## 3. Ghi log có cấu trúc và tiết kiệm chi phí
 
-Log lab tốt là **có cấu trúc** (JSON) và theo sự kiện. Log xấu là `print("here")`.
+Log hiệu quả cần ở dạng **có cấu trúc** (JSON) và gắn với sự kiện cụ thể, thay vì các dòng tự do kiểu `print("here")`. Bốn quy tắc thực hành:
 
-1. Ghi **đầu và cuối** lời gọi ngoài, không phải mọi dòng nghiệp vụ.
-2. Không ghi mật khẩu, cookie phiên, MSSV thô. Băm hoặc bỏ.
-3. Đưa log container ra **stdout/stderr** (Chương 08).
-4. Log không có `trace_id` là bưu thiếp không địa chỉ.
+1. Ghi nhận **điểm vào và điểm ra** của các lời gọi dịch vụ bên ngoài, tránh ghi log tràn lan ở mọi vòng lặp nghiệp vụ.
+2. Tuyệt đối không ghi mật khẩu, cookie phiên đăng nhập hay mã số sinh viên dạng thô; cần băm (hash) hoặc lọc bỏ.
+3. Xuất log của container ra luồng chuẩn **stdout/stderr** (theo nguyên lý Chương 08).
+4. Luôn đính kèm `trace_id` để có thể liên kết log trực tiếp với trace tương ứng.
 
-## 4. OpenTelemetry là đường ống, không phải sản phẩm
+## 4. Kiến trúc đường ống OpenTelemetry
 
-1. **API** — lời gọi trong mã (`start_as_current_span`).
-2. **SDK** — lấy mẫu, thuộc tính tài nguyên (`service.name=courseboard-api`).
-3. **Instrumentation** — bọc FastAPI, HTTPX, gRPC.
-4. **Collector** (tùy chọn) — nhận OTLP, xuất Jaeger / Prometheus / Tempo / nhà cung cấp.
-5. **Lan truyền ngữ cảnh** — W3C Trace Context (`traceparent`).
+OpenTelemetry bao gồm năm thành phần chính:
+
+1. **API:** Tập giao diện gọi trong mã ứng dụng (như `start_as_current_span`).
+2. **SDK:** Xử lý lấy mẫu và gán thuộc tính tài nguyên (`service.name=courseboard-api`).
+3. **Thư viện Instrumentation:** Tự động gắn đo đạc cho các framework như FastAPI, HTTPX, gRPC.
+4. **Collector (tùy chọn):** Thành phần trung gian tiếp nhận dữ liệu OTLP và chuyển tiếp tới Jaeger, Prometheus, Tempo hoặc dịch vụ đám mây.
+5. **Lan truyền ngữ cảnh:** Truyền thông tin trace qua header chuẩn W3C Trace Context (`traceparent`).
 
 ```python
 from opentelemetry import trace
@@ -96,70 +98,70 @@ def call_worker(http_post, url: str, payload: dict) -> None:
         http_post(url, json=payload, headers=headers)
 ```
 
-Lab Lộ trình triển khai có thể **không** cần Collector: in `trace_id`, hoặc một container Jaeger all-in-one. Chuẩn đầu ra là *đường đi*, không phải một SaaS.
+Trong bài thực hành Lộ trình triển khai, bạn chưa nhất thiết phải dựng riêng một Collector: có thể in trực tiếp `trace_id` ra log hoặc chạy một container Jaeger all-in-one. Mục tiêu chính là nắm vững *luồng đi của dữ liệu đo*, không phụ thuộc vào một nền tảng SaaS cụ thể.
 
-## 5. Sampling, cardinality, và lời nói dối
+## 5. Lấy mẫu (sampling) và bùng nổ cardinality
 
-**Nổ cardinality.** Nhãn `user_id` biến một chuỗi thời gian thành hàng chục nghìn. Nhãn phải *ít giá trị*: `route`, `code`, `region`, `version`. Định danh duy nhất để trên *span và log*.
+**Bùng nổ cardinality:** Đưa các giá trị có số lượng biến thể rất lớn (như `user_id` hoặc `session_id`) làm nhãn metric sẽ tạo ra hàng chục nghìn chuỗi thời gian, làm tăng mạnh chi phí và gây quá tải bộ nhớ. Nhãn metric phải có *tập giá trị hữu hạn* như `route`, `code`, `region`, `version`; còn các mã định danh chi tiết nên đặt ở thuộc tính của *span và log*.
 
-**Lấy mẫu.** Giữ 5% trace thì trượt mất lần thanh toán lỗi. Với lab IUH, **giữ 100%** đến khi có tải thật.
+**Lấy mẫu (sampling):** Nếu chỉ giữ 5% lượng trace một cách ngẫu nhiên, bạn rất dễ bỏ sót đúng giao dịch thanh toán bị lỗi. Ở quy mô bài lab IUH, nên **giữ lại 100%** dữ liệu trace cho đến khi hệ thống có lưu lượng lớn thực sự.
 
 ```text
 nhãn tốt:  http.route=/api/posts  http.status=500  service.version=sha-8f3c
 nhãn xấu:  user=sv123456  email=a@iuh.edu.vn  query="select ..."
 ```
 
-## 6. Cảnh báo nhóm hai người có thể thức vì nó
+## 6. Thiết lập cảnh báo hợp lý cho nhóm nhỏ
 
-| Đánh thức | Để bản tin tuần |
+| Sự cố cần cảnh báo khẩn | Sự kiện chỉ cần tổng hợp báo cáo tuần |
 | --- | --- |
-| Tỷ lệ lỗi $$2\times$$ nền 10 phút | Một 5xx đơn lẻ |
-| Đốt SLO hết ngân sách lỗi trong vài giờ | p99 xấu chậm trên route admin không dùng |
-| Đĩa > 90% volume cơ sở dữ liệu | Một dòng debug bạn không thích |
+| Tỷ lệ lỗi tăng $$2\times$$ mức nền trong 10 phút liên tiếp | Một phản hồi 5xx xuất hiện đơn lẻ |
+| Tốc độ tiêu hao ngân sách lỗi nhanh, có nguy cơ cạn SLO trong vài giờ | Độ trễ p99 tăng nhẹ trên một đường dẫn quản trị ít dùng |
+| Dung lượng đĩa của volume cơ sở dữ liệu vượt 90% | Một dòng log debug bất thường không ảnh hưởng người dùng |
 
-Gắn cảnh báo với **runbook** năm dòng: xem gì, rollback ra sao (Chương 09 / 13-04), ai giữ DNS nếu chứng chỉ hết hạn.
+Mỗi cảnh báo khẩn nên đi kèm một **quy trình xử lý nhanh (runbook)** ngắn gọn khoảng năm dòng: cần kiểm tra chỉ số nào trước, cách hoàn tác phiên bản (Chương 09 / 13-04) và ai là người giữ quyền cập nhật DNS nếu chứng chỉ TLS hết hạn.
 
-## 7. Quan sát tối thiểu cho Bảng tin
+## 7. Mức quan sát tối thiểu cho ứng dụng Bảng tin học phần
 
-1. Metric RED trên API.
-2. Log JSON có `trace_id` và `service.version`.
-3. Một trace mỗi HTTP, con cho DB và HTTP ra.
-4. `/healthz` kiểm cơ sở dữ liệu.
-5. Ảnh panel khi **cố ý làm hỏng** (tắt DB).
+1. Thu thập bộ chỉ số RED trên tầng API.
+2. Ghi log JSON có kèm `trace_id` và `service.version`.
+3. Tạo một trace cho mỗi yêu cầu HTTP, gồm các span con cho truy vấn cơ sở dữ liệu và lời gọi HTTP ra ngoài.
+4. Cung cấp endpoint `/healthz` kiểm tra kết nối thực tế tới cơ sở dữ liệu.
+5. Chụp lại bằng chứng bảng giám sát khi **chủ động gây lỗi** (chẳng hạn tạm dừng container cơ sở dữ liệu).
 
 <div class="content-box exercise-box">
-<p><strong>Thành thật với lab.</strong> Dashboard xanh mà chưa từng tiêm lỗi không chứng minh bạn quan sát được. Hãy phá có chủ đích.</p>
+<p><strong>Kiểm chứng thực tế trong bài lab.</strong> Một bảng điều khiển luôn hiển thị màu xanh khi chưa từng thử nghiệm lỗi không chứng minh được hệ thống quan sát hoạt động đúng. Hãy chủ động tiêm lỗi để kiểm tra tín hiệu phản hồi.</p>
 </div>
 
 ## Thách thức
 
-- Tự động nhúng span ồn và giấu truy vấn chậm.
-- Đồng hồ: thời lượng span là địa phương (Chương 02).
-- Quyền riêng tư: query string mang tên sinh viên.
-- Khóa nhà cung cấp trên API agent.
+- Cơ chế tự động instrumentation có thể sinh ra quá nhiều span vụn, làm che khuất truy vấn thực sự chậm.
+- Sai lệch đồng hồ: mốc thời gian của mỗi span dựa trên đồng hồ cục bộ của từng nút (xem Chương 02).
+- Rủi ro quyền riêng tư nếu chuỗi truy vấn URL (query string) chứa tên hoặc mã số sinh viên được ghi nguyên văn vào log.
+- Ràng buộc nhà cung cấp nếu mã nguồn gọi trực tiếp API của một agent độc quyền thay vì OpenTelemetry.
 
 ## Video tham khảo
 
-- **xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], tiếng Anh. Xem trước OpenTelemetry như một pipeline, đúng cách bài độ sâu nói dữ liệu đo di chuyển.
-- [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve, tiếng Anh. Log, metric và trace là ba việc, đúng cách bài tách ở đầu.
-- [OpenTelemetry: Simplifying Hybrid Cloud Monitoring](https://www.youtube.com/watch?v=hLvwoow3XTk) — IBM Technology, tiếng Anh. IBM mô tả OpenTelemetry trên hệ hybrid, cho mục collector và backend.
+- **Xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation] (tiếng Anh). Trình bày kiến trúc đường ống OpenTelemetry trong năm phút.
+- [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve (tiếng Anh). Phân biệt vai trò của log, metric và trace, khớp với phần mở đầu bài học.
+- [OpenTelemetry: Simplifying Hybrid Cloud Monitoring](https://www.youtube.com/watch?v=hLvwoow3XTk) — IBM Technology (tiếng Anh). Minh họa cách triển khai OpenTelemetry Collector và backend trong môi trường đám mây lai.
 
 ## Bài tập
 
-1. Với `POST /api/posts`, viết một SLI RED, một SLI USE cho Postgres, một SLO cho demo một tuần.
-2. Trace: span API 1,2 s, span DB 20 ms. Bước tiếp theo là gì?
-3. Nhãn an toàn hay không: `http.status`, `tenant_id` (3 tenant), `session_id`, `sql_text`.
-4. Collector làm gì mà SDK một mình không làm? Bốn câu.
+1. Đối với endpoint `POST /api/posts`, xác định một SLI theo RED, một SLI theo USE cho PostgreSQL và một SLO phù hợp cho tuần chạy thử nghiệm.
+2. Một trace ghi nhận tổng thời gian span API là 1,2 giây, trong khi span truy vấn cơ sở dữ liệu chỉ mất 20 ms. Bạn sẽ kiểm tra những nguyên nhân nào tiếp theo?
+3. Đánh giá các nhãn metric sau có an toàn về mặt cardinality hay không: `http.status`, `tenant_id` (hệ thống có 3 tenant), `session_id`, `sql_text`.
+4. Trình bày trong khoảng bốn câu những vai trò mà OpenTelemetry Collector đảm nhận mà riêng SDK trong ứng dụng không làm được.
 
-## Tiếp theo
+## Đọc tiếp
 
 - [13-02]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_02_Supply_Chain_Security_and_Observability %})
 - [13-04 CI/CD]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_04_CICD_Cloud_Apps %})
 - [Lab A]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_01_Lab_Docker_Local %})
 
-## Tài liệu
+## Tài liệu tham khảo
 
-1. Tài liệu OpenTelemetry và thông báo tốt nghiệp CNCF (11/5/2026).
-2. W3C Trace Context.
-3. SRE workbook (công khai); USE (Brendan Gregg); RED.
-4. [infracourse.cloud](https://infracourse.cloud/) — cảm hứng; bài IUH là nguyên tác.
+1. Tài liệu OpenTelemetry và thông báo trạng thái graduated của CNCF (11/5/2026).
+2. Đặc tả W3C Trace Context.
+3. *The Site Reliability Workbook* (công khai); phương pháp USE (Brendan Gregg) và phương pháp RED.
+4. [infracourse.cloud](https://infracourse.cloud/) — nguồn tham khảo cách tiếp cận; nội dung bài học IUH được biên soạn độc lập.
