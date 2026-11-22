@@ -275,7 +275,9 @@ All providers offer managed big data services:
 
 ### Availability Zones
 
+<div class="textbook-definition" markdown="1">
 **Definition**: Physically separate locations within each region
+</div>
 
 **Purpose**: Tolerance to local failures
 - Earthquakes
