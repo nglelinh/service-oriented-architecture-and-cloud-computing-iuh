@@ -9,15 +9,15 @@ categories:
 - chapter09
 ---
 
-Lý thuyết bắt buộc của **Chương 09 (Kubernetes)** hiện có bản tiếng Anh. Lộ trình tiếng Việt chỉ thêm **một bài ứng dụng tùy chọn**.
+Phần lý thuyết bắt buộc của **Chương 09 (Kubernetes)** hiện được trình bày bằng tiếng Anh. Lộ trình tiếng Việt ở chương này bổ sung **một bài ứng dụng tùy chọn**.
 
 - [09-04 Service mesh, Gateway API và mạng eBPF]({{ site.baseurl }}{% multilang_post_url contents/chapter09/21-01-01-09_04_Service_Mesh_and_Gateway_API %})
-- Bài Services/Deployments tiếng Anh có thêm mục **rolling và canary**.
+- Bài Services và Deployments ở bản tiếng Anh có bổ sung phần so sánh chiến lược cập nhật **rolling và canary**.
 - [Lộ trình triển khai]({{ site.baseurl }}/contents/vi/chapter15/)
 - [Bản tiếng Anh của chương]({{ site.baseurl }}/contents/en/chapter09/)
 
 ## Video tham khảo
 
-- **xem trước:** [Kubernetes là gì \| giải thích siêu dễ hiểu bằng hình ảnh trong 10 phút](https://www.youtube.com/watch?v=fbsBWQHxcpw) — Nguyen Duc Hoang, tiếng Việt. Xem trước Kubernetes bằng tiếng Việt với hình, vì lý thuyết bắt buộc của chương vẫn ở tiếng Anh.
-- [Istio & Service Mesh - simply explained in 15 mins](https://www.youtube.com/watch?v=16fgzklcF7Y) — TechWorld with Nana, tiếng Anh. Trang tiếng Việt trỏ sang service mesh; đây là giải thích Istio khoảng mười lăm phút.
-- [What is Cilium?](https://www.youtube.com/watch?v=ELyib78vjRY) — eBPF & Cilium Community, tiếng Anh. Cilium là gì, ví dụ mạng eBPF trong cùng bài tùy chọn.
+- **Xem trước:** [Kubernetes là gì \| giải thích siêu dễ hiểu bằng hình ảnh trong 10 phút](https://www.youtube.com/watch?v=fbsBWQHxcpw) — Nguyen Duc Hoang (tiếng Việt). Giới thiệu trực quan các khái niệm Kubernetes bằng tiếng Việt trước khi đọc phần lý thuyết tiếng Anh.
+- [Istio & Service Mesh - simply explained in 15 mins](https://www.youtube.com/watch?v=16fgzklcF7Y) — TechWorld with Nana (tiếng Anh). Giải thích hoạt động của Istio và service mesh trong khoảng 15 phút.
+- [What is Cilium?](https://www.youtube.com/watch?v=ELyib78vjRY) — eBPF & Cilium Community (tiếng Anh). Giới thiệu Cilium — ví dụ tiêu biểu cho hạ tầng mạng dựa trên eBPF trong bài tùy chọn.

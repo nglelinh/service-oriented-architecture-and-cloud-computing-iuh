@@ -10,30 +10,30 @@ categories:
 lesson_type: optional
 ---
 
-Chương bắt buộc định nghĩa nền tảng, pipeline và xử lý Lambda/Kappa. Bài tùy chọn này là ứng dụng **lakehouse mở** 2022–2026: một bản sao dữ liệu trên object storage, metadata bảng **Iceberg/Delta/Hudi**, và nhiều engine (Spark, Flink, Trino, kho SaaS) chia **catalog REST**.
+Phần bắt buộc của chương đã trình bày kiến trúc nền tảng dữ liệu lớn, pipeline và mô hình xử lý Lambda/Kappa. Bài tùy chọn này đi vào mô hình **lakehouse mở** giai đoạn 2022–2026: lưu trữ một bản sao dữ liệu duy nhất trên object storage, quản lý siêu dữ liệu bằng định dạng bảng mở (**Iceberg, Delta Lake, Hudi**) và cho phép nhiều engine (Spark, Flink, Trino, kho dữ liệu SaaS) truy cập chung thông qua **catalog REST**.
 
-> Lý thuyết bắt buộc đang ở bản tiếng Anh. Đây là phần ứng dụng tùy chọn bằng tiếng Việt.
+> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
 ## Mục tiêu học tập
 
-- Giải thích “ghi một lần, đọc ở nhiều engine” như kiến trúc nền tảng, không phải trivia định dạng tệp.
-- Đặt catalog REST Apache Polaris / Iceberg vào củ hành ingestion–lưu trữ–xử lý–truy vấn.
-- Đối chiếu lô/luồng lakehouse với nền tảng chỉ-kho độc quyền.
+- Hiểu nguyên lý "ghi một lần, đọc bằng nhiều engine" ở tầm kiến trúc nền tảng thay vì chỉ là chi tiết định dạng tệp.
+- Đặt catalog REST (như Apache Polaris hoặc Iceberg REST Catalog) vào đúng vị trí trong kiến trúc nhiều lớp: thu thập (ingestion) – lưu trữ – xử lý – truy vấn.
+- So sánh kiến trúc lakehouse hỗ trợ đồng thời lô và luồng với nền tảng kho dữ liệu độc quyền.
 
-## 1. Hợp đồng nền tảng chuyển sang bảng
+## 1. Hợp đồng nền tảng dịch chuyển sang tầng bảng mở
 
-Hợp đồng nền tảng Hadoop 2015 là “HDFS + Hive Metastore + YARN.” Hợp đồng 2025 gần hơn với:
+Nếu hợp đồng nền tảng Hadoop năm 2015 xoay quanh "HDFS + Hive Metastore + YARN", thì mô hình phổ biến năm 2025 được tổ chức thành bốn lớp tách biệt:
 
-1. **Object storage** (S3/GCS/ADLS) như lớp bền.
-2. **Định dạng bảng mở** (Iceberg, Delta Lake, Hudi) cho snapshot, tiến hóa lược đồ và xóa.
-3. **Catalog** hiện thực spec REST Iceberg để Spark, Trino và Flink thấy cùng bảng.
-4. **Engine** đổi được mà không copy petabyte.
+1. **Object storage** (S3, GCS, ADLS) đóng vai trò tầng lưu trữ bền vững.
+2. **Định dạng bảng mở** (Iceberg, Delta Lake, Hudi) cung cấp quản lý snapshot, tiến hóa lược đồ (schema evolution) và thao tác xóa dữ liệu.
+3. **Catalog** triển khai chuẩn Iceberg REST Catalog để Spark, Trino và Flink cùng nhìn thấy một trạng thái bảng thống nhất.
+4. **Engine tính toán** có thể thay đổi hoặc kết hợp linh hoạt mà không cần sao chép hàng petabyte dữ liệu.
 
-Snowflake đóng góp **Polaris** (catalog REST Iceberg) cho ASF năm 2024. Databricks mua Tabular (người tạo Iceberg) năm 2024 và ship **Delta UniForm** để bảng Delta trình bày metadata Iceberg. Bài kỹ thuật Capital One 2025 gọi đây là *hội tụ định dạng*: kiến trúc sư nên giả định đọc đa engine.
+Năm 2024, Snowflake đóng góp **Polaris** (catalog REST cho Iceberg) cho Apache Software Foundation; cùng năm, Databricks mua lại Tabular (nhóm sáng lập Iceberg) và phát hành **Delta UniForm** giúp bảng Delta xuất siêu dữ liệu tương thích Iceberg. Bài phân tích kỹ thuật năm 2025 của Capital One gọi xu hướng này là *sự hội tụ định dạng*: kiến trúc sư dữ liệu ngày nay cần thiết kế sẵn cho kịch bản nhiều engine cùng đọc một nguồn dữ liệu.
 
-Khảo sát hệ sinh thái Iceberg 2025 (kết quả 2026) ghi Iceberg là định dạng mở được nêu độc quyền nhiều nhất trong *mẫu đó*, catalog vẫn phân mảnh (Glue, Nessie, S3 Tables, Polaris, …). Dùng khảo sát như **hướng**, không phải một số thị phần.
+Khảo sát hệ sinh thái Iceberg năm 2025 (công bố đầu năm 2026) ghi nhận Iceberg là định dạng bảng mở được nhắc đến nhiều nhất trong *mẫu khảo sát đó*, trong khi lớp catalog vẫn còn phân mảnh (AWS Glue, Nessie, S3 Tables, Polaris...). Nên xem kết quả khảo sát như *tín hiệu về xu hướng*, không phải con số thị phần tuyệt đối.
 
-## 2. Ứng dụng: phân tích đa đám mây không ETL thứ hai
+## 2. Ứng dụng: phân tích đa đám mây không cần thêm lớp ETL sao chép
 
 ```mermaid
 graph TB
@@ -44,7 +44,7 @@ graph TB
   I --> WH[Engine kho qua catalog REST]
 ```
 
-*Ứng dụng* là mart phân tích sản phẩm, không phải thương hiệu SQL. Quản trị (ai được `DELETE` snapshot, vùng nào giữ PII) sống ở catalog + IAM, khớp phần quản trị dữ liệu của bài bắt buộc.
+Giá trị cốt lõi của mô hình nằm ở tầng ứng dụng phân tích sản phẩm, không phụ thuộc vào một hãng cơ sở dữ liệu cụ thể. Cơ chế quản trị (ai có quyền xóa snapshot, vùng nào lưu dữ liệu định danh cá nhân PII) được kiểm soát tập trung tại catalog và IAM, khớp với nội dung quản trị dữ liệu của phần lý thuyết.
 
 ```sql
 SELECT country, count(*) AS n
@@ -53,31 +53,31 @@ WHERE event_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-07'
 GROUP BY 1;
 ```
 
-## 3. Streaming + lô trên một bảng (Kappa có cửa thoát)
+## 3. Kết hợp xử lý luồng và xử lý lô trên cùng một bảng
 
-Kappa nói “luồng là nguồn sự thật.” Thực hành lakehouse: luồng **append** + lô **nén/viết lại** + time-travel để kiểm toán. Vẫn là nền tảng (ingestion, lưu trữ, xử lý, truy vấn) — củ hành của bài bắt buộc — với tính nguyên tử tốt hơn thư mục `/events/2026/09/16/` thô.
+Kiến trúc Kappa xem dòng sự kiện là nguồn sự thật duy nhất. Trong thực hành lakehouse hiện đại, mô hình này thường được kết hợp linh hoạt: nhánh luồng thực hiện **ghi nối tiếp (append)**, còn nhánh lô chạy định kỳ để **nén tệp (compaction) và viết lại**, kèm tính năng quay ngược thời gian (time-travel) phục vụ kiểm toán. Cấu trúc vẫn bám sát bốn tầng nền tảng (thu thập, lưu trữ, xử lý, truy vấn) nhưng bảo đảm tính nguyên tử tốt hơn nhiều so với việc ghi trực tiếp vào thư mục thô dạng `/events/2026/09/16/`.
 
 <div class="content-box insight-box">
-<p><strong>Dữ liệu như sản phẩm.</strong> Bảng Iceberg có chủ, SLO và nhật ký đổi lược đồ gần với <em>dịch vụ</em> SOA hơn thư mục dump. Catalog là registry.</p>
+<p><strong>Dữ liệu như một sản phẩm (Data as a Product).</strong> Một bảng Iceberg có đơn vị sở hữu rõ ràng, có SLO và nhật ký thay đổi lược đồ mang tính chất gần với một <em>dịch vụ</em> trong SOA hơn là một thư mục xuất dữ liệu rời rạc; khi đó catalog đóng vai trò tương đương service registry.</p>
 </div>
 
 ## Thách thức
 
-- Phân mảnh catalog (hai catalog REST là hai nguồn sự thật).
-- Tệp nhỏ và ingest streaming không có job rewrite theo lịch.
-- *Egress* xuyên đám mây khi bảng “mở” nằm trong bucket một hyperscaler.
+- Phân mảnh ở lớp catalog: vận hành hai catalog REST độc lập dễ dẫn đến hai phiên bản trạng thái dữ liệu khác nhau.
+- Phát sinh quá nhiều tệp nhỏ nếu luồng nạp dữ liệu thời gian thực không đi kèm tác vụ nén tệp định kỳ.
+- Chi phí truyền dữ liệu ra ngoài (*egress*) xuyên đám mây khi bảng dùng định dạng "mở" nhưng dữ liệu vật lý vẫn nằm trong bucket của một nhà cung cấp duy nhất.
 
 ## Video tham khảo
 
-- **xem trước:** [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology, tiếng Anh. Xem trước Apache Iceberg là gì, hợp đồng bảng bài nói đã thay cho HDFS cộng Hive.
-- [Apache Iceberg: What It Is and Why Everyone’s Talking About It.](https://www.youtube.com/watch?v=TsmhRZElPvM) — Confluent Developer, tiếng Anh. Vì sao Iceberg xuất hiện trên nhiều engine, cho mục ứng dụng đa engine.
-- [Lambda vs Kappa vs Data Streaming Platform — Which One Wins? \| Modern Data Engineering Pipelines](https://www.youtube.com/watch?v=vOYpLg5uB2g) — Confluent Developer, tiếng Anh. Lô và streaming trên một nền tảng, đúng mục streaming cộng lô trên một bảng.
+- **Xem trước:** [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology (tiếng Anh). Giải thích Apache Iceberg — định dạng bảng mở thay thế mô hình HDFS kết hợp Hive truyền thống.
+- [Apache Iceberg: What It Is and Why Everyone’s Talking About It.](https://www.youtube.com/watch?v=TsmhRZElPvM) — Confluent Developer (tiếng Anh). Phân tích lý do Iceberg hỗ trợ tốt mô hình đa engine.
+- [Lambda vs Kappa vs Data Streaming Platform — Which One Wins? \| Modern Data Engineering Pipelines](https://www.youtube.com/watch?v=vOYpLg5uB2g) — Confluent Developer (tiếng Anh). So sánh xử lý lô và xử lý luồng trên cùng một nền tảng dữ liệu.
 
 ## Bài tập
 
-1. Ánh xạ Hive Metastore + HDFS sang Iceberg REST + object storage. Chế độ lỗi nào còn nguyên?
-2. Thiết kế bảng PII: snapshot nào được rời vùng VN/EU, engine nào được đọc?
-3. Vì sao một nhóm giữ Flink cho ingest và Spark cho backfill trên *cùng* bảng Iceberg?
+1. Ánh xạ từng thành phần của cặp Hive Metastore + HDFS sang cặp Iceberg REST Catalog + object storage, đồng thời chỉ ra những dạng sự cố nào vẫn còn tồn tại.
+2. Thiết kế quy tắc quản trị cho một bảng chứa dữ liệu PII: snapshot nào được phép rời khỏi vùng Việt Nam/EU và những engine nào có quyền đọc?
+3. Giải thích vì sao một tổ chức có thể dùng Flink cho nhánh nạp dữ liệu thời gian thực và dùng Spark cho nhánh backfill trên *cùng một* bảng Iceberg.
 
 ## Tài liệu tham khảo
 
@@ -85,4 +85,4 @@ Kappa nói “luồng là nguồn sự thật.” Thực hành lakehouse: luồn
 2. Databricks, “Delta UniForm”.
 3. Capital One Tech, “Lakehouse Convergence: Delta Lake & Iceberg” (2025).
 4. Data Lakehouse Hub, kết quả khảo sát Iceberg 2025 (2/2026).
-5. Tài liệu sink Apache Flink + Iceberg (mẫu ingest streaming).
+5. Tài liệu sink Apache Flink + Iceberg (mẫu nạp dữ liệu streaming).

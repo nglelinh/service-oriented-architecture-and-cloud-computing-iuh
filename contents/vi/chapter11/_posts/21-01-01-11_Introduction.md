@@ -9,13 +9,13 @@ categories:
 - chapter11
 ---
 
-Lý thuyết bắt buộc của **Chương 11 (thu thập và làm sạch dữ liệu)** hiện có bản tiếng Anh. Lộ trình tiếng Việt chỉ thêm **một bài ứng dụng tùy chọn**.
+Phần lý thuyết bắt buộc của **Chương 11 (Thu thập và làm sạch dữ liệu)** hiện được trình bày bằng tiếng Anh. Lộ trình tiếng Việt ở chương này bổ sung **một bài ứng dụng tùy chọn**.
 
 - [11-02 Hợp đồng dữ liệu, cổng chất lượng và pipeline AI]({{ site.baseurl }}{% multilang_post_url contents/chapter11/21-01-01-11_02_Data_Contracts_and_AI_Pipelines %})
 - [Bản tiếng Anh của chương]({{ site.baseurl }}/contents/en/chapter11/)
 
 ## Video tham khảo
 
-- **xem trước:** [What is Data Cleaning? \| Data Fundamentals for Beginners](https://www.youtube.com/watch?v=WpX2F2BS3Qc) — Alex The Analyst, tiếng Anh. Xem trước làm sạch dữ liệu là gì, việc phần tổng quan nói phân tích phụ thuộc vào.
-- [What is a Data Contract?](https://www.youtube.com/watch?v=-n3OD-ml_k0) — IBM Technology, tiếng Anh. Trang tiếng Việt trỏ hợp đồng dữ liệu; đây là định nghĩa khoảng ba phút của IBM.
-- [Data Cleaning Explained in 1 Video. Missing Values, Outliers & Imputation \| #datascience](https://www.youtube.com/watch?v=MgjxaTqXdRE) — Neural Notes, tiếng Anh. Giá trị thiếu, ngoại lai và imputation trong một lượt làm sạch.
+- **Xem trước:** [What is Data Cleaning? \| Data Fundamentals for Beginners](https://www.youtube.com/watch?v=WpX2F2BS3Qc) — Alex The Analyst (tiếng Anh). Giới thiệu khái niệm làm sạch dữ liệu — nền tảng quyết định chất lượng phân tích.
+- [What is a Data Contract?](https://www.youtube.com/watch?v=-n3OD-ml_k0) — IBM Technology (tiếng Anh). Định nghĩa ngắn gọn về hợp đồng dữ liệu trong khoảng ba phút.
+- [Data Cleaning Explained in 1 Video. Missing Values, Outliers & Imputation \| #datascience](https://www.youtube.com/watch?v=MgjxaTqXdRE) — Neural Notes (tiếng Anh). Tổng hợp xử lý giá trị thiếu, giá trị ngoại lai và kỹ thuật điền khuyết (imputation).

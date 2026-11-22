@@ -10,23 +10,23 @@ categories:
 lesson_type: optional
 ---
 
-Bài bắt buộc đối chiếu client–server, P2P và hướng sự kiện, rồi giới thiệu YARN như hệ điều hành cụm. Bài tùy chọn này cho thấy các *mô hình tính toán* đó trên kiến trúc dịch vụ 2022–2026: **gRPC** cho RPC đồng bộ, **CloudEvents** cho hợp đồng bất đồng bộ, và **Kubernetes** như bộ lập lịch đã thay YARN ngoài các estate Hadoop.
+Phần lý thuyết bắt buộc so sánh các mô hình client–server, ngang hàng (P2P) và hướng sự kiện, đồng thời giới thiệu YARN với vai trò bộ quản lý tài nguyên cụm. Bài tùy chọn này minh họa cách các *mô hình tính toán* đó xuất hiện trong kiến trúc dịch vụ giai đoạn 2022–2026: **gRPC** cho gọi thủ tục từ xa đồng bộ, **CloudEvents** cho giao tiếp bất đồng bộ chuẩn hóa, và **Kubernetes** với vai trò bộ lập lịch cụm phổ biến bên ngoài hệ sinh thái Hadoop truyền thống.
 
-> Lý thuyết bắt buộc đang ở bản tiếng Anh. Đây là phần ứng dụng tùy chọn bằng tiếng Việt.
+> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
 ## Mục tiêu học tập
 
-- Đặt gRPC và CloudEvents lên cùng sơ đồ mô hình với client–server vs hướng sự kiện.
-- Giải thích vì sao Spark Connect (gRPC) là thay đổi mô hình tính toán, không chỉ là tính năng Spark.
-- So sánh ApplicationMaster của YARN với controller Kubernetes mà không viết lại nội bộ YARN.
+- Đặt gRPC và CloudEvents vào đúng vị trí trên phổ mô hình client–server và hướng sự kiện.
+- Giải thích vì sao Spark Connect (dựa trên gRPC) là một thay đổi ở cấp mô hình tính toán chứ không chỉ là tính năng bổ sung của Spark.
+- So sánh vai trò giữa ApplicationMaster của YARN và controller trong Kubernetes.
 
-## 1. SOA đồng bộ: gRPC như stub hiện đại
+## 1. Giao tiếp dịch vụ đồng bộ: gRPC
 
-gRPC (CNCF graduated) là HTTP/2 + Protocol Buffers + stub sinh mã. Vẫn là **client–server**, nhưng có:
+gRPC (dự án CNCF đã đạt trạng thái graduated) kết hợp HTTP/2, Protocol Buffers và cơ chế sinh mã stub tự động. Về bản chất, gRPC vẫn thuộc mô hình **client–server**, nhưng bổ sung các cơ chế quan trọng cho hệ thống phân tán:
 
-- Deadline và hủy (timeout hạng nhất).
-- RPC streaming (client, server, hoặc hai chiều) làm mờ “hỏi/đáp” và “luồng sự kiện.”
-- Kiểu nội dung mà service mesh định tuyến được (Gateway API **GRPCRoute** vào kênh Standard ở v1.1, tháng 5/2024).
+- Hỗ trợ hạn chót (deadline) và hủy yêu cầu (cancellation) ngay ở tầng giao thức.
+- Hỗ trợ RPC dạng luồng (client streaming, server streaming hoặc hai chiều), thu hẹp khoảng cách giữa mô hình hỏi–đáp và luồng sự kiện.
+- Định tuyến trực tiếp ở tầng service mesh và cổng vào (tài nguyên **GRPCRoute** của Kubernetes Gateway API đã vào kênh Standard từ v1.1, tháng 5/2024).
 
 ```protobuf
 syntax = "proto3";
@@ -36,11 +36,11 @@ service ResourceBroker {
 }
 ```
 
-`Allocate` là client–server cổ điển. `WatchAllocations` là luồng sự kiện *trên* RPC. Sinh viên phải nói được mình đang ở mô hình nào trước khi chọn chính sách retry.
+Trong định nghĩa trên, `Allocate` là lời gọi client–server truyền thống, còn `WatchAllocations` truyền luồng sự kiện *trên nền* RPC. Người thiết kế cần xác định rõ mình đang dùng mô hình nào trước khi xây dựng chính sách thử lại (retry).
 
-## 2. SOA bất đồng bộ: CloudEvents và broker
+## 2. Giao tiếp dịch vụ bất đồng bộ: CloudEvents và message broker
 
-[CloudEvents](https://cloudevents.io/) (CNCF) là phong bì chung (`id`, `source`, `type`, `specversion`) để producer và consumer không invent JSON mới mỗi topic.
+[CloudEvents](https://cloudevents.io/) (CNCF) định nghĩa một định dạng phong bì sự kiện chuẩn (`id`, `source`, `type`, `specversion`) để các dịch vụ phát (producer) và nhận (consumer) không phải tự tạo cấu trúc JSON riêng cho từng topic.
 
 ```python
 event = {
@@ -53,48 +53,48 @@ event = {
 }
 ```
 
-Đây là mô hình hướng sự kiện của bài bắt buộc với **tên chuẩn** cho tin nhắn. Khóa idempotency (`id`) là cách sống sót sau retry độc lập — cùng vấn đề tin cậy YARN giải cho tác vụ lô, nay ở lớp *dịch vụ*.
+Đây chính là mô hình hướng sự kiện của phần lý thuyết, kết hợp với **quy ước đặt tên và định dạng chuẩn**. Trường khóa chống trùng lặp (`id`, dùng cho idempotency) giúp dịch vụ xử lý an toàn khi thông điệp bị gửi lại nhiều lần — bài toán đảm bảo độ tin cậy tương tự YARN ở xử lý lô, nay được giải quyết ở tầng *dịch vụ*.
 
-## 3. Ai là hệ điều hành cụm bây giờ?
+## 3. Bộ lập lịch cụm hiện đại
 
-| Quan tâm | Hadoop YARN (bài bắt buộc) | Kubernetes (mặc định những năm 2020) |
+| Khía cạnh | Hadoop YARN (lý thuyết bắt buộc) | Kubernetes (phổ biến thập niên 2020) |
 | --- | --- | --- |
-| Đơn vị công việc | Application / container trên NM | Pod + controller |
-| Bộ lập lịch | RM + hàng đợi | kube-scheduler + priority |
-| Bộ não từng việc | ApplicationMaster | Operator / Job / Spark Driver |
-| Đa framework | MR, Spark, Flink trên một cụm HDFS | Mọi container trên một API |
+| Đơn vị thực thi | Application / container trên NodeManager | Pod và controller |
+| Bộ lập lịch | ResourceManager và hàng đợi | `kube-scheduler` và lớp ưu tiên |
+| Điều phối từng ứng dụng | ApplicationMaster | Operator / Job / Spark Driver |
+| Hỗ trợ đa framework | MapReduce, Spark, Flink trên cùng cụm HDFS | Mọi ứng dụng container hóa trên một API thống nhất |
 
-YARN không biến mất: nhiều nền tảng dữ liệu vẫn lập lịch Spark trên YARN. Nhưng khảo sát CNCF 2024 (công bố 2025) đặt **Kubernetes trên production ở 80%** người trả lời. Ý tưởng đã học — tách **thương lượng tài nguyên** khỏi **logic ứng dụng** — chuyển sang control plane khác.
+YARN vẫn được duy trì trong nhiều nền tảng dữ liệu lớn hiện có. Tuy nhiên, theo khảo sát CNCF 2024 (công bố năm 2025), **80%** tổ chức đã chạy Kubernetes trên môi trường sản xuất. Nguyên lý cốt lõi đã học — tách bạch **điều phối tài nguyên** khỏi **logic ứng dụng** — vẫn giữ nguyên và được chuyển sang control plane của Kubernetes.
 
-**Spark Connect** (Apache Spark 3.4+, củng cố ở **Spark 4.0.0**, 23/5/2025) làm sự tách này thành nghĩa đen: tiến trình người dùng là client gRPC mỏng; cụm giữ Spark session.
+**Spark Connect** (ra mắt từ Apache Spark 3.4 và củng cố ở **Spark 4.0.0**, ngày 23/5/2025) hiện thực hóa triệt để sự tách bạch này: tiến trình người dùng chỉ là một client gRPC gọn nhẹ, còn toàn bộ Spark session chạy tập trung trên cụm.
 
-## 4. Hướng dẫn quyết định ngắn
+## 4. Nguyên tắc lựa chọn nhanh
 
-1. Cần câu trả lời ngay với hạn chót? **gRPC / HTTP** (client–server).
-2. Cần phản ứng với sự kiện đã xảy ra? **CloudEvent + broker** (hướng sự kiện).
-3. Cần đặt CPU/GPU/bộ nhớ vài phút đến vài giờ? **Bộ lập lịch** (YARN hoặc Kubernetes).
+1. Cần phản hồi ngay kèm hạn chót rõ ràng? Chọn **gRPC / HTTP** (client–server).
+2. Cần phản ứng bất đồng bộ trước các sự kiện đã xảy ra? Chọn **CloudEvents + broker** (hướng sự kiện).
+3. Cần cấp phát CPU/GPU/bộ nhớ cho tác vụ kéo dài từ vài phút đến nhiều giờ? Dùng **bộ lập lịch cụm** (YARN hoặc Kubernetes).
 
 <div class="content-box insight-box">
-<p><strong>Phản mẫu.</strong> Dùng bus tin nhắn như RPC đồng bộ (“chờ sự kiện trả lời”) mà không timeout là tái tạo client–server với khả năng gỡ lỗi tệ hơn. Cần RPC thì dùng RPC.</p>
+<p><strong>Mô hình cần tránh (anti-pattern).</strong> Sử dụng hàng đợi thông điệp như cơ chế RPC đồng bộ ("gửi tin rồi ngồi chờ sự kiện phản hồi") mà không thiết lập timeout thực chất chỉ là tái tạo mô hình client–server nhưng khó gỡ lỗi hơn. Khi bài toán cần RPC đồng bộ, hãy dùng thẳng RPC.</p>
 </div>
 
 ## Thách thức
 
-- Hiệu ứng nghiệp vụ exactly-once vẫn cần consumer idempotent; hầu hết cloud broker chỉ cho at-least-once.
-- gRPC qua trình duyệt/Internet công cộng thường cần proxy (Connect/gRPC-Web, Gateway API).
-- Chạy cả YARN và Kubernetes trong một tổ chức tạo hai hàng đợi, hai mô hình định danh.
+- Đảm bảo hiệu ứng nghiệp vụ "xử lý đúng một lần" (exactly-once) vẫn đòi hỏi consumer có tính lũy đẳng (idempotent), vì đa số cloud broker chỉ cam kết gửi ít nhất một lần (at-least-once).
+- Dùng gRPC trực tiếp từ trình duyệt qua Internet công cộng thường cần lớp chuyển đổi trung gian (như Connect, gRPC-Web hoặc Gateway API).
+- Vận hành song song cả YARN và Kubernetes trong cùng tổ chức dẫn đến hai hệ thống hàng đợi và hai mô hình quản lý định danh khác nhau.
 
 ## Video tham khảo
 
-- **xem trước:** [gRPC in 5 minutes \| Eric Anderson & Ivy Zhuang, Google](https://www.youtube.com/watch?v=njC24ts24Pg) — gRPC, tiếng Anh. Xem trước gRPC trong năm phút từ chính dự án, cho mục SOA đồng bộ.
-- [What is the Cloud Events Specification & Why You Should Care!](https://www.youtube.com/watch?v=Sjw0PFwTvek) — James Eastham, tiếng Anh. Đặc tả CloudEvents là gì, cho mục hợp đồng bất đồng bộ.
-- [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech, tiếng Anh. Kubernetes là bộ lập lịch cụm mà bài nói đã thế chỗ YARN ngoài các hệ Hadoop.
+- **Xem trước:** [gRPC in 5 minutes \| Eric Anderson & Ivy Zhuang, Google](https://www.youtube.com/watch?v=njC24ts24Pg) — gRPC (tiếng Anh). Tóm tắt gRPC trong năm phút, phục vụ mục SOA đồng bộ.
+- [What is the Cloud Events Specification & Why You Should Care!](https://www.youtube.com/watch?v=Sjw0PFwTvek) — James Eastham (tiếng Anh). Giải thích đặc tả CloudEvents cho mục hợp đồng sự kiện bất đồng bộ.
+- [What is Kubernetes?](https://www.youtube.com/watch?v=cC46cg5FFAM) — Google Cloud Tech (tiếng Anh). Giới thiệu Kubernetes — bộ lập lịch cụm phổ biến thay thế YARN ngoài hệ sinh thái Hadoop.
 
 ## Bài tập
 
-1. Phân loại năm lời gọi trong ứng dụng gọi xe (báo giá, luồng vị trí tài xế, chuyến xong, email hóa đơn, điểm gian lận) thành RPC vs sự kiện.
-2. Viết proto khoảng 10 dòng cho `WatchAllocations` và liệt kê hai chế độ lỗi của stream mà unary RPC không có.
-3. Một đoạn văn: ánh xạ ApplicationMaster của YARN sang `Job` Kubernetes + driver Spark Connect.
+1. Phân loại năm tương tác trong một ứng dụng gọi xe (tính giá cước, luồng cập nhật vị trí tài xế, hoàn tất chuyến đi, gửi email hóa đơn, chấm điểm gian lận) thành lời gọi RPC đồng bộ hoặc sự kiện bất đồng bộ.
+2. Viết đoạn định nghĩa `.proto` khoảng 10 dòng cho `WatchAllocations` và nêu hai dạng lỗi đặc thù của RPC streaming không xuất hiện ở unary RPC.
+3. Viết một đoạn ngắn so sánh vai trò giữa ApplicationMaster của YARN với sự kết hợp của Kubernetes `Job` và driver Spark Connect.
 
 ## Tài liệu tham khảo
 

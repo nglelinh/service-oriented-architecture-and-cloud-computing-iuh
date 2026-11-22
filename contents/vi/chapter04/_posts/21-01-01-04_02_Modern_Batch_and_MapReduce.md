@@ -10,19 +10,19 @@ categories:
 lesson_type: optional
 ---
 
-Mô hình lập trình MapReduce (map, shuffle, reduce, chạy lại khi lỗi) vẫn là mô hình tư duy cho **xử lý lô**. Điều đổi trong 2022–2026 là *shuffle sống ở đâu* và *engine nào* chạy: Spark, Flink batch, BigQuery/Dataflow, và bảng **lakehouse mở** khiến job lô chỉ là thêm một reader của cùng tệp.
+Mô hình tư duy của MapReduce (map, shuffle, reduce và chạy lại khi gặp lỗi) vẫn là nền tảng của **xử lý lô (batch processing)**. Điểm thay đổi trong giai đoạn 2022–2026 nằm ở *vị trí thực hiện bước shuffle* và *engine thực thi*: Spark, Flink ở chế độ batch, BigQuery/Dataflow cùng các định dạng bảng **lakehouse mở** giúp mỗi tác vụ lô chỉ cần đọc trực tiếp từ cùng một kho tệp chung.
 
-> Lý thuyết bắt buộc đang ở bản tiếng Anh. Đây là phần ứng dụng tùy chọn bằng tiếng Việt.
+> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
 ## Mục tiêu học tập
 
-- Nhận ra hậu duệ MapReduce trong dịch vụ lô đám mây và job nén lakehouse.
-- Đối chiếu “viết lớp Mapper” với lô SQL/DataFrame vẫn shuffle.
-- Giải thích vì sao lô không chết khi streaming phổ biến (Lambda/Kappa, rewrite Iceberg).
+- Nhận diện các nguyên lý kế thừa từ MapReduce trong dịch vụ xử lý lô đám mây và tác vụ nén dữ liệu (compaction) của lakehouse.
+- So sánh cách viết lớp `Mapper` thủ công với truy vấn SQL/DataFrame hiện đại (vốn vẫn thực hiện shuffle bên dưới).
+- Giải thích vì sao xử lý lô vẫn giữ vai trò thiết yếu ngay cả khi xử lý luồng (streaming) trở nên phổ biến (kiến trúc Lambda/Kappa, tác vụ viết lại tệp Iceberg).
 
-## 1. Mô hình không biến mất — nó có trình biên dịch
+## 1. Mô hình không biến mất — nó được nâng cấp lớp biên dịch
 
-SQL Spark hoặc BigQuery 2025 như `SELECT country, COUNT(*) FROM events GROUP BY country` vẫn là MapReduce: tổng hợp cục bộ, shuffle theo `country`, tổng hợp cuối. Word Count của bài bắt buộc là cùng DAG với cú pháp dễ hơn.
+Một truy vấn Spark SQL hoặc BigQuery như `SELECT country, COUNT(*) FROM events GROUP BY country` về bản chất vẫn vận hành theo mẫu MapReduce: tổng hợp cục bộ trên từng phân vùng, thực hiện shuffle theo khóa `country`, rồi tổng hợp kết quả cuối cùng. Bài toán Word Count trong phần lý thuyết bắt buộc có cùng cấu trúc đồ thị thực thi (DAG), chỉ khác ở cú pháp biểu đạt ngắn gọn hơn.
 
 ```python
 from collections import Counter
@@ -37,59 +37,59 @@ def reduce_counts(pairs):
     return c
 ```
 
-Điều *thật sự* đổi: **chịu lỗi** thường là “tính lại partition mất từ lineage hoặc snapshot bảng” hơn là “chạy lại Mapper Java trên một split HDFS.” Object storage cộng **Apache Iceberg / Delta Lake** cho commit nguyên tử để job lô lỗi không để lại thư mục Hive viết dở.
+Thay đổi *thực chất* nằm ở cơ chế **chịu lỗi**: thay vì khởi chạy lại lớp Mapper Java trên một khối tách (split) của HDFS, hệ thống hiện đại tính lại phân vùng bị mất dựa trên đồ thị nguồn gốc (lineage) hoặc trạng thái snapshot của bảng. Lưu trữ đối tượng (object storage) kết hợp với **Apache Iceberg** hoặc **Delta Lake** cung cấp cơ chế ghi nguyên tử (atomic commit), đảm bảo một tác vụ lô gặp sự cố giữa chừng không để lại thư mục dữ liệu ghi dở như mô hình Hive trước đây.
 
-## 2. Ứng dụng lô native-đám mây
+## 2. Các mẫu ứng dụng xử lý lô thuần đám mây
 
-| Mẫu | Hadoop những năm 2010 | Ví dụ 2022–2026 |
+| Mẫu bài toán | Hệ sinh thái Hadoop thập niên 2010 | Thực tế giai đoạn 2022–2026 |
 | --- | --- | --- |
-| ETL đêm | MR + Oozie | Job Spark/Flink trên Kubernetes hoặc EMR/Dataproc |
-| SQL lớn | Hive trên MR | BigQuery, Snowflake, Spark SQL trên Iceberg |
-| Pipeline di động | Khóa nhà cung cấp | Runner Apache Beam (Dataflow, Flink, Spark) |
-| Nén/sắp tệp | `fsimage` + MR | Iceberg rewrite / Delta OPTIMIZE |
+| ETL chạy định kỳ ban đêm | MapReduce + Oozie | Tác vụ Spark/Flink trên Kubernetes hoặc EMR/Dataproc |
+| Truy vấn SQL quy mô lớn | Hive trên MapReduce | BigQuery, Snowflake, Spark SQL trên Iceberg |
+| Pipeline di động giữa các engine | Phụ thuộc từng nhà cung cấp | Apache Beam với nhiều runner (Dataflow, Flink, Spark) |
+| Nén và sắp xếp tệp | `fsimage` + MapReduce | Iceberg rewrite / Delta `OPTIMIZE` |
 
-**Apache Beam** giữ ý tưởng *di động* của MapReduce: một pipeline, nhiều runner. Google Cloud Dataflow là runner quản lý. Netflix (nguồn gốc Iceberg), Apple và nhiều ngân hàng vẫn chạy **lô nhiều giờ** vì khóa sổ, backfill đặc trưng và xóa GDPR vốn bị chặn (bounded). Streaming không xóa các job đó; nó thêm đồng hồ thứ hai.
+**Apache Beam** duy trì triết lý *di động* của MapReduce: viết một pipeline duy nhất và chạy trên nhiều runner khác nhau, trong đó Google Cloud Dataflow là dịch vụ quản lý phổ biến. Nhiều tổ chức như Netflix (nơi khởi nguồn Iceberg), Apple hay các ngân hàng vẫn duy trì các **tác vụ lô kéo dài nhiều giờ** cho bài toán khóa sổ kế toán, tính lại đặc trưng lịch sử (backfill) và xóa dữ liệu theo yêu cầu GDPR — những bài toán vốn thao tác trên tập dữ liệu hữu hạn (bounded). Xử lý luồng không thay thế hoàn toàn xử lý lô mà bổ sung thêm một nhánh thời gian thực song song.
 
-## 3. Lô lakehouse: MapReduce trên bảng mở
+## 3. Xử lý lô trong lakehouse: MapReduce trên định dạng bảng mở
 
-Định dạng bảng mở biến object storage thành thứ reducer có thể tin:
+Các định dạng bảng mở biến kho lưu trữ đối tượng thành tầng dữ liệu tin cậy cho các bước tổng hợp:
 
-- **Cô lập snapshot** — reader thấy phiên bản đã commit.
-- **Phân vùng ẩn** — không tự viết `dt=2026-09-16` trong mọi Mapper.
-- **Nén** — tệp nhỏ từ ingest streaming được *viết lại theo lô* (merge phía reduce cổ điển).
+- **Cô lập theo snapshot:** Tiến trình đọc luôn nhìn thấy một phiên bản dữ liệu nhất quán đã được commit.
+- **Phân vùng ẩn (hidden partitioning):** Không còn phải ghi cứng cấu trúc thư mục kiểu `dt=2026-09-16` trong mã xử lý.
+- **Nén tệp (compaction):** Hàng loạt tệp nhỏ sinh ra từ luồng nạp dữ liệu thời gian thực được *gom và viết lại theo lô* — một dạng gộp ở pha reduce kinh điển.
 
-Khảo sát cộng đồng Iceberg 2025 (kết quả 2026) ghi Iceberg là định dạng mở được nêu nhiều nhất trong *mẫu đó*, với Spark và Trino là engine phổ biến. Coi đó là *bằng chứng cộng đồng*, không phải thị phần toàn cầu.
+Khảo sát cộng đồng Iceberg năm 2025 (công bố đầu năm 2026) ghi nhận Iceberg là định dạng bảng mở được nhắc đến nhiều nhất trong *mẫu khảo sát đó*, với Spark và Trino là hai engine truy vấn phổ biến. Cần xem đây là *dữ liệu phản ánh xu hướng cộng đồng* chứ không phải số liệu thị phần toàn cầu.
 
 <div class="content-box insight-box">
-<p><strong>Shuffle là thuế.</strong> Dù trả bằng container YARN hay executor Kubernetes, <code>GROUP BY</code> rộng và join vẫn thống trị chi phí. Kỹ năng ứng dụng là giảm khóa shuffle và số tệp — không phải bỏ từ vựng MapReduce.</p>
+<p><strong>Shuffle vẫn là chi phí lớn nhất.</strong> Dù chạy trên container YARN hay executor của Kubernetes, các phép <code>GROUP BY</code> rộng và phép nối (join) lớn vẫn chiếm phần lớn chi phí tính toán và mạng. Kỹ năng thực tế quan trọng là giảm lượng dữ liệu phải shuffle và kiểm soát số lượng tệp nhỏ, chứ không phải bỏ qua mô hình tư duy MapReduce.</p>
 </div>
 
-## 4. Mini case: xóa GDPR như reduce lô
+## 4. Tình huống ngắn: xóa dữ liệu GDPR như một tác vụ reduce lô
 
-1. **Map**: đọc tombstone user-id (nhỏ) và partition sự kiện (lớn).
-2. **Shuffle**: co-group theo `user_id` (hoặc broadcast tập tombstone nếu vừa bộ nhớ).
-3. **Reduce**: ghi snapshot Iceberg mới không còn các hàng đó.
-4. **Chịu lỗi**: writer chết thì snapshot trước vẫn đọc được.
+1. **Map:** Đọc danh sách mã người dùng cần xóa (tombstone, kích thước nhỏ) và các phân vùng sự kiện (kích thước lớn).
+2. **Shuffle:** Gom nhóm theo `user_id` (hoặc broadcast danh sách cần xóa nếu đủ nhỏ để nằm gọn trong bộ nhớ).
+3. **Reduce:** Ghi ra một snapshot Iceberg mới đã loại bỏ các bản ghi tương ứng.
+4. **Chịu lỗi:** Nếu tiến trình ghi gặp sự cố, các tiến trình đọc vẫn tiếp tục đọc an toàn từ snapshot trước đó.
 
-Đó là câu chuyện chạy lại của bài bắt buộc, áp vào job tuân thủ những năm 2020.
+Đây chính là cơ chế chạy lại an toàn của MapReduce trong phần lý thuyết, được áp dụng vào bài toán tuân thủ pháp lý hiện đại.
 
 ## Thách thức
 
-- Bùng nổ tệp nhỏ khi ingest streaming không bao giờ chạy nén lô.
-- Nhóm “chỉ SQL” không giải thích được lệch dữ liệu cho đến khi hóa đơn tới.
-- Sink “exactly-once” thực ra là “at-least-once + merge idempotent.”
+- Gia tăng đột biến số lượng tệp nhỏ nếu luồng nạp dữ liệu thời gian thực không chạy kèm tác vụ nén lô định kỳ.
+- Các nhóm chỉ viết SQL thuần thường khó phát hiện tình trạng lệch phân bố dữ liệu (data skew) cho đến khi chi phí tính toán tăng vọt.
+- Cam kết ghi "đúng một lần" (exactly-once) trên thực tế thường được xây dựng từ cơ chế "ít nhất một lần" (at-least-once) kết hợp phép gộp có tính lũy đẳng (idempotent merge).
 
 ## Video tham khảo
 
-- **xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks, tiếng Anh. Xem trước Spark là engine vẫn chạy hình dạng map/shuffle/reduce, đúng ý mô hình được biên dịch.
-- [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology, tiếng Anh. Apache Iceberg, bảng mở bài dùng cho lô lakehouse trên object storage.
-- [Big Data Architecture Patterns \| Lambda vs Kappa Architecture](https://www.youtube.com/watch?v=waDJcSCXz_Y) — Software Architecture Academy, tiếng Anh. Lambda đối chiếu Kappa, để đường lô và đường luồng trong bài là hai kiến trúc khác nhau.
+- **Xem trước:** [What is Apache Spark?](https://www.youtube.com/watch?v=p8FGC49N-zM) — Databricks (tiếng Anh). Giới thiệu Spark — engine vẫn thực thi luồng map/shuffle/reduce dưới lớp tối ưu hóa hiện đại.
+- [What is Apache Iceberg?](https://www.youtube.com/watch?v=6tjSVXpHrE8) — IBM Technology (tiếng Anh). Giải thích Apache Iceberg — định dạng bảng mở phục vụ xử lý lô trên object storage.
+- [Big Data Architecture Patterns \| Lambda vs Kappa Architecture](https://www.youtube.com/watch?v=waDJcSCXz_Y) — Software Architecture Academy (tiếng Anh). So sánh kiến trúc Lambda và Kappa, làm rõ vai trò song hành của nhánh lô và nhánh luồng.
 
 ## Bài tập
 
-1. Viết lại Word Count bằng Spark SQL và đánh dấu biên shuffle.
-2. Ước lượng join đêm 2 TB nên dùng broadcast map-side hay shuffled reduce-side (nêu giả định bộ nhớ).
-3. Thiết kế chính sách retry cho pipeline Beam ghi Iceberg: cái gì chạy lại được an toàn?
+1. Viết lại bài toán Word Count bằng Spark SQL và chỉ rõ bước nào phát sinh ranh giới shuffle.
+2. Đánh giá xem một phép nối (join) dữ liệu 2 TB chạy ban đêm nên dùng broadcast map-side join hay shuffled reduce-side join (nêu rõ giả định về dung lượng bộ nhớ).
+3. Thiết kế chính sách thử lại (retry) cho một pipeline Apache Beam ghi vào bảng Iceberg và xác định những bước nào có thể chạy lại an toàn.
 
 ## Tài liệu tham khảo
 

@@ -9,7 +9,7 @@ categories:
 - chapter13
 ---
 
-Lý thuyết bắt buộc của **Chương 13 (triển khai và bảo mật)** hiện có bản tiếng Anh. Lộ trình tiếng Việt có các bài ứng dụng / độ sâu tùy chọn.
+Phần lý thuyết bắt buộc của **Chương 13 (Triển khai và Bảo mật)** hiện được trình bày bằng tiếng Anh. Lộ trình tiếng Việt ở chương này cung cấp ba bài học ứng dụng và chuyên sâu tùy chọn:
 
 - [13-02 Bảo mật chuỗi cung ứng, SLSA và quan sát production]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_02_Supply_Chain_Security_and_Observability %})
 - [13-03 Quan sát sâu — log, metric, trace, OpenTelemetry]({{ site.baseurl }}{% multilang_post_url contents/chapter13/21-01-01-13_03_Observability_Depth %})
@@ -19,6 +19,6 @@ Lý thuyết bắt buộc của **Chương 13 (triển khai và bảo mật)** h
 
 ## Video tham khảo
 
-- **xem trước:** [CI/CD Explained in 5 Minutes](https://www.youtube.com/watch?v=ddDJxFnv-qs) — TechWorld with Nana, tiếng Anh. CI/CD trong năm phút, ý tưởng pipeline lời mở nói giúp giảm lỗi người.
-- [SLSA: Industry-Driven Guidelines for Software Supply Chain Security \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=gdYlSuH5Srs) — OpenSSF, tiếng Anh. SLSA, vì trang tiếng Việt trỏ tiếp sang bài chuỗi cung ứng.
-- [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], tiếng Anh. OpenTelemetry trong năm phút, bài quan sát mà lời mở này cũng liên kết.
+- **Xem trước:** [CI/CD Explained in 5 Minutes](https://www.youtube.com/watch?v=ddDJxFnv-qs) — TechWorld with Nana (tiếng Anh). Tóm tắt quy trình CI/CD trong năm phút, giúp tự động hóa phát hành và giảm sai sót thủ công.
+- [SLSA: Industry-Driven Guidelines for Software Supply Chain Security \| OpenSSF Project Spotlight](https://www.youtube.com/watch?v=gdYlSuH5Srs) — OpenSSF (tiếng Anh). Giới thiệu khung bảo mật chuỗi cung ứng phần mềm SLSA được trình bày trong bài 13-02.
+- [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation] (tiếng Anh). Giới thiệu OpenTelemetry trong năm phút, nền tảng cho bài 13-03.
