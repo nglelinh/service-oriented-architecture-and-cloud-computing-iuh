@@ -12,6 +12,36 @@ lesson_type: required
 
 Big Data has become a cornerstone of modern computing, enabling organizations to extract insights from massive datasets that were previously impossible to process. This lecture covers the fundamentals of big data and the platforms that make big data processing possible.
 
+When your dataset is 500 MB, a single laptop with Python and SQLite finishes an aggregation before your coffee cools. When your dataset hits **50 terabytes** of clickstreams, IoT telemetry, or financial transactions, the bottleneck is no longer CPU clock speed—it is the physical speed of moving bytes off disk and across a network cable. **Big Data platforms** (Hadoop/HDFS, MapReduce, Apache Spark, and distributed streaming engines) were invented around one revolutionary inversion: *stop moving massive data to the compute server; instead, ship tiny compute code directly to the machines already holding the data blocks*.
+
+## Background Knowledge Map: Distributed Storage, Data Locality, and Parallel Compute
+
+### 1. The 5 Vs and Distributed File Systems (HDFS / Object Storage)
+Volume, Velocity, Variety, Veracity, and Value break vertical scaling (buying a bigger single server). Distributed file systems like **HDFS** slice giant files into large contiguous blocks (typically **128 MB** each) and replicate every block across multiple racks (default replication factor **3**) for fault tolerance and parallel sequential disk reads. Modern cloud architectures often decouple storage into object stores (S3/GCS/ADLS) while preserving the same partitioned, immutable-file layout.
+
+### 2. MapReduce vs. In-Memory DAG Execution (Apache Spark)
+Classic **MapReduce** forced every stage to write intermediate results back to disk, making iterative machine learning and multi-join SQL painfully slow. **Apache Spark** compiles jobs into a **Directed Acyclic Graph (DAG)** of transformations on Resilient Distributed Datasets (RDDs)/DataFrames, pipelining narrow transformations in RAM and only crossing the network during **wide transformations** (shuffles like `groupBy` or `join`).
+
+### 3. The Shuffle Bottleneck: Why Network I/O Dominates Distributed Jobs
+In any distributed compute engine, local filtering and projection scale almost linearly as you add workers. The moment a query requires a **shuffle** (re-partitioning keys across nodes), every executor must serialize, compress, transmit over the network, and re-sort gigabytes of data. Tuning Big Data jobs is largely the art of minimizing shuffle volume.
+
+### Deep-Dive Explanation: Hand-Calculating HDFS Storage Footprint, Block Parallelism, and Shuffle Time (Read Slowly)
+
+Suppose an e-commerce platform stores **10 TB ($$10{,}240\text{ GiB}$$)** of raw clickstream logs in an HDFS cluster with block size **128 MiB** and replication factor **3**:
+
+1. **Raw disk capacity required:**
+   $$10\text{ TB} \times 3\text{ replicas} = 30\text{ TB of physical disk storage}.$$
+
+2. **Number of HDFS blocks (maximum map-stage parallelism):**
+   Since $$1\text{ GiB} = 1{,}024\text{ MiB}$$, each GiB holds $$1{,}024 / 128 = 8$$ blocks:
+   $$\text{Total blocks} = 10{,}240 \times 8 = 81{,}920\text{ blocks}.$$
+   On a Spark cluster with **100 executor cores**, each core processes roughly $$81{,}920 / 100 \approx 819\text{ blocks}$$ sequentially in parallel waves.
+
+3. **Now calculate the Shuffle penalty:**
+   Suppose a `GROUP BY user_id` query shuffles **2 TB ($$2 \times 10^{12}\text{ bytes}$$)** of intermediate data across a cluster network whose aggregate bisection bandwidth is **10 Gbps ($$10^{10}\text{ bits/s}$$)** (ignoring compression for a lower-bound intuition check):
+   $$\text{Transfer time} = \frac{2 \times 10^{12}\text{ bytes} \times 8\text{ bits/byte}}{10^{10}\text{ bits/s}} = 1{,}600\text{ seconds} \approx 26.7\text{ minutes!}$$
+   If you instead pre-aggregate locally on each worker (**map-side combiner**) and cut shuffle volume by **10×** (down to 200 GB), network transfer plunges from **26.7 minutes to 2.7 minutes**—without buying a single extra CPU!
+
 ## What is Big Data?
 
 ### Definition

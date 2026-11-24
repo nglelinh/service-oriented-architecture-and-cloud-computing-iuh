@@ -18,6 +18,37 @@ The required stack (Spark SQL, Structured Streaming, optional MLlib) is enough t
 - Describe a Kappa-style path that still uses batch Spark for backfills.
 - Sketch Structured Streaming output as an Iceberg/Delta table consumed by many engines.
 
+A common rookie mistake in cloud AI projects is wiring a customer's checkout HTTP request directly into an Apache Spark job—and watching page load time explode to 4 seconds! Production 2023–2026 ML systems run on **two completely separate clocks**: a fast **online request path** (Feature Store + gRPC Model Server answering in ~25 ms) and an asynchronous **event-driven Spark/Kafka path** that continuously updates rolling features and lakehouse training tables in the background.
+
+## Background Knowledge Map: Two-Clock Event-Driven ML Architecture
+
+1. **The Online Serving Clock (Milliseconds):** User requests hit an API gateway → fetch precomputed low-latency features from an **Online Feature Store** (Redis/DynamoDB) → call a dedicated **Model Server** (KServe, Triton, vLLM over gRPC) → return prediction in < 50 ms. Spark is *never* on this hot path!
+2. **The Asynchronous Streaming Clock (Seconds):** Every click, payment, or sensor ping publishes a **CloudEvent** to Kafka; **Spark Structured Streaming** (or Flink) computes rolling aggregates (e.g., *"transactions in last 5 minutes"*) and writes them both to the Online Feature Store and to an **Offline Lakehouse** (Iceberg/Delta).
+3. **Avoiding Training–Serving Skew:** Using the exact same feature definition for both offline Iceberg backfills and online Redis updates ensures the model sees identical distributions at training and inference time.
+
+### Worked Example (Step by Step): End-to-End Latency Budget for Real-Time Fraud Scoring
+
+A payments API has a strict **50 ms p99 latency SLA** at checkout:
+
+| Hop on the Online Request Path | Component | p99 Latency |
+|---|---|---|
+| 1. Auth + Request validation | API Gateway | $$5	ext{ ms}$$ |
+| 2. Fetch user's 5-min velocity features | Redis Online Feature Store | $$4	ext{ ms}$$ |
+| 3. Run fraud model inference | KServe / Triton (gRPC) | $$18	ext{ ms}$$ |
+| 4. Apply approve/block business rule + publish `tx.scored` to Kafka | Checkout Service | $$3	ext{ ms}$$ |
+| **Total Synchronous Checkout Latency** | **Online Path** | **$$30	ext{ ms}$$** (20 ms safety margin!) |
+
+Meanwhile, on the **asynchronous clock**, Spark Structured Streaming consumes `tx.scored` from Kafka every **2 seconds**, recomputes each user's rolling 5-minute spend, and updates Redis—so the next transaction sees fresh features without ever waiting on Spark!
+
+### Deep-Dive Explanation: Wiring Spark Into Event-Driven SOA Cleanly (Read Slowly)
+
+1. **Keep Spark off the synchronous user path:** Spark's job scheduling overhead (100–500 ms minimum) makes it ideal for high-throughput stream/batch computation, never for single-request HTTP serving.
+2. **Use a dual-sink lakehouse pattern:** write curated stream outputs to *both* low-latency Redis (for live inference) and immutable Iceberg tables (for reproducible model retraining and audits).
+3. **Design for graceful feature fallback:** if the online feature store times out after 10 ms, serve safe default features or a lightweight rule-based fallback rather than blocking checkout.
+4. **Log exact inference inputs for drift monitoring:** emitting `(trace_id, features_used, prediction)` asynchronously to Kafka lets offline Spark jobs detect feature drift and label feedback loops automatically.
+
+**Quick check.** What happens if a team computes `user_avg_spend_7d` in Python for live inference and in a slightly different SQL query for offline training? Subtle rounding or timezone differences create **training–serving skew**, silently degrading production fraud accuracy even though offline test AUC looked great!
+
 ## 1. Two clocks in one product
 
 | Clock | Typical engine | SLA |

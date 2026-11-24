@@ -10,9 +10,22 @@ categories:
 lesson_type: optional
 ---
 
+Nhiều sinh viên khi nghe đến "Hadoop MapReduce" thường hỏi: *"Ngày nay còn ai viết lớp `Mapper` và `Reducer` bằng Java nữa đâu, học làm gì cho nặng?"* Câu trả lời thú vị là: cú pháp Java dài dòng của Hadoop 2004 đã lùi vào quá khứ, nhưng **xương sống thuật toán của nó** — chia dữ liệu song song (map), gom nhóm qua mạng (shuffle), tổng hợp cục bộ rồi ghi kết quả chịu lỗi (reduce) — vẫn đang chạy ngầm bên dưới mọi câu lệnh `GROUP BY` của Spark SQL, BigQuery hay Snowflake ngày hôm nay.
+
 Mô hình tư duy của MapReduce (map, shuffle, reduce và chạy lại khi gặp lỗi) vẫn là nền tảng của **xử lý lô (batch processing)**. Điểm thay đổi trong giai đoạn 2022–2026 nằm ở *vị trí thực hiện bước shuffle* và *engine thực thi*: Spark, Flink ở chế độ batch, BigQuery/Dataflow cùng các định dạng bảng **lakehouse mở** giúp mỗi tác vụ lô chỉ cần đọc trực tiếp từ cùng một kho tệp chung.
 
 > Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+
+## Bản đồ kiến thức nền: Bốn trụ cột của xử lý lô hiện đại
+
+1. **Ba pha kinh điển (Map – Shuffle – Reduce) dưới lớp vỏ SQL**:
+   Mọi truy vấn tổng hợp trên dữ liệu terabyte đều phải trải qua bước lọc/biến đổi cục bộ (Map), trao đổi dữ liệu qua mạng theo khóa (Shuffle — pha tốn kém nhất) và cộng gộp kết quả cuối (Reduce).
+2. **Tách rời Tính toán và Lưu trữ (Compute–Storage Separation)**:
+   Hadoop đời đầu gắn chặt đĩa HDFS vào từng máy tính toán để tận dụng *data locality*. Trên đám mây hiện đại, dữ liệu nằm rẻ và bền vững trên **Object Storage** (S3, GCS), còn cụm tính toán (Spark/Trino) được bật lên khi cần chạy lô và tắt đi ngay khi xong.
+3. **Định dạng bảng mở (Apache Iceberg / Delta Lake) & Giao dịch ACID**:
+   Object Storage vốn chỉ lưu tệp tĩnh. Lớp metadata của Iceberg/Delta bổ sung **snapshot cô lập**, **ghi nguyên tử (atomic commit)** và **nén tệp nhỏ (compaction)** để một tác vụ lô chết giữa chừng không bao giờ làm hỏng bảng dữ liệu.
+4. **Tính toán di động & Dữ liệu hữu hạn vs. vô hạn (Bounded vs. Unbounded)**:
+   Xử lý lô thao tác trên tập dữ liệu có điểm đầu và điểm cuối rõ ràng (ví dụ khóa sổ tháng, xóa dữ liệu GDPR), phối hợp song song cùng nhánh luồng thời gian thực trong kiến trúc Lambda/Kappa.
 
 ## Mục tiêu học tập
 
@@ -72,6 +85,24 @@ Khảo sát cộng đồng Iceberg năm 2025 (công bố đầu năm 2026) ghi n
 4. **Chịu lỗi:** Nếu tiến trình ghi gặp sự cố, các tiến trình đọc vẫn tiếp tục đọc an toàn từ snapshot trước đó.
 
 Đây chính là cơ chế chạy lại an toàn của MapReduce trong phần lý thuyết, được áp dụng vào bài toán tuân thủ pháp lý hiện đại.
+
+### Khung giải thích (nên đọc chậm): Tính tay chi phí Shuffle và sức mạnh của Combiner / Broadcast Join
+
+Giả sử bạn có bảng nhật ký truy cập `events` nặng **1 TB** ($$10^{12}\text{ byte}$$, khoảng 10 tỷ dòng) trải trên **100 máy worker** (mỗi máy giữ 10 GB), và cần chạy câu lệnh `SELECT country, COUNT(*) FROM events GROUP BY country` với tổng cộng **200 quốc gia**.
+
+#### Bước 1: So sánh lưu lượng mạng Shuffle khi CÓ và KHÔNG CÓ gộp cục bộ (Map-side Combiner)
+
+- **Không gộp cục bộ:** Mỗi dòng phát ra cặp `(country, 1)` kích thước ~20 byte đi qua mạng để shuffle:
+  $$\text{Lưu lượng Shuffle} = 10^{10} \times 20\text{ B} = \mathbf{200\text{ GB}}$$
+  Trên mạng cụm 10 Gbps (~1,25 GB/s tổng chia sẻ), riêng bước đẩy dữ liệu qua mạng đã tốn hàng phút và dễ nghẽn đĩa tạm.
+- **Có gộp cục bộ (Combiner / Partial Aggregate trong Spark SQL):** Mỗi máy trong 100 máy tự đếm sẵn 200 quốc gia cục bộ trước khi gửi qua mạng! Mỗi máy chỉ gửi đúng **200 cặp** `(country, partial_count)`:
+  $$\text{Lưu lượng Shuffle} = 100 \times 200 \times 20\text{ B} = \mathbf{400\text{ KB}}!$$
+
+Chỉ bằng một tối ưu Map-side cơ bản, lưu lượng mạng giảm từ **200 GB xuống 400 KB** — giảm đúng **$$500.000\times$$**!
+
+#### Bước 2: Áp dụng trực giác đó cho bài toán xóa GDPR (Mục 4)
+
+Nếu danh sách `tombstone` chứa 50.000 mã `user_id` cần xóa (chỉ nặng khoảng **2 MB**), thay vì shuffle toàn bộ **1 TB** bảng `events` theo `user_id`, bộ tối ưu chỉ cần **broadcast** đúng 2 MB danh sách kia tới cả 100 worker (tổng băng thông chỉ $$100 \times 2\text{ MB} = \mathbf{200\text{ MB}}$$). Mỗi worker tự lọc ngay tại chỗ mà **không cần shuffle 1 byte nào của bảng lớn**!
 
 ## Thách thức
 

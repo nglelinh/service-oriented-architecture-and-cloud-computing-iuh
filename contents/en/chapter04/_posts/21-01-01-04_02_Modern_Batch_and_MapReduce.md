@@ -18,6 +18,34 @@ MapReduce’s programming model (map, shuffle, reduce, re-execute on failure) is
 - Contrast “write a Mapper class” with SQL/DataFrame batch that still shuffles.
 - Explain why batch did not die when streaming became popular (Lambda/Kappa, Iceberg rewrites).
 
+Almost nobody writes raw Java `Mapper<LongWritable, Text, ...>` boilerplate in 2026—yet the **MapReduce paradigm never died**. Every time you run a `GROUP BY` in BigQuery, compact Parquet files in an **Apache Iceberg** lakehouse, or execute a nightly GDPR deletion pipeline in Spark or Flink batch, the exact same three-act play—parallel map, distributed shuffle, and fault-tolerant reduce—is running underneath a modern SQL/DataFrame compiler!
+
+## Background Knowledge Map: From Raw MapReduce to Open Lakehouse Batch
+
+1. **Compiled Batch Engines:** Modern engines (Spark SQL, Flink Batch, BigQuery, Trino) compile declarative SQL/DataFrame queries into multi-stage DAGs of map-and-shuffle operators—optimizing predicate pushdown and memory pipelines automatically.
+2. **Open Table Formats (Apache Iceberg / Delta Lake):** Store immutable Parquet files on cheap cloud object storage (S3/GCS) alongside versioned metadata manifests—bringing ACID transactions, time-travel queries, and partition pruning to batch lakes.
+3. **Cloud-Native Maintenance Jobs:** Real-world lakehouses rely heavily on batch compaction (merging thousands of tiny streaming files into clean 128–256 MB Parquet files) and regulatory rewrite jobs (GDPR right-to-be-forgotten deletes).
+
+### Worked Example (Step by Step): The "Small-File Problem" and Lakehouse Compaction Math
+
+Suppose a streaming pipeline writes **10,000 tiny 1 MB Parquet files** (10 GB total) to S3 over a day, and each S3 file-open + metadata read incurs **5 ms** of fixed latency overhead before reading bytes at **200 MB/s**:
+- **Before compaction (10,000 × 1 MB files):**
+  - File-open overhead: $$10{,}000 	imes 5	ext{ ms} = \mathbf{50	ext{ seconds}}$$ just opening headers!
+  - Data read: $$10{,}000	ext{ MB} / 200	ext{ MB/s} = 50	ext{ seconds}$$.
+  - Total single-worker scan time: **100 seconds** (50% pure metadata waste!).
+- **After nightly batch compaction into 100 × 100 MB files:**
+  - File-open overhead: $$100 	imes 5	ext{ ms} = \mathbf{0.5	ext{ seconds}}$$ (**100× less metadata overhead!**).
+  - Data read: $$50	ext{ seconds}$$ → total **50.5 seconds** (and Parquet column compression + min/max statistics pruning improve simultaneously!).
+
+### Deep-Dive Explanation: Why Batch Processing Thrives Alongside Real-Time Streaming (Read Slowly)
+
+1. **Separate paradigm from syntax:** Hadoop Java MapReduce faded because of verbose APIs and forced HDFS disk spills, *not* because map–shuffle–reduce stopped being useful.
+2. **Use partition pruning before shuffling:** Iceberg manifests record min/max column values per file—letting a batch query skip 95% of files without ever reading them from S3.
+3. **Design GDPR deletion as a targeted copy-on-write batch job:** instead of mutating individual rows inside immutable Parquet files, Iceberg identifies the exact data files containing `user_id = 42`, rewrites only those files cleanly, and commits a new atomic table snapshot.
+4. **Balance Lambda vs. Kappa pragmatically:** streaming delivers low-latency freshness, while batch remains king for full historical backfills, ML training snapshots, and exact financial reconciliation.
+
+**Quick check.** If a 10 TB Iceberg table is partitioned by `event_date` across 365 days (~27.4 GB/day) and a query filters `WHERE event_date = '2026-05-01'`, how much data does partition pruning avoid scanning? It skips **364/365 = 99.7%** of the table—reading 27.4 GB instead of 10 TB!
+
 ## 1. The paradigm did not vanish—it got compilers
 
 A 2025 Spark or BigQuery SQL such as `SELECT country, COUNT(*) FROM events GROUP BY country` is still MapReduce: local aggregation, shuffle by `country`, final aggregate. The required lesson’s Word Count is the same DAG with nicer syntax.

@@ -16,6 +16,21 @@ lesson_type: optional
 
 This lab is original IUH coursework. It is **not** a Stanford CS 40 assignment.
 
+Before you ever spend a single cent on AWS or GCP, you can run a full multi-tier service-oriented architecture—reverse proxy, backend API, worker, and PostgreSQL database—right on your laptop in 3 seconds with **Docker Compose**. Even better, running locally exposes the exact networking, persistence, and startup-order bugs (*"why did my API crash before Postgres finished booting?"*) that bite engineers in production Kubernetes clusters!
+
+Lab A walks you through building a clean, reproducible local multilayer stack with Docker Compose—internal bridge networks, named volumes, healthchecks, and zero hardcoded secrets.
+
+---
+
+## Background Knowledge Map: Four Docker Compose Mechanics Behind Local Multi-Tier Apps
+
+1. **User-Defined Bridge Networks & Service DNS:** Containers on the same Compose network resolve each other by **service name** (e.g., `postgres://db:5432`), never by brittle `localhost` or hardcoded container IPs!
+2. **Named Volumes vs. Ephemeral Container Layers:** Anything written inside a container’s writable layer disappears on `docker compose down`; mounting a **named volume** (`/var/lib/postgresql/data`) preserves database tables across restarts.
+3. **Readiness Healthchecks (`depends_on: condition: service_healthy`):** Starting container B after container A *starts* is not enough—Postgres takes 2–5 seconds to accept SQL connections! Healthchecks (`pg_isready`) guarantee B waits until A is actually ready.
+4. **Least-Exposure Port Mapping:** Publish only the front-door proxy/API port (`8080:8080`) to your host laptop; keep internal databases unreachable from outside the Compose network.
+
+---
+
 ## Purpose
 
 Stand up a **three-process Course Board** on your laptop: a browser-facing edge, an API, and a datastore. You should be able to point at each process and say which Chapter 01-07 tier it cartoons (edge / app / data).
@@ -93,6 +108,29 @@ The edge can be Caddy, nginx, or a tiny static UI served by the API. Pick one. P
 ## Instructor note
 
 Evidence is `NOTES.md` + Compose file + the 503 screenshot/log. No rubric is copied from another university; grade locally if you use this as a marked lab.
+
+---
+
+### Worked Concrete Example: Debugging the Classic `localhost:5432` Connection Refused Bug
+
+Suppose your `api` container tries to connect to your `db` container inside `docker-compose.yml`:
+
+| `DATABASE_URL` in `api` Container | What `api` Actually Connects To | Result |
+| :--- | :--- | :--- |
+| `postgres://user:pw@localhost:5432/app` | `api`’s **own** loopback interface (no Postgres running there!) | **`ECONNREFUSED` crash!** |
+| `postgres://user:pw@172.18.0.2:5432/app` | Hardcoded container IP (changes on next restart!) | Fragile — breaks randomly |
+| `postgres://user:pw@db:5432/app` | Docker’s internal DNS resolving service `db` | **Works reliably every time!** |
+
+### Deep-Dive Explanation: Four Habits for Clean Local Docker Labs (Read Slowly)
+
+1. **Always check `docker compose ps` and `docker compose logs -f api` first:** 90% of startup failures show up clearly in the first 20 lines of container logs.
+2. **Use `.env` (gitignored!) + `.env.example` (committed):** Teammates copy `.env.example` to `.env` locally so no passwords ever enter Git history.
+3. **Know `down` vs. `down -v`:** `docker compose down` keeps your database volume intact; `docker compose down -v` wipes volumes clean for a fresh migration test.
+4. **Use multi-stage Dockerfiles:** Build your app in a full SDK image and copy *only* the compiled binary/bundle into a tiny runtime image (`alpine` / `distroless`), cutting image size from 900 MB to ~30 MB!
+
+**Quick check.** Inside a Docker Compose stack with services `web` and `postgres`, why does connecting from `web` to `localhost:5432` fail even if you mapped `ports: ["5432:5432"]` on `postgres`?
+
+---
 
 ## Video tham khảo
 

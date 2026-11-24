@@ -10,9 +10,24 @@ categories:
 lesson_type: optional
 ---
 
+Vào lúc 20:05 tối thứ Sáu, tổng đài chăm sóc khách hàng báo tràn cuộc gọi vì nút "Thanh toán" quay vòng mãi rồi báo lỗi. Bạn mở bảng điều khiển giám sát hạ tầng lên: CPU của cả 12 máy chủ đều xanh mượt ở mức 35%, RAM dư một nửa, không có máy nào sập nguồn. Vậy chuyện gì đang xảy ra? Trong một hệ thống phân tán, mọi thành phần đều có thể "trông có vẻ khỏe mạnh" khi nhìn riêng lẻ, nhưng cả luồng nghiệp vụ vẫn tắc nghẽn vì một kết nối bị treo hoặc độ trễ đuôi tăng vọt ở dịch vụ thứ tư trong chuỗi gọi.
+
 Phần lý thuyết bắt buộc định nghĩa hệ thống phân tán thông qua ba tính chất: tính tương tranh, không có đồng hồ toàn cục và lỗi độc lập. Bài đọc tùy chọn này trình bày cách các nhóm vận hành thực tế *quan sát* những tính chất đó trong giai đoạn 2022–2026, đồng thời lý giải vì sao trace, metric và kiểm thử hỗn loạn (chaos engineering) đã trở thành một phần thiết yếu của kiến trúc ứng dụng.
 
 > Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+
+## Bản đồ kiến thức nền: Bốn trụ cột của khả năng quan sát hệ phân tán
+
+Để chuyển từ thói quen "SSH vào từng máy đọc file log" sang tư duy quan sát hệ thống phân tán chuyên nghiệp, hãy nắm vững bốn trụ cột:
+
+1. **Ba tín hiệu bổ trợ (Metrics, Logs, Distributed Traces)**:
+   *Metric* (con số tổng hợp theo thời gian) báo cho bạn biết hệ thống đang bất thường ở đâu; *Trace* (cây các span nối bởi `trace_id`) chỉ ra chính xác chặng nào trong chuỗi dịch vụ gây chậm hoặc lỗi; còn *Log* (bản ghi sự kiện chi tiết) giải thích nguyên nhân cụ thể tại đúng dòng mã đó.
+2. **Chuẩn hóa đo đạc & Lan truyền ngữ cảnh (OpenTelemetry + W3C `traceparent`)**:
+   Thay vì phụ thuộc vào SDK độc quyền của từng hãng giám sát, OpenTelemetry chuẩn hóa cả giao thức xuất dữ liệu lẫn header W3C `traceparent` để mã định danh luồng công việc không bị đứt gãy khi đi qua HTTP, gRPC hay hàng đợi thông điệp.
+3. **Thống kê độ trễ đuôi (Percentiles: p50, p95, p99)**:
+   Trong hệ phân tán, giá trị trung bình (mean) là một cái bẫy nguy hiểm vì 99 yêu cầu nhanh `20 ms` có thể che lấp hoàn toàn 1 yêu cầu bị treo `5.000 ms`. Kỹ sư SRE luôn theo dõi các phân vị đuôi như `p95` và `p99`.
+4. **Độ tin cậy định lượng (SLO, Error Budget & Chaos Engineering)**:
+   Không thể đạt độ khả dụng 100% với chi phí hữu hạn. Thay vào đó, nhóm vận hành đặt mục tiêu mức dịch vụ (SLO), tính ra **ngân sách lỗi (error budget)** được phép tiêu hao mỗi tháng, và dùng kiểm thử hỗn loạn có kiểm soát để chứng minh cơ chế timeout/retry hoạt động đúng trước khi sự cố thật xảy ra.
 
 ## Mục tiêu học tập
 
@@ -82,6 +97,31 @@ def call_with_budget(fn, timeout_s=0.2, attempts=3):
 - **Hệ thống đa vùng (multi-region active-active):** Trace giúp xác định chính xác vùng địa lý nào đã xử lý yêu cầu của người dùng.
 
 Theo khảo sát CNCF 2024 (công bố tháng 4/2025), **80%** tổ chức tham gia đã vận hành Kubernetes trên môi trường sản xuất. Mật độ dịch vụ tăng kéo theo chi phí và độ phức tạp giám sát tăng mạnh; OpenTelemetry giữ vai trò lớp hợp đồng ổn định ngay cả khi hệ thống lưu trữ phía sau thay đổi.
+
+### Khung giải thích (nên đọc chậm): Tính tay ngân sách lỗi (Error Budget) và "hiệu ứng khuếch đại độ trễ đuôi"
+
+Hãy cầm bút tính thử hai con số mà mọi kỹ sư SRE đều phải thuộc lòng khi đọc dashboard.
+
+#### Bước 1: Tính ngân sách lỗi mỗi tháng cho SLO $$99{,}9\%$$
+
+Giả sử dịch vụ thanh toán nhận **1.000.000 yêu cầu/tháng** (30 ngày = $$43.200\text{ phút}$$) với cam kết SLO thành công $$99{,}9\%$$:
+- Tỷ lệ lỗi tối đa được phép: $$1 - 0{,}999 = 0{,}001 = \mathbf{0{,}1\%}$$.
+- Số yêu cầu lỗi tối đa cho phép trong cả tháng:
+  $$1.000.000 \times 0{,}001 = \mathbf{1.000\text{ yêu cầu lỗi/tháng}}.$$
+- Tính theo thời gian ngừng hoàn toàn tương đương:
+  $$43.200\text{ phút} \times 0{,}001 = \mathbf{43{,}2\text{ phút/tháng}}.$$
+
+Nếu một đợt triển khai lỗi làm sập thanh toán **15 phút**, bạn đã đốt mất $$\frac{15}{43{,}2} \approx \mathbf{34{,}7\%}$$ ngân sách lỗi cả tháng. Khi ngân sách lỗi chạm 0, chính sách SRE buộc đóng băng tính năng mới để dồn toàn lực sửa độ tin cậy.
+
+#### Bước 2: Vì sao độ trễ đuôi `p99` đáng sợ hơn bạn tưởng trong hệ gọi song song (Fan-out)?
+
+Giả sử trang chủ ứng dụng gọi **song song 10 dịch vụ con** (gợi ý sản phẩm, giỏ hàng, khuyến mãi, đánh giá...), và mỗi dịch vụ đều đạt chuẩn rất tốt: **99% yêu cầu xong dưới 50 ms**, chỉ có **1% yêu cầu (p99)** bị chậm thành `800 ms`.
+Xác suất để *tất cả 10 lời gọi* đều nhanh (không dính bất kỳ quả chậm nào) là:
+$$P(\text{tất cả đều nhanh}) = (0{,}99)^{10} \approx \mathbf{0{,}9044} \quad (90{,}44\%).$$
+Suy ra xác suất người dùng bị chậm `800 ms` tăng vọt lên:
+$$P(\text{ít nhất 1 dịch vụ chậm}) = 1 - 0{,}9044 = \mathbf{9{,}56\%}!$$
+
+Tức là dù từng dịch vụ riêng lẻ chỉ có 1% chậm, gần **1 trên 10 người dùng** mở trang chủ lại phải chờ `800 ms`! Không có distributed trace ghép từng `span` lại với nhau, bạn sẽ mãi không biết chính dịch vụ nào trong 10 dịch vụ ấy là thủ phạm.
 
 ## Thách thức
 

@@ -16,6 +16,21 @@ lesson_type: optional
 
 Free-tier product lists change. Treat every SKU below as **“verify on the provider page today.”** This page is IUH hygiene, not a coupon guide and not a CS 40 lab.
 
+Every semester, at least one student learns a painful $45 lesson about cloud free tiers: they shut down their EC2 virtual machine, thinking billing stopped, only to receive a surprise invoice at the end of the month for an idle **NAT Gateway** ($0.045/hour = **$32.40/month**!) or an unattached **Elastic IP** ($3.60/month) they forgot was still allocated!
+
+Lab C is your practical **IUH Cloud Hygiene & FinOps Survival Guide**: how to set hard **$1–$5 billing alarms** *before* launching a single resource, which sneaky "always-billing" cloud components sit outside free tiers, and how to lock down root accounts with MFA.
+
+---
+
+## Background Knowledge Map: Four Cloud FinOps & Account-Hygiene Fundamentals
+
+1. **Free Tier ≠ Unlimited Free:** Free tiers have strict monthly ceilings (e.g., 750 hours of `t2.micro`/`t3.micro`, 20 GB storage) and **exclude** many networking resources like NAT Gateways, Application Load Balancers, and cross-AZ data transfer!
+2. **Zero-Trust Account Hygiene:** Never use the AWS/GCP **root account** for daily labs—enable MFA on root immediately, create a least-privilege IAM user/role, and never commit access keys to GitHub (automated bots scrape leaked keys in under 60 seconds!).
+3. **Proactive Billing Alarms (Budget Guardrails):** Setting an email alert at **$1.00** and **$5.00** catches runaway resources on Day 1 instead of Day 30.
+4. **Teardown Verification Checklist:** After `tofu destroy` or manual cleanup, always verify the **Billing Dashboard** and **Active Regions** list to ensure zero orphaned disks (EBS) or IPs remain.
+
+---
+
 ## Purpose
 
 Know what “free” usually means, what it never meant, and the **order of operations** if you leave localhost.
@@ -78,6 +93,32 @@ You do **not** need to reproduce a three-tier VPC in a personal account. A diagr
 ## Done when
 
 You can explain, without a slide, the difference between “always free,” “credits,” and “I left a NAT on.” If you never opened a cloud account, your `NOTES.md` still lists the ten ticks and **which ones blocked you**—that is a valid Lab C.
+
+---
+
+### Worked Concrete Example: Hidden Monthly Cost of "Forgotten" Idle Lab Resources
+
+Calculate what happens if a student leaves just 3 tiny "invisible" AWS resources running for a 30-day month (720 hours) after terminating their EC2 instance:
+
+| Forgotten Resource | Hourly Rate | 720-Hour Monthly Bill | Covered by Free Tier? |
+| :--- | :--- | :--- | :--- |
+| **1 × NAT Gateway** (idle!) | $$0.045	ext{ USD/hr}$$ | **$$32.40	ext{ USD}$$** | **NO!** |
+| **1 × Application Load Balancer** | $$0.0225	ext{ USD/hr}$$ | **$$16.20	ext{ USD}$$** | Partial (750h first 12 mo only) |
+| **1 × Unattached Elastic IP** | $$0.005	ext{ USD/hr}$$ | **$$3.60	ext{ USD}$$** | **NO!** |
+| **Total Surprise Bill** | — | **Up to $$52.20	ext{ USD/mo}$$** | — |
+
+That single table is why **zero-spend IaC teardown (`tofu destroy`) + a $1 billing alarm** is mandatory before any student deploys to a real cloud account!
+
+### Deep-Dive Explanation: Four Cloud Hygiene Rules Every Student Engineer Should Follow (Read Slowly)
+
+1. **Create the $1 billing alert *before* creating your first VM:** It takes 2 minutes and protects your credit card permanently.
+2. **Work in ONE single cloud region (e.g., `ap-southeast-1` Singapore):** Switching regions randomly hides running resources in another region’s console view!
+3. **Never push `.env`, `credentials`, or `.pem` files to GitHub:** Install `gitleaks` or check `git status` before pushing—a leaked AWS key can rack up thousands of dollars in crypto-mining instances within an hour.
+4. **Prefer serverless / free student platforms (Render, Fly.io free allowances, GitHub Pages, local Docker) when a full VPC isn’t needed.**
+
+**Quick check.** Why can stopping (rather than terminating) an EC2 instance—or deleting an EC2 instance while leaving a NAT Gateway in the VPC—still generate monthly cloud charges?
+
+---
 
 ## Video tham khảo
 

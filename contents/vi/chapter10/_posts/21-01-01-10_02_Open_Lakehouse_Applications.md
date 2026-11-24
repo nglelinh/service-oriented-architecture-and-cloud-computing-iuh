@@ -10,9 +10,25 @@ categories:
 lesson_type: optional
 ---
 
-Phần bắt buộc của chương đã trình bày kiến trúc nền tảng dữ liệu lớn, pipeline và mô hình xử lý Lambda/Kappa. Bài tùy chọn này đi vào mô hình **lakehouse mở** giai đoạn 2022–2026: lưu trữ một bản sao dữ liệu duy nhất trên object storage, quản lý siêu dữ liệu bằng định dạng bảng mở (**Iceberg, Delta Lake, Hudi**) và cho phép nhiều engine (Spark, Flink, Trino, kho dữ liệu SaaS) truy cập chung thông qua **catalog REST**.
+Suốt hơn một thập kỷ, các doanh nghiệp dữ liệu lớn bị kẹt trong một thế lưỡng nan đắt đỏ: lưu dữ liệu thô trên **Data Lake** (rẻ, linh hoạt trên S3/GCS nhưng hỗn loạn, thiếu giao dịch ACID, dễ thành "đầm lầy dữ liệu"), rồi mỗi đêm phải chạy hàng trăm đường ống ETL sao chép sang **Data Warehouse** (nhanh, chuẩn SQL, có ACID nhưng đắt đỏ và khóa chặt vào một nhà cung cấp).
 
-> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+Kiến trúc **Open Lakehouse**—với các định dạng bảng mở như **Apache Iceberg**, **Delta Lake** và **Apache Hudi**—đã phá vỡ ranh giới đó. Thay vì nhốt dữ liệu trong định dạng độc quyền của một kho dữ liệu duy nhất, hợp đồng nền tảng nay dịch chuyển xuống chính **tầng bảng mở** nằm ngay trên Object Storage giá rẻ, cho phép Spark, Trino, DuckDB, Snowflake và BigQuery cùng đọc ghi an toàn trên một bản dữ liệu duy nhất.
+
+## Bản đồ kiến thức nền: Bốn viên gạch công nghệ tạo nên Open Lakehouse
+
+Để hiểu vì sao các định dạng bảng mở lại thay đổi toàn bộ ngành kỹ thuật dữ liệu giai đoạn 2022–2026, hãy nắm bốn trụ cột sau:
+
+1. **Lưu trữ dạng cột (Columnar Storage — Apache Parquet)**:
+   Thay vì lưu từng dòng liền nhau như CSV/JSON, Parquet gom giá trị của *cùng một cột* vào các khối liên tiếp (row groups). Nhờ đó, câu truy vấn chỉ cần 3 cột trong bảng 100 cột sẽ bỏ qua hoàn toàn 97 cột còn lại, đồng thời nén dữ liệu cùng kiểu hiệu quả hơn gấp $5\times\text{–}10\times$.
+
+2. **Tầng Metadata giao dịch ACID (Iceberg / Delta Transaction Log)**:
+   Object Storage (như S3) vốn chỉ cung cấp các tệp bất biến và không hỗ trợ giao dịch nhiều tệp cùng lúc. Iceberg/Delta giải quyết điều này bằng một cây tệp metadata (manifest list → manifest files → data files) và cơ chế hoán đổi con trỏ nguyên tử (*atomic catalog commit*). Mọi thao tác `INSERT`, `UPDATE`, `DELETE` đều tạo ra một **Snapshot** mới hoàn chỉnh, giúp người đọc không bao giờ thấy dữ liệu ghi dở dang.
+
+3. **Tách rời hoàn toàn lưu trữ và tính toán (Decoupled Compute & Storage)**:
+   Vì dữ liệu nằm ở định dạng mở (Parquet + Iceberg metadata) trên Object Storage, bạn có thể dùng **Apache Flink** để ghi luồng thời gian thực, **Spark** để huấn luyện ML ban đêm, và **DuckDB/Trino** để phân tích BI tức thì—tất cả đọc chung đúng một nguồn sự thật mà không cần sao chép ETL qua lại.
+
+4. **Du hành thời gian (Time Travel) & Tiến hóa lược đồ (Schema Evolution)**:
+   Nhờ lưu lịch sử các Snapshot bất biến, kỹ sư có thể truy vấn `SELECT * FROM orders VERSION AS OF 42` để tái lập chính xác tập dữ liệu huấn luyện mô hình AI tháng trước hoặc khôi phục tức thì nếu một job ghi nhầm dữ liệu.
 
 ## Mục tiêu học tập
 
@@ -60,6 +76,35 @@ Kiến trúc Kappa xem dòng sự kiện là nguồn sự thật duy nhất. Tro
 <div class="content-box insight-box">
 <p><strong>Dữ liệu như một sản phẩm (Data as a Product).</strong> Một bảng Iceberg có đơn vị sở hữu rõ ràng, có SLO và nhật ký thay đổi lược đồ mang tính chất gần với một <em>dịch vụ</em> trong SOA hơn là một thư mục xuất dữ liệu rời rạc; khi đó catalog đóng vai trò tương đương service registry.</p>
 </div>
+
+### Khung giải thích (nên đọc chậm): Tính tay lượng dữ liệu quét và chi phí đọc nhờ Partition Pruning + Thống kê Min/Max trên bảng Iceberg 10 TB
+
+Tại sao một câu truy vấn SQL chạy trên bảng Lakehouse nặng **10 TB** lại có thể trả kết quả chỉ trong vài giây với chi phí vài xu, thay vì đọc hết 10 TB rồi treo hệ thống? Hãy tính tay từng bước cắt tỉa (pruning) của tầng metadata Iceberg!
+
+Giả sử bảng `sales_events` có tổng dung lượng **10 TB** (`10.000 GB`), lưu dữ liệu giao dịch trong **1.000 ngày** (trung bình `10 GB/ngày`), được phân vùng ẩn (*hidden partitioning*) theo ngày `event_date` và chứa **100 tệp Parquet** (`100 MB/tệp`) cho mỗi ngày. Mỗi tệp Parquet gồm 20 cột đều nhau (mỗi cột chiếm $5\%$ dung lượng tệp).
+
+Ta chạy câu truy vấn phân tích:
+```sql
+SELECT store_id, SUM(amount)
+FROM sales_events
+WHERE event_date = DATE '2026-10-15'
+  AND amount > 5000000;
+```
+
+Theo dõi lượng dữ liệu thực sự phải tải từ Object Storage qua 3 tầng cắt tỉa:
+
+| Tầng cắt tỉa của Lakehouse | Cơ chế áp dụng | Dữ liệu còn lại phải đọc | Tỷ lệ giảm so với 10 TB |
+| :--- | :--- | :---: | :---: |
+| **0. Quét thô (không tối ưu)** | Đọc toàn bộ 100.000 tệp | `10.000 GB` | $1\times$ |
+| **1. Partition Pruning (Manifest List)** | Chỉ giữ phân vùng `event_date = 2026-10-15` (1/1.000 ngày = 100 tệp) | `10 GB` | Giảm **$1.000\times$** |
+| **2. Min/Max Stats Pruning (Manifest File)** | Metadata ghi sẵn `[min(amount), max(amount)]` của từng tệp; chỉ 12/100 tệp có `max(amount) > 5.000.000` | $12 \times 100\text{ MB} = \mathbf{1{,}2\text{ GB}}$ | Giảm **$8.333\times$** |
+| **3. Column Projection (Parquet)** | Câu SQL chỉ cần 2/20 cột (`store_id`, `amount` = $10\%$ mỗi tệp) | $10\% \times 1{,}2\text{ GB} = \mathbf{120\text{ MB}}$ | Giảm **$83.333\times$** |
+
+**Kiểm tra bằng chi phí thực tế** (với giá quét dữ liệu serverless phổ biến khoảng `$5 / TB`):
+- Nếu quét thô 10 TB: $10 \times \$5 = \mathbf{\$50{,}00}$ cho **một** câu truy vấn!
+- Sau 3 tầng cắt tỉa của Open Lakehouse (`0,00012 TB`): $0{,}00012 \times \$5 = \mathbf{\$0{,}0006}$ (chưa đến **15 đồng Việt Nam**!) và đọc xong `120 MB` trong dưới 1 giây.
+
+Đó là sức mạnh toán học thực sự phía sau cấu trúc cây metadata của Apache Iceberg và Delta Lake.
 
 ## Thách thức
 

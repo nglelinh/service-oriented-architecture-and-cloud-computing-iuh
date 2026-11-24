@@ -9,7 +9,20 @@ categories:
 - chapter01
 ---
 
-Điện toán đám mây (cloud computing) đã làm thay đổi căn bản cách các tổ chức tiếp cận hạ tầng công nghệ thông tin, triển khai ứng dụng và cung cấp dịch vụ. Nhờ mô hình này, doanh nghiệp có thể sử dụng tài nguyên tính toán theo nhu cầu mà không cần đầu tư chi phí lớn ban đầu cho phần cứng và trung tâm dữ liệu.
+Cách đây hơn một thế kỷ, mỗi nhà máy dệt hay xưởng cơ khí muốn có điện đều phải tự mua máy phát, tự trữ than và thuê đội thợ máy túc trực ngày đêm. Mãi đến khi lưới điện công cộng ra đời, doanh nghiệp mới chỉ cần cắm phích vào ổ điện và trả tiền theo số kilowatt-giờ thực dùng. Điện toán đám mây (cloud computing) tạo ra đúng bước ngoặt lịch sử đó cho ngành công nghệ thông tin: biến năng lực tính toán từ tài sản phần cứng phải tự mua sắm và bảo trì thành một dịch vụ tiện ích cấp phát theo nhu cầu.
+
+## Bản đồ kiến thức nền: Bốn trụ cột của Chương 01 — Nền tảng điện toán đám mây
+
+Để không bị lạc giữa hàng trăm tên dịch vụ thương mại, hãy nhìn toàn bộ Chương 01 qua bốn trụ cột kiến thức nền gắn kết chặt chẽ với nhau:
+
+1. **Định nghĩa & Đặc trưng cốt yếu (Chuẩn NIST SP 800-145)**:
+   Trả lời câu hỏi "thế nào mới thực sự là đám mây?" qua 5 đặc trưng kỹ thuật (tự phục vụ, truy cập mạng rộng, gom nhóm tài nguyên, đàn hồi nhanh, đo lường được), giúp phân biệt đám mây thật với việc chỉ thuê máy chủ đặt tủ rack truyền thống.
+2. **Mô hình dịch vụ & Phân chia trách nhiệm (IaaS, PaaS, SaaS)**:
+   Xác định ranh giới giữa những gì nhà cung cấp quản lý và những gì kỹ sư ứng dụng phải tự lo (hệ điều hành, bản vá bảo mật, runtime, dữ liệu). Chọn đúng tầng trừu tượng giúp cân bằng giữa tốc độ phát triển và mức độ kiểm soát.
+3. **Mô hình triển khai & Hạ tầng vật lý (Public, Private, Hybrid, Data Center)**:
+   Giải thích cách tài nguyên đám mây vận hành ngoài đời thực bên trong các trung tâm dữ liệu theo vùng (Region) và vùng sẵn sàng (AZ), cũng như cách cân bằng giữa bảo mật tuân thủ pháp lý với khả năng mở rộng ngang.
+4. **Kinh tế đám mây & Mạng nền tảng (CapEx vs. OpEx, FinOps, VPC/DNS/TLS)**:
+   Cung cấp tư duy định lượng về chi phí vận hành và năm khái niệm mạng cốt lõi để chuẩn bị trực tiếp cho các chương về hệ phân tán, container và Kubernetes phía sau.
 
 ## Điện toán đám mây là gì?
 
@@ -63,6 +76,19 @@ Tạm dịch: *Một mô hình cho phép truy cập mạng thuận tiện, mọi
 - **Khả năng mở rộng (scalability):** Tăng hoặc giảm tài nguyên linh hoạt theo biến động tải.
 - **Tính đa dạng công nghệ:** Hỗ trợ nhiều ngôn ngữ lập trình, khung làm việc và dịch vụ quản lý sẵn có.
 - **Rút ngắn thời gian ra thị trường (speed to market):** Tăng tốc chu kỳ phát triển, thử nghiệm và phát hành sản phẩm.
+
+### Khung giải thích (nên đọc chậm): Tính tay bài toán kinh tế CapEx so với OpEx cho cổng đăng ký học phần
+
+Giả sử một trường đại học cần vận hành **Cổng đăng ký học phần** với đặc thù tải cực kỳ lệch: trong **10 ngày cao điểm mỗi năm** (2 kỳ đăng ký, mỗi kỳ 5 ngày), hệ thống cần tới **20 máy chủ** hoạt động hết công suất; còn **355 ngày còn lại** chỉ cần đúng **2 máy chủ** là dư sức phục vụ tra cứu điểm và lịch học. Hãy đặt lên bàn cân hai phương án bằng phép tính tay:
+
+| Tiêu chí so sánh | Phương án A: Mua máy chủ tại chỗ (CapEx) | Phương án B: Đám mây đàn hồi (OpEx) |
+| :--- | :---: | :---: |
+| Số máy chủ phải trang bị / trả tiền | Mua cứng **20 máy chủ** cho đỉnh tải | **2 máy** chạy 365 ngày + **18 máy** chỉ bật đúng 10 ngày |
+| Đơn giá giả định | 3.000 USD/máy (khấu hao 3 năm) + điện/chỗ đặt 200 USD/máy/năm | 0,10 USD/giờ/máy (~2,40 USD/ngày/máy) |
+| **Tổng chi phí 1 năm** | $$20 \times (1.000 + 200) = \mathbf{24.000\text{ USD/năm}}$$ | $$(2 \times 365 + 18 \times 10) \times 2{,}40 = (730 + 180) \times 2{,}40 = \mathbf{2.184\text{ USD/năm}}$$ |
+| Hiệu suất sử dụng trung bình | $$\frac{2 \times 355 + 20 \times 10}{20 \times 365} = \frac{910}{7.300} \approx \mathbf{12{,}5\%}$$ (lãng phí 87,5%!) | Gần **100%** khớp theo đường cong nhu cầu |
+
+**Góc nhìn phản biện quan trọng:** Nếu ngược lại, bạn chạy một cụm tính toán ổn định **20 máy chủ chạy 100% tải suốt 365 ngày/năm** mà vẫn trả giá on-demand của đám mây ($$20 \times 365 \times 2{,}40 = 17.520\text{ USD/năm}$$), chênh lệch với tự đầu tư không còn lớn — lúc đó doanh nghiệp mới cần đến gói cam kết dài hạn (Reserved/Savings Plans) hoặc hạ tầng lai. Con số luôn trả lời trung thực hơn khẩu hiệu!
 
 ## Tác động trong thực tiễn
 

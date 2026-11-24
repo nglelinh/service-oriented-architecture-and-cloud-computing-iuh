@@ -12,6 +12,36 @@ lesson_type: optional
 
 The required lesson covers IAM, encryption, blue/green/canary, CI/CD, and monitoring. This optional note adds the 2022–2026 **software supply chain** layer (SLSA, SBOM, Sigstore) and treats **OpenTelemetry** as the production observability contract—not a vendor agent bolted on after go-live.
 
+You might audit every single line of code your team wrote—and still get compromised because a tiny logging library three levels deep inside your dependency tree was hijacked before your container image was built. High-profile incidents like SolarWinds, Log4Shell, and XZ Utils taught the software industry a permanent lesson: **your application is only as secure as its build pipeline and transitive dependencies**. Modern cloud security combines **Software Supply-Chain Security (SBOM, SLSA, cryptographic signing)** with **Production Observability** so you can both prove *where* every binary came from and detect *what* it is doing in real time.
+
+## Background Knowledge Map: Verifiable Builds, Provenance, and Runtime Visibility
+
+### 1. SBOMs and Transitive Dependency Risk
+An **SBOM (Software Bill of Materials)**—in CycloneDX or SPDX format—is the complete "nutrition label" of every direct and transitive package inside your container image. When a zero-day CVE is announced, teams with automated SBOMs know in 10 seconds which exact production services are affected, instead of spending days grepping repositories.
+
+### 2. SLSA (Supply-chain Levels for Software Artifacts) and Cryptographic Signing
+**SLSA** defines progressive maturity levels for tamper-resistant builds: scripted builds (L1), hosted build service generating signed **provenance** metadata (L2), and hardened, isolated, ephemeral build runners (L3). Tools like **Sigstore Cosign** sign container image digests (SHA-256) so Kubernetes admission controllers refuse to deploy any unsigned or tampered image.
+
+### 3. Connecting Build Provenance to Production Observability
+Security does not stop at deployment. Tagging runtime telemetry (logs, metrics, traces) with the exact immutable image digest (`sha256:...`) and Git commit SHA connects every anomalous outbound network call or latency spike in production directly back to the exact build artifact that caused it.
+
+### Deep-Dive Explanation: Hand-Calculating Transitive Dependency CVE Exposure (Read Slowly)
+
+Suppose your Node.js or Python microservice declares only **12 direct dependencies** in `package.json` or `requirements.txt`, and each direct package pulls in an average of **15 transitive dependencies**:
+
+1. **True attack surface inside your container:**
+   $$12 \times 15 = 180\text{ third-party packages!}$$
+2. **Annual probability of at least one critical vulnerability:**
+   Suppose each individual package has a modest **0.5% ($$0.005$$)** independent chance of receiving a critical CVE in a given year.
+   - Probability one package stays CVE-free all year: $$1 - 0.005 = 0.995$$.
+   - Probability *all 180* packages stay CVE-free:
+     $$(0.995)^{180} \approx 0.4057 \quad (40.6\%).$$
+   - Probability **at least one critical CVE** hits your service this year:
+     $$1 - 0.4057 = 0.5943 \approx 59.4\%!$$
+
+3. **Why pinning by immutable digest matters:**
+   Deploying `my-app:latest` allows a compromised registry tag to silently swap binaries between Pod restarts. Pinning `my-app@sha256:9f86d0...` paired with Cosign verification guarantees mathematically that the exact bytes tested in CI are the exact bytes running in production.
+
 ## Learning objectives
 
 - Distinguish SBOM (“what is inside”) from SLSA provenance (“how it was built”).

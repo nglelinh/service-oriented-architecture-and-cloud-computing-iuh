@@ -16,6 +16,22 @@ lesson_type: optional
 
 Tài liệu được biên soạn độc lập cho IUH, không sử dụng tài liệu bài tập của CS 40.
 
+Bạn không cần thẻ tín dụng hay tài khoản AWS/GCP để học bản chất của Infrastructure as Code. Nhờ kiến trúc **Provider dạng plugin** của OpenTofu, bạn có thể luyện tập trọn vẹn vòng đời `init → fmt → validate → plan → apply → destroy` hoàn toàn ngoại tuyến ngay trên máy cá nhân bằng các provider cục bộ (`local`, `random`), hiểu tận gốc tệp State và đồ thị phụ thuộc mà rủi ro phát sinh hóa đơn bằng **đúng 0 đồng**.
+
+## Bản đồ kiến thức nền: Bốn bước vòng đời bắt buộc của mọi dự án OpenTofu
+
+1. **Khởi tạo & Khóa phiên bản (`tofu init` + `.terraform.lock.hcl`)**:
+   Lệnh `tofu init` tải các binary provider cần thiết và ghi mã băm SHA-256 của chúng vào tệp `.terraform.lock.hcl`. Tệp khóa này **phải được commit vào Git** để đồng đội và CI dùng chính xác cùng một phiên bản provider.
+
+2. **Kiểm tra cú pháp & Chuẩn hóa (`tofu fmt`, `tofu validate`)**:
+   `fmt` định dạng mã HCL thống nhất toàn nhóm; `validate` kiểm tra kiểu biến, tham chiếu thuộc tính và cấu trúc khối trước khi cần chạm tới bất kỳ API bên ngoài nào.
+
+3. **Lập kế hoạch & Kiểm duyệt (`tofu plan`)**:
+   Đọc mã `.tf` + đọc tệp trạng thái `terraform.tfstate` + dựng đồ thị phụ thuộc DAG để in ra bản diff chi tiết (`+ create`, `~ update`, `- destroy`, `-/+ replace`) mà **chưa thay đổi gì trong thực tế**.
+
+4. **Tách biệt Mã nguồn khỏi Giá trị Môi trường (`variables.tf` vs. `*.tfvars`)**:
+   Mã cấu trúc (`main.tf`) viết một lần, còn tham số thay đổi theo môi trường (tên dự án, số bản sao, vùng triển khai) được truyền qua tệp `.tfvars` hoặc biến môi trường `TF_VAR_*`—và tuyệt đối không commit tệp chứa secret hay tệp `terraform.tfstate` lên Git công khai!
+
 ## Mục đích
 
 Viết một cấu hình hạ tầng **khai báo (declarative)** mô tả kiến trúc mạng của ứng dụng Bảng tin học phần từ bài [01-07]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_07_Networking_Crash_Course %}), sau đó chứng minh bạn hiểu rõ cơ chế **state** và **plan**. Bạn có thể sử dụng **OpenTofu** (`tofu`) *hoặc* Terraform vì quy trình làm việc tương đương (xem bài 14-02 để hiểu bối cảnh ra đời của OpenTofu).
@@ -58,6 +74,30 @@ Chỉ thực hiện khi lớp đã được cấp tài khoản **và** nhóm đ�
 2. Vì sao lệnh `plan` không tự động đảm bảo cấu hình an toàn bảo mật (xem bài 14-02)?
 3. Nêu một nhận xét ngắn về CDK hoặc Pulumi dựa trên [mục so sánh trong bài 14-01]({{ site.baseurl }}{% multilang_post_url contents/chapter14/21-01-01-14_01_Infrastructure_as_Code %}).
 4. Liệt kê những loại thông tin **tuyệt đối không** lưu trực tiếp ở dạng rõ trong tệp state (như mật khẩu hay dữ liệu sinh viên chưa mã hóa).
+
+### Khung giải thích (nên đọc chậm): Trace vòng đời 2 tài nguyên cục bộ (`random_id` → `local_file`) qua `plan`, `apply` và đổi biến
+
+Giả sử trong bài lab cục bộ, tệp `main.tf` khai báo 2 tài nguyên nối nhau theo quan hệ phụ thuộc:
+```hcl
+resource "random_id" "suffix" {
+  byte_length = 2
+}
+
+resource "local_file" "config" {
+  filename = "${path.module}/app-${random_id.suffix.hex}.conf"
+  content  = "env=${var.env}\n"
+}
+```
+
+Theo dõi chính xác OpenTofu dựng DAG và cập nhật `terraform.tfstate` qua 3 thao tác:
+
+| Thao tác | Đồ thị / So sánh State | Ký hiệu `plan` & Kết quả |
+| :--- | :--- | :--- |
+| **1. Lần đầu chạy `tofu apply` (`var.env = "dev"`)** | State rỗng. DAG xác định `random_id.suffix` phải tạo **trước** `local_file.config` vì thuộc tính `.hex` phụ thuộc vào nó. | `+ random_id.suffix` (sinh `a3f1`) → `+ local_file.config` (tạo tệp `app-a3f1.conf`). State lưu 2 bản ghi. |
+| **2. Chạy lại `tofu plan` ngay lập tức (không sửa gì)** | Mã HCL khớp 100% với State và tệp trên đĩa. | **`No changes. Your infrastructure matches the configuration.`** (Tính lũy đẳng!) |
+| **3. Sửa `var.env = "staging"` rồi chạy `tofu plan`** | `random_id.suffix` không đổi (giữ nguyên `a3f1`), nhưng `local_file.config.content` thay đổi (thuộc tính *ForceNew* của `local_file`). | **`-/+ local_file.config must be replaced`** (`1 to add, 0 to change, 1 to destroy`) — xóa tệp cũ và tạo lại tệp mới với `env=staging`. |
+
+Nhìn qua 3 bước nhỏ chạy mất chưa đầy 2 giây này, bạn đã nắm đúng 100% cơ chế lõi mà OpenTofu dùng để quản lý hàng nghìn máy chủ trên AWS, Azure hay GCP!
 
 ## Những điều không nên làm
 

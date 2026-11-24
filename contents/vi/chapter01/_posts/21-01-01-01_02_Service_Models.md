@@ -10,6 +10,31 @@ categories:
 lesson_type: required
 ---
 
+Hãy tưởng tượng bạn muốn ăn một chiếc bánh pizza vào tối thứ Sáu. Bạn có thể tự mua bột, men, phô mai, bật lò nướng ở nhà (**On-Premises**); hoặc mua đế bánh làm sẵn về tự chọn nhân và nướng (**IaaS**); hoặc gọi tiệm giao bánh nóng tận cửa, bạn chỉ việc dọn bàn ăn (**PaaS**); hoặc bước thẳng vào nhà hàng ngồi ăn không cần rửa bát (**SaaS**). Phép ẩn dụ "Pizza as a Service" kinh điển này lột tả chính xác bài toán đánh đổi lớn nhất của điện toán đám mây: **quyền kiểm soát hạ tầng** đối lập trực tiếp với **gánh nặng vận hành**.
+
+Bài học này phân tách ranh giới trách nhiệm giữa bạn và nhà cung cấp đám mây qua ba tầng kinh điển **IaaS – PaaS – SaaS** (cùng làn sóng **CaaS/FaaS** hiện đại), giúp bạn biết chính xác khi nào nên tự quản trị máy ảo và khi nào nên giao hết phần vận hành cho nền tảng.
+
+---
+
+## Bản đồ kiến thức nền: Mô hình Trách nhiệm Chia sẻ (Shared Responsibility)
+
+### 1. Ranh giới trừu tượng hóa ngăn xếp (Abstraction Layers)
+Một ứng dụng chạy trên 9 tầng từ thấp đến cao: *Mạng vật lý → Lưu trữ → Máy chủ → Ảo hóa → Hệ điều hành (OS) → Middleware → Runtime → Dữ liệu → Ứng dụng*. IaaS bàn giao cho bạn từ tầng **OS** trở lên; PaaS chỉ giao **Ứng dụng + Dữ liệu**; còn SaaS quản trị trọn gói, bạn chỉ cấu hình người dùng và dữ liệu nghiệp vụ.
+- **Câu hỏi lớn:** Khi có lỗ hổng bảo mật nhân Linux (ví dụ CVE nghiêm trọng), ai là người chịu trách nhiệm vá lỗi trong IaaS so với PaaS?
+- **Ứng dụng thực tế:** Phân định SLA bảo mật, kiểm toán tuân thủ ISO 27001 / SOC 2.
+
+### 2. Đánh đổi Kiểm soát vs. Tốc độ ra mắt (Control vs. Velocity)
+Càng xuống thấp (IaaS), bạn càng tự do chỉnh tham số nhân Linux, cài phần mềm cũ hoặc chọn GPU đặc thù — nhưng đội ngũ phải tốn nhân lực trực vận hành, vá OS và cấu hình dự phòng. Càng lên cao (PaaS/FaaS), lập trình viên tập trung 100% vào nghiệp vụ nhưng phải chấp nhận giới hạn của nền tảng và nguy cơ phụ thuộc nhà cung cấp (**vendor lock-in**).
+- **Câu hỏi lớn:** Một startup 4 kỹ sư nên chọn tự dựng cụm EC2 hay triển khai trên PaaS/Cloud Run?
+- **Ứng dụng thực tế:** Kiến trúc MVP, chuyển đổi hệ thống kế thừa (lift-and-shift vs. re-platform).
+
+### 3. Tiến hóa hậu-PaaS: CaaS và Serverless (FaaS)
+Giữa IaaS và PaaS ngày nay xuất hiện **CaaS** (Kubernetes được quản lý như EKS/GKE — đóng gói ứng dụng vào container chuẩn OCI để dễ di chuyển) và **FaaS** (AWS Lambda, Cloud Functions — chỉ viết từng hàm, nền tảng tự co giãn về 0 khi không có tải).
+- **Câu hỏi lớn:** Container giúp giảm vendor lock-in của PaaS truyền thống bằng cách nào?
+- **Ứng dụng thực tế:** Microservices trên Kubernetes, xử lý webhook/ảnh bằng Serverless.
+
+---
+
 Các dịch vụ điện toán đám mây thường được phân loại thành ba mô hình chính, mỗi mô hình mang lại mức độ kiểm soát, tính linh hoạt và phạm vi trách nhiệm quản trị khác nhau. Hiểu rõ sự khác biệt giữa ba mô hình này là cơ sở để lựa chọn chiến lược đám mây phù hợp với năng lực và nhu cầu của tổ chức.
 
 ## Ngăn xếp dịch vụ đám mây
@@ -136,6 +161,43 @@ Cùng với sự phát triển của hệ sinh thái đám mây, ranh giới gi�
 Nắm vững ba mô hình dịch vụ cốt lõi — IaaS, PaaS và SaaS — giúp tổ chức đưa ra quyết định kiến trúc có cơ sở. Mỗi mô hình có sự đánh đổi riêng giữa quyền kiểm soát, độ linh hoạt và chi phí vận hành, tùy thuộc vào năng lực kỹ thuật và mục tiêu kinh doanh cụ thể.
 
 Bài tiếp theo sẽ trình bày các mô hình triển khai đám mây và cách kết hợp chúng với các mô hình dịch vụ để hoàn thiện kiến trúc tổng thể.
+
+---
+
+## Ví dụ cầm tay chỉ việc & Khung giải thích
+
+### Ví dụ cầm tay chỉ việc 1: Tính tổng chi phí sở hữu (TCO) thực tế — IaaS rẻ hơn hay PaaS rẻ hơn?
+
+Một nhóm phát triển cần chạy ứng dụng web thương mại điện tử suốt 1 năm. Nhìn bảng giá niêm yết, IaaS có vẻ rẻ hơn PaaS — nhưng hãy tính đủ **chi phí nhân công vận hành (DevOps)**:
+
+| Khoản mục chi phí (1 tháng) | Tự vận hành trên IaaS (EC2) | Nền tảng quản lý PaaS (App Platform / Cloud Run) |
+|---|---|---|
+| Hóa đơn tài nguyên đám mây | **120 USD** | **260 USD** |
+| Thời gian vá OS, cấu hình Nginx, SSL, backup, xử lý sự cố | 25 giờ kỹ sư × 30 USD/giờ = **750 USD** | 3 giờ cấu hình × 30 USD/giờ = **90 USD** |
+| **Tổng chi phí thực (TCO/tháng)** | **870 USD** | **350 USD** |
+
+**Bài học:** Hóa đơn cloud của PaaS đắt hơn 2.1 lần, nhưng **tổng chi phí sở hữu lại rẻ hơn 60%** vì đội kỹ sư được giải phóng 22 giờ mỗi tháng để xây tính năng tạo doanh thu!
+
+### Ví dụ cầm tay chỉ việc 2: Xác định trách nhiệm khi xảy ra sự cố bảo mật
+
+Xét lỗ hổng thực thi mã từ xa trong thư viện OpenSSL của hệ điều hành Ubuntu:
+- **Khách hàng dùng IaaS (EC2):** Nhà cung cấp chỉ vá hypervisor; **bạn phải tự chạy `apt upgrade` và khởi động lại toàn bộ máy ảo**! Nếu bỏ quên, hệ thống bị xâm nhập là lỗi của bạn.
+- **Khách hàng dùng PaaS (Cloud Run / Heroku):** Nhà cung cấp tự động cập nhật image hệ điều hành nền; bạn chỉ cần kiểm tra thư viện cấp ứng dụng (như `package.json` / `requirements.txt`).
+- **Khách hàng dùng SaaS (Gmail / Salesforce):** Nhà cung cấp vá toàn bộ từ hạ tầng tới ứng dụng; bạn chỉ quản lý phân quyền tài khoản (MFA, RBAC).
+
+### Khung giải thích: Quy tắc 4 bước chọn đúng mô hình dịch vụ cho dự án (nên đọc chậm)
+
+#### Bước 1: Nếu nghiệp vụ không phải lợi thế cạnh tranh lõi → mua SaaS ngay
+Đừng bao giờ tự dựng máy chủ email, CRM, quản lý nhân sự hay công cụ chat nội bộ. SaaS luôn thắng về tốc độ và chi phí cho các bài toán chuẩn hóa.
+
+#### Bước 2: Nếu xây sản phẩm riêng với đội nhỏ → ưu tiên PaaS hoặc Container Serverless
+Cloud Run, Render, Fly.io hay App Runner cho phép bạn đóng gói ứng dụng bằng `Dockerfile` (giữ tính di động cao, tránh khóa chặt) mà không phải gánh việc quản trị hệ điều hành hay cụm Kubernetes.
+
+#### Bước 3: Chỉ xuống IaaS khi có lý do kỹ thuật không thể né tránh
+Ví dụ: cần phần mềm kế thừa chạy trên Windows Server cũ, cần tinh chỉnh kernel mạng DPDK, cần gắn ổ đĩa NVMe cục bộ tốc độ cực cao hoặc tối ưu chi phí ở quy mô hàng trăm máy chủ trở lên.
+
+#### Bước 4: Luôn nhớ dữ liệu và danh tính người dùng luôn là trách nhiệm CỦA BẠN
+Dù ở IaaS, PaaS hay SaaS, nhà cung cấp đám mây không bao giờ chịu trách nhiệm nếu bạn để lộ mật khẩu quản trị, mở công khai kho lưu trữ chứa dữ liệu khách hàng hoặc cấu hình sai quyền truy cập.
 
 ## Video tham khảo
 

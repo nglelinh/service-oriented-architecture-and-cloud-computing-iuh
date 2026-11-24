@@ -10,9 +10,22 @@ categories:
 lesson_type: optional
 ---
 
+Khi thiết kế một hệ thống nhiều dịch vụ, câu hỏi đầu tiên thường không phải là "chọn ngôn ngữ lập trình nào?", mà là "hai dịch vụ này nên nói chuyện với nhau theo nhịp nào?". Khi người dùng bấm nút **Tính cước chuyến đi**, họ cần câu trả lời ngay trong 100 mili-giây; nhưng khi chuyến đi kết thúc, việc gửi email hóa đơn PDF hay cộng điểm thưởng hoàn toàn có thể diễn ra sau đó vài giây mà không làm treo màn hình tài xế. Nhầm lẫn giữa hai nhịp giao tiếp này là nguyên nhân hàng đầu khiến hệ thống microservice bị quá tải dây chuyền.
+
 Phần lý thuyết bắt buộc so sánh các mô hình client–server, ngang hàng (P2P) và hướng sự kiện, đồng thời giới thiệu YARN với vai trò bộ quản lý tài nguyên cụm. Bài tùy chọn này minh họa cách các *mô hình tính toán* đó xuất hiện trong kiến trúc dịch vụ giai đoạn 2022–2026: **gRPC** cho gọi thủ tục từ xa đồng bộ, **CloudEvents** cho giao tiếp bất đồng bộ chuẩn hóa, và **Kubernetes** với vai trò bộ lập lịch cụm phổ biến bên ngoài hệ sinh thái Hadoop truyền thống.
 
 > Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+
+## Bản đồ kiến thức nền: Ba trụ cột của giao tiếp dịch vụ và lập lịch cụm hiện đại
+
+Để đặt đúng gRPC, CloudEvents và Kubernetes vào bức tranh lớn của hệ phân tán, hãy nắm ba trụ cột sau:
+
+1. **Giao tiếp đồng bộ nhị phân (gRPC trên HTTP/2 + Protocol Buffers)**:
+   Khác với REST/JSON dạng văn bản tự do, gRPC dùng hợp đồng chặt (`.proto`), mã hóa nhị phân gọn nhẹ và tận dụng ghép kênh (multiplexing) của HTTP/2 để gửi nhiều lời gọi đồng thời trên cùng một kết nối TCP, hỗ trợ sẵn hạn chót (*deadline*) và truyền luồng (*streaming*).
+2. **Giao tiếp bất đồng bộ hướng sự kiện (CloudEvents + Message Broker)**:
+   Thay vì dịch vụ A gọi trực tiếp dịch vụ B và đứng chờ, dịch vụ A phát đi một sự kiện bất biến (ví dụ `order.created`) vào broker (Kafka, NATS, RabbitMQ). Các dịch vụ quan tâm tự đăng ký nhận và xử lý độc lập theo tốc độ riêng, giúp tách rời lỗi và làm phẳng đỉnh tải.
+3. **Tách bạch Điều phối tài nguyên và Logic ứng dụng (YARN → Kubernetes)**:
+   Cả YARN lẫn Kubernetes đều giải cùng một bài toán: làm sao gom hàng trăm máy chủ thành một bể tài nguyên chung và xếp lịch chạy hàng nghìn tác vụ mà không lãng phí CPU/RAM. Kubernetes mở rộng nguyên lý đó từ riêng thế giới Hadoop sang mọi loại ứng dụng container hóa.
 
 ## Mục tiêu học tập
 
@@ -77,6 +90,26 @@ YARN vẫn được duy trì trong nhiều nền tảng dữ liệu lớn hiện
 <div class="content-box insight-box">
 <p><strong>Mô hình cần tránh (anti-pattern).</strong> Sử dụng hàng đợi thông điệp như cơ chế RPC đồng bộ ("gửi tin rồi ngồi chờ sự kiện phản hồi") mà không thiết lập timeout thực chất chỉ là tái tạo mô hình client–server nhưng khó gỡ lỗi hơn. Khi bài toán cần RPC đồng bộ, hãy dùng thẳng RPC.</p>
 </div>
+
+### Khung giải thích (nên đọc chậm): Tính tay lưu lượng JSON so với Protobuf và bài toán làm phẳng đỉnh tải bằng Broker
+
+#### Bước 1: So sánh băng thông giữa REST/JSON và gRPC/Protobuf ở quy mô 10.000 lời gọi/giây
+
+Giả sử `AllocateReply` chứa 4 trường (`request_id`, `node_id`, `cpu_millis`, `mem_mb`).
+- Với **JSON** (lặp lại toàn bộ tên khóa ở mỗi bản tin): kích thước trung bình khoảng **180 byte/bản tin**.
+- Với **Protocol Buffers** (chỉ truyền mã số trường dạng nhị phân + biến nguyên varint): kích thước giảm còn khoảng **45 byte/bản tin** (gọn hơn $$4\times$$).
+
+Ở tốc độ $$10.000\text{ yêu cầu/giây}$$ giữa hai vùng sẵn sàng (AZ):
+- Băng thông JSON: $$10.000 \times 180\text{ B/s} = 1{,}8\text{ MB/s} \approx \mathbf{4{,}66\text{ TB/tháng}}.$$
+- Băng thông Protobuf: $$10.000 \times 45\text{ B/s} = 0{,}45\text{ MB/s} \approx \mathbf{1{,}17\text{ TB/tháng}}.$$
+
+Riêng chi phí truyền dữ liệu liên vùng (cross-AZ transfer) và CPU phân tích cú pháp (serialization) đã giảm tới **75%** khi dùng gRPC cho luồng gọi nội bộ dày đặc.
+
+#### Bước 2: Vì sao Broker cứu hệ thống khỏi sập vào giờ cao điểm?
+
+Giả sử dịch vụ gửi hóa đơn chỉ xử lý tối đa **200 đơn/giây**, nhưng đúng 12:00 trưa Flash Sale có **1.000 đơn/giây** đổ vào trong **30 giây**:
+- **Nếu gọi đồng bộ trực tiếp (gRPC/HTTP):** $$800\text{ đơn/giây}$$ vượt ngưỡng bị lỗi `503` hoặc làm đầy hàng đợi kết nối khiến dịch vụ đặt hàng sập theo.
+- **Nếu đẩy sự kiện `order.created` (CloudEvents) qua Broker:** Trong 30 giây đỉnh tải, broker nhận đủ $$30 \times 1.000 = 30.000\text{ sự kiện}$$, còn dịch vụ hóa đơn xử lý đều đặn $$30 \times 200 = 6.000\text{ sự kiện}$$. Phần tồn đọng là $$24.000\text{ sự kiện}$$ nằm an toàn trong hàng đợi và được xử lý hết sau đúng $$\frac{24.000}{200} = \mathbf{120\text{ giây}}$$ (2 phút) mà **không mất một đơn hàng nào**!
 
 ## Thách thức
 

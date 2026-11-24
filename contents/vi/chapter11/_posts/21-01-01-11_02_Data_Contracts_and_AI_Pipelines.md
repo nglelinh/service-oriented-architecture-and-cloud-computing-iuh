@@ -10,9 +10,23 @@ categories:
 lesson_type: optional
 ---
 
-Phần bắt buộc của chương đề cập quy trình thu thập, làm sạch và kiểm chứng dữ liệu. Bài tùy chọn này trình bày cách các nhóm nền tảng giai đoạn 2022–2026 chuẩn hóa những bước đó thành **hợp đồng kiểu SOA**: lược đồ có quản lý phiên bản giữa bên cung cấp (producer) và bên sử dụng (consumer), cổng kiểm soát chất lượng tự động, cùng các yêu cầu xử lý đặc thù cho pipeline **LLM/RAG** vốn phức tạp hơn dữ liệu bảng CSV thông thường.
+Hãy hình dung kịch bản quen thuộc ở hầu hết các công ty công nghệ: chiều thứ Sáu, đội Backend đổi tên cột `price` thành `unit_price_vnd` và đổi định dạng ngày từ chuỗi ISO sang timestamp số nguyên để tối ưu ứng dụng di động. Dịch vụ đặt hàng vẫn chạy xanh rì—nhưng sáng thứ Hai, bảng điều khiển doanh thu của giám đốc trống trơn và hệ thống gợi ý AI trả về kết quả vô nghĩa vì toàn bộ pipeline dữ liệu phía sau âm thầm vỡ nát.
 
-> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+Sự cố đó không phải do đội dữ liệu yếu kém, mà do thiếu **Hợp đồng dữ liệu (Data Contracts)**—giao diện có phiên bản, được kiểm chứng tự động giữa bên sinh dữ liệu (producer) và bên tiêu thụ dữ liệu (consumer). Và khi doanh nghiệp nạp dữ liệu vào các mô hình **AI/LLM (RAG, fine-tuning)**, yêu cầu làm sạch dữ liệu còn khắt khe gấp bội: dữ liệu trùng lặp, rác HTML hay rò rỉ thông tin cá nhân (PII) sẽ trực tiếp đầu độc câu trả lời của mô hình.
+
+## Bản đồ kiến thức nền: Bốn trụ cột của kỹ thuật chất lượng dữ liệu thời đại AI
+
+1. **Hợp đồng dữ liệu (Data Contracts) & Schema Registry**:
+   Hợp đồng dữ liệu quy định rõ bốn cam kết: **lược đồ (schema)** (tên cột, kiểu dữ liệu, bắt buộc/tùy chọn), **ngữ nghĩa (semantics)** (đơn vị tiền tệ, múi giờ), **SLA độ tươi mới** (dữ liệu trễ tối đa bao nhiêu phút) và **quyền sở hữu**. Các công cụ như Avro/Protobuf kết hợp Schema Registry chặn mọi thay đổi phá vỡ tương thích ngược (*breaking changes*) ngay từ bước CI trước khi đẩy lên sản xuất.
+
+2. **Cổng kiểm soát chất lượng (Data Quality Gates — Pattern Write-Audit-Publish)**:
+   Thay vì đổ thẳng dữ liệu thô vào bảng sản xuất rồi cầu nguyện, kỹ thuật **WAP (Write–Audit–Publish)** ghi batch mới vào một nhánh/vùng tạm, chạy bộ kiểm định tự động (kiểm tra `NOT NULL`, miền giá trị, tỷ lệ trùng khóa, phân phối bất thường) rồi mới công bố nguyên tử sang bảng chính nếu đạt ngưỡng; các bản ghi lỗi được chuyển vào **Dead-Letter Queue (DLQ)** để điều tra.
+
+3. **Làm sạch chuyên biệt cho đường ống AI/LLM (Chunking, Deduplication & PII Redaction)**:
+   Với SQL truyền thống, thiếu một dấu phẩy chỉ gây lỗi dòng đó. Với hệ thống **RAG (Retrieval-Augmented Generation)**, các tài liệu trùng lặp làm tràn top-$k$ kết quả tìm kiếm vector, HTML/footer rác đốt sạch cửa sổ ngữ cảnh (context window) và tốn chi phí token, còn thông tin nhạy cảm (CCCD, số điện thoại, mật khẩu) nếu không che lọc (*PII redaction*) có thể bị LLM lặp lại cho người dùng khác.
+
+4. **Nguồn gốc dữ liệu (Data Lineage) & Khả năng truy vết**:
+   Mỗi tập dữ liệu huấn luyện hay chỉ mục vector phải gắn mã phiên bản nguồn gốc để khi phát hiện một tài liệu chứa thông tin sai hoặc yêu cầu xóa theo quyền riêng tư, hệ thống biết chính xác cần gỡ bỏ đoạn vector nào mà không phải xây lại toàn bộ từ con số không.
 
 ## Mục tiêu học tập
 
@@ -81,6 +95,26 @@ Một mẫu thiết kế an toàn là **phân tách hai vùng dữ liệu**: Vù
 <div class="content-box warning-box">
 <p><strong>Thu thập tự động (web scraping) không thay thế chiến lược nguồn dữ liệu hợp lệ.</strong> Cần kiểm tra <code>robots.txt</code>, điều khoản giấy phép và quy định bảo vệ dữ liệu cá nhân tại Việt Nam/EU trước khi chạy mã thu thập như <code>BeautifulSoup</code>. So sánh giữa dùng API chính thức và scraping hiện là vấn đề tuân thủ pháp lý quan trọng.</p>
 </div>
+
+### Khung giải thích (nên đọc chậm): Trace 10.000 tài liệu đi qua 3 cổng kiểm soát chất lượng và tính chi phí token tiết kiệm được cho RAG
+
+Giả sử bạn xây dựng hệ thống hỏi–đáp nội bộ (RAG) bằng cách thu thập **10.000 trang tài liệu** từ wiki công ty (trung bình `1.200 token/trang`, tương đương **12.000.000 token** thô) để tạo embedding và lưu vào Vector Database.
+
+Hãy theo dõi từng cổng làm sạch biến đổi tập dữ liệu này ra sao:
+
+| Cổng kiểm soát (Quality Gate) | Luật kiểm tra áp dụng | Số trang / token bị loại hoặc chỉnh sửa | Còn lại sau cổng |
+| :--- | :--- | :--- | :---: |
+| **Đầu vào thô** | Thu thập từ HTML/PDF nội bộ | — | `10.000` trang (`12,00M` token) |
+| **Cổng 1: Hợp đồng lược đồ & Xác thực** | Loại trang rỗng, lỗi mã hóa UTF-8, thiếu `doc_id` hoặc `updated_at` | Đẩy `400` trang lỗi (`4%`) sang DLQ | `9.600` trang (`11,52M` token) |
+| **Cổng 2: Khử trùng lặp (Exact + MinHash near-dup)** | Loại các bản sao lưu nháp, trang copy từ năm cũ trùng $> 85\%$ nội dung | Loại `2.600` trang trùng lặp (`27%` của 9.600) | `7.000` trang (`8,40M` token) |
+| **Cổng 3: Tẩy rác HTML/Navbar & Che PII** | Gỡ thanh điều hướng, chân trang lặp lại (chiếm `25%` số token mỗi trang) và che số điện thoại/email cá nhân | Giảm `2,10M` token rác + che `340` chuỗi PII | `7.000` trang (**`6,30M` token sạch**) |
+
+#### Kiểm tra tác động bằng con số cụ thể
+
+1. **Giảm chi phí & dung lượng Vector DB**:
+   Số token cần tính embedding giảm từ $12{,}00\text{M}$ xuống $6{,}30\text{M}$—tiết kiệm **$47{,}5\%$ chi phí API embedding và dung lượng lưu trữ vector**.
+2. **Tăng độ chính xác truy hồi (Recall@5)**:
+   Trước khi khử trùng lặp, nếu một tài liệu quy định nghỉ phép bị nhân bản 4 lần trên wiki, cả 4/5 kết quả `top_k = 5` trả về cho LLM sẽ chỉ lặp lại đúng 1 tài liệu đó—đẩy mất các thông tin bổ sung quan trọng ra ngoài cửa sổ ngữ cảnh! Sau Cổng 2, mỗi slot trong `top_k = 5` là một mảnh tri thức độc lập, nâng chất lượng câu trả lời lên rõ rệt.
 
 ## Thách thức
 

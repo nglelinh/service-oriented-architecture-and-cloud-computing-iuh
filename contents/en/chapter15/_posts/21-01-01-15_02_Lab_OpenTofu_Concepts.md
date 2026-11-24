@@ -16,6 +16,21 @@ lesson_type: optional
 
 Original IUH material. Not a CS 40 handout.
 
+The #1 reason students hesitate to practice Infrastructure as Code is completely rational: **fear of accidentally racking up a $200 cloud bill while experimenting!** The beauty of **OpenTofu / Terraform** is that its core engine—dependency graphs, state files, variable validation, `plan` diffs, and idempotent updates—works identically on **zero-cost local providers** (`local_file`, `random_pet`, or LocalStack/Docker providers) with **$0.00 billing risk**!
+
+Lab B lets you master the full `init` $$	o$$ `plan` $$	o$$ `apply` $$	o$$ drift-detection $$	o$$ `destroy` lifecycle safely on your own machine before ever touching a paid cloud account.
+
+---
+
+## Background Knowledge Map: Learning the IaC Lifecycle With Zero Cloud Spend
+
+1. **Provider Abstraction:** OpenTofu’s core graph engine doesn’t care whether a provider manages AWS EC2 instances or local files/Docker containers—the exact same HCL syntax, state diffing, and DAG scheduling apply.
+2. **The Four-Command Loop (`init` $$	o$$ `plan` $$	o$$ `apply` $$	o$$ `destroy`):** `init` downloads providers; `plan` computes the dry-run diff; `apply` reconciles reality to code; `destroy` cleanly removes every tracked resource.
+3. **Observing Drift Firsthand:** Manually deleting or editing a resource managed by OpenTofu and re-running `tofu plan` shows you *live* how IaC detects external tampering and plans to heal it.
+4. **Input Variables & Outputs:** Parameterizing configs with `variables.tf` and surfacing computed values via `outputs.tf` mirrors real production modules.
+
+---
+
 ## Purpose
 
 Write a small **declarative** stack that *would* describe the Course Board network from [01-07]({{ site.baseurl }}{% multilang_post_url contents/chapter01/21-01-01-01_07_Networking_Crash_Course %}), then prove you can reason about **state** and **plan**. Use **OpenTofu** (`tofu`) *or* Terraform (`terraform`)—the workflow is the same for this lab. Chapter 14-02 explains why OpenTofu exists.
@@ -74,6 +89,30 @@ Write answers in `NOTES.md`—these *are* the lab if the tooling misbehaves:
 ## Done when
 
 Both pair members can walk a third student through the plan output without reading it for the first time. Destroy evidence exists if anything was applied.
+
+---
+
+### Worked Concrete Example: Tracing Drift Healing Across 4 Commands ($0.00 Cost)
+
+Imagine a minimal OpenTofu config creating a local config file `app.conf` via `local_file`:
+
+| Step | Command / Action | Desired State (HCL) | Live Reality | `tofu plan` / `apply` Action |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | `tofu apply` | `app.conf` = `"port=8080"` | Does not exist | **`+ create`** `app.conf` |
+| 2 | `tofu apply` (again) | `app.conf` = `"port=8080"` | `"port=8080"` | **`No changes`** (idempotent!) |
+| 3 | Manually edit `app.conf` to `"port=9999"` | `"port=8080"` | `"port=9999"` (Drift!) | `plan` shows **`-/+ replace`** to heal drift! |
+| 4 | `tofu destroy` | Empty | `"port=8080"` | **`- destroy`** removes `app.conf` cleanly |
+
+### Deep-Dive Explanation: Four Safeguards Before Moving From Local Labs to Real Cloud (Read Slowly)
+
+1. **Never skip `tofu plan`:** Reading the diff habit on local files becomes muscle memory that protects real cloud databases later.
+2. **Add `.terraform/` and `*.tfstate*` to `.gitignore` from minute one:** Prevent provider binaries and sensitive state files from polluting Git.
+3. **Tag every cloud resource with `project` and `owner`:** When you do graduate to AWS/GCP, cost-allocation tags let you spot any stray resource in seconds.
+4. **Always run `tofu destroy` at the end of every lab session:** Make cleanup part of your "Done" definition!
+
+**Quick check.** If you run `tofu apply` twice in a row without editing any `.tf` files or touching any live resources, what should OpenTofu report on the second run—and what is this property called?
+
+---
 
 ## Video tham khảo
 

@@ -10,7 +10,23 @@ categories:
 lesson_type: optional
 ---
 
-Phần bắt buộc của Chương 13 giới thiệu khái niệm pipeline và GitHub Actions. Bài tùy chọn này xây dựng **quy trình thực hành chuẩn cho nhóm hai sinh viên tại IUH**: các bước cần thiết trong pipeline, cách đưa artifact qua từng môi trường, và cách xác thực với đám mây mà không lưu mật khẩu trong kho mã nguồn. Ví dụ xuyên suốt của bài là ứng dụng **Bảng tin học phần IUH**.
+Hãy thử hỏi bất kỳ đội phần mềm nào từng triển khai thủ công bằng cách SSH vào máy chủ, gõ `git pull` rồi `docker compose up -d`: sớm muộn gì cũng sẽ có một tối thứ Sáu ai đó quên chạy lệnh di trú cơ sở dữ liệu, đẩy nhầm biến môi trường của máy phát triển lên máy thật, hoặc lỡ commit khóa bí mật AWS (`AWS_SECRET_ACCESS_KEY`) thẳng lên kho GitHub công khai!
+
+**CI/CD (Continuous Integration / Continuous Delivery)** biến việc phát hành phần mềm từ một nghi lễ căng thẳng đầy rủi ro thành một dây chuyền tự động, lặp lại được và kiểm chứng chặt chẽ ở từng cổng. Bài học này trình bày chuẩn mực xây dựng pipeline đám mây hiện đại cho nhóm nhỏ: *build một lần, thăng cấp theo digest, xác thực không mật khẩu bằng OIDC, và kiểm thử khói (smoke test) tự động*.
+
+## Bản đồ kiến thức nền: Bốn nguyên tắc vàng của đường ống CI/CD đám mây hiện đại
+
+1. **Tách bạch CI (Tích hợp liên tục) và CD (Chuyển giao / Triển khai liên tục)**:
+   **CI** chạy trên mọi Pull Request để xác minh chất lượng (lint, unit test, quét lỗ hổng, đóng gói artifact). **CD** tiếp nhận artifact đã đạt chuẩn CI để đưa dần qua các môi trường (`Dev → Staging → Production`) kèm chính sách phê duyệt và kiểm thử sau triển khai.
+
+2. **"Build một lần, thăng cấp theo Digest" (Build Once, Promote Many)**:
+   Sai lầm phổ biến nhất là chạy `docker build` lại ở bước Staging rồi lại `docker build` lần nữa ở bước Production—khiến bản chạy thật có thể kéo phải một gói thư viện mới vừa phát hành 10 phút trước và khác hoàn toàn bản đã kiểm thử! Chuẩn vàng là chỉ build **đúng 1 lần**, ghi nhận `sha256` digest bất biến, và chỉ thay đổi **cấu hình môi trường** (biến môi trường/Secret) khi thăng cấp đúng digest đó sang Staging và Production.
+
+3. **Xác thực không khóa tĩnh bằng OIDC (Workload Identity Federation)**:
+   Lưu `AWS_ACCESS_KEY_ID` hay JSON Service Account vĩnh viễn trong GitHub Secrets giống như dán chìa khóa nhà dưới thảm chùi chân—lộ một lần là mất kiểm soát cho đến khi ai đó phát hiện. Với **OIDC (OpenID Connect)**, GitHub Actions cấp một mã thông báo JWT ngắn hạn cho đúng một lượt chạy workflow; đám mây xác minh chữ ký JWT đó và đổi lấy **phiên truy cập tạm thời chỉ sống 15 phút**, không có bất kỳ khóa dài hạn nào để bị đánh cắp!
+
+4. **Phân tách môi trường & Kiểm thử khói tự động (Smoke Test + Rollback)**:
+   Sau khi triển khai bản mới, pipeline tự động gọi endpoint `/healthz` và một luồng đọc/ghi cốt lõi (smoke test). Nếu không trả về `200 OK` trong thời hạn quy định, CD lập tức giữ nguyên hoặc quay lui về digest ổn định trước đó.
 
 ## Mục tiêu học tập
 
@@ -134,6 +150,36 @@ Một quy trình CI chỉ thực sự đáng tin khi chạy trên môi trường
 - Ảnh container chạy bằng quyền `root` và Dockerfile thiếu chỉ thị `USER`.
 - Lệnh chạy kiểm thử bị che lỗi bằng `|| true`.
 - Tệp Docker Compose mở cổng cơ sở dữ liệu `5432` ra toàn bộ giao diện `0.0.0.0`.
+
+### Khung giải thích (nên đọc chậm): Trace từng bước luồng xác thực OIDC không mật khẩu và thăng cấp Digest từ PR lên Production
+
+Hãy theo dõi trọn vẹn một lượt phát hành của nhóm 2 sinh viên từ lúc bấm **Merge Pull Request** trên GitHub cho tới khi người dùng thấy tính năng mới trên Production—không hề lưu một khóa mật khẩu đám mây dài hạn nào!
+
+#### Giai đoạn 1: CI đóng gói & gắn định danh bất biến (phút `0:00 → 2:10`)
+1. Commit `e4f9a12` được merge vào nhánh `main`.
+2. Job `ci-test` chạy `pytest` / `cargo test` và linter (`ruff` / `clippy`) → **Pass**.
+3. Job `ci-build` đóng gói container image, đẩy lên Registry và xuất ra duy nhất một **Digest bất biến**:
+   ```text
+   IMAGE_DIGEST = ghcr.io/iuh-team/board@sha256:8c3d7b...e910
+   ```
+   *(Lưu ý: từ giây phút này trở đi, **không bao giờ** chạy `docker build` lại nữa!)*
+
+#### Giai đoạn 2: Đổi danh tính OIDC trong 4 bước (không có `SECRET_KEY` dài hạn!)
+
+| Bước | Bên gửi → Bên nhận | Nội dung trao đổi thực tế | Thời hạn sống |
+| :---: | :--- | :--- | :---: |
+| 1 | GitHub Actions Runner → GitHub OIDC Provider | Yêu cầu cấp JWT cho workflow hiện tại | — |
+| 2 | GitHub OIDC Provider → Runner | Trả về JWT đã ký có claim: `repo="iuh-team/board"`, `ref="refs/heads/main"`, `environment="staging"` | `5 phút` |
+| 3 | Runner → Cloud STS (`AssumeRoleWithWebIdentity`) | Gửi JWT để xin quyền triển khai vào Role `deploy-staging-role` | — |
+| 4 | Cloud STS → Runner | Kiểm tra chữ ký + khớp chính xác `repo` & `environment` → cấp cặp token tạm thời | **`15 phút` rồi tự hủy!** |
+
+#### Giai đoạn 3: Thăng cấp đúng Digest & Kiểm thử khói (phút `2:15 → 4:00`)
+1. Job `deploy-staging` triển khai đúng `sha256:8c3d7b...e910` lên môi trường Staging.
+2. Smoke test gọi `GET https://staging.board.iuh/healthz` → nhận `200 OK` trong `45 ms`, kiểm tra truy vấn DB thành công.
+3. Thành viên thứ 2 trong nhóm bấm nút **Approve** trên cổng bảo vệ môi trường `production` (GitHub Environment Protection Rule).
+4. Job `deploy-prod` xin token OIDC mới cho Role `deploy-prod-role` và đẩy **chính xác `sha256:8c3d7b...e910`** lên Production, rồi chạy smoke test lần cuối.
+
+Nhờ thiết kế này: (1) lộ kho mã nguồn cũng không lộ khóa đám mây, (2) nhánh `feature/*` không thể giả mạo quyền deploy `production`, và (3) mã chạy trên Production giống từng byte với mã vừa vượt qua Staging.
 
 ## Thách thức
 

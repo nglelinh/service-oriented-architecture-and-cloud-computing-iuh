@@ -14,6 +14,38 @@ Chapter 01-06 introduced FinOps as NIST *measured service* with a feedback loop.
 
 It will not make you a finance team. It will stop a “small demo” from becoming an unexplained bill.
 
+In the old on-premise era, buying a new server required a purchase order, three manager signatures, and a six-week wait. In the cloud, a single developer can spin up 16 GPU instances with one `terraform apply`—and forget to shut them down before a long weekend, generating a 10,000 USD surprise invoice by Monday morning. **FinOps (Cloud Financial Operations)** bridges engineering, finance, and product teams so cloud cost becomes a first-class engineering metric right alongside latency and availability, rather than an unpleasant monthly accounting shock.
+
+## Background Knowledge Map: Cloud Pricing Models, Cost Allocation, and Unit Economics
+
+### 1. The Four Cloud Purchasing Models
+- **On-Demand:** pay by the second/hour with zero commitment—maximum flexibility, highest unit price.
+- **Reserved Instances / Savings Plans (1-year or 3-year):** commit to a steady baseline spend in exchange for **30%–65% discounts**.
+- **Spot / Preemptible Instances:** rent spare provider capacity at **60%–90% off**, with the catch that the provider can reclaim the VM with 30–120 seconds' notice (ideal for stateless batch jobs and fault-tolerant workers).
+- **Free Tier & Academic Credits:** great for labs, but watch out for non-free companion resources (NAT Gateways, unattached Elastic IPs, idle Load Balancers).
+
+### 2. Tagging, Showback/Chargeback, and Unit Economics
+You cannot optimize what you cannot attribute. Enforcing mandatory resource tags (`env`, `service`, `owner`, `cost-center`) enables **showback** (visibility per team) and **unit economics** (e.g., *cost per 1,000 API calls* or *cost per active student*)—the only metric that tells you whether a rising cloud bill is healthy business growth or runaway waste.
+
+### 3. The Three FinOps Levers: Right-Sizing, Scheduling, and Rate Optimization
+Always optimize **usage before rate**: first delete orphaned volumes and **right-size** overprovisioned instances, second turn off dev/staging clusters at night and on weekends, and *only then* buy Savings Plans for the lean, steady baseline.
+
+### Deep-Dive Explanation: Hand-Calculating a 67.5% Cloud Bill Reduction Using Right-Sizing + Savings Plans (Read Slowly)
+
+Suppose a production team runs **10 always-on `m6i.xlarge` instances** (4 vCPU, 16 GiB RAM) at **0.192 USD/hour** On-Demand across a standard **730-hour month**, and CloudWatch metrics reveal peak CPU never exceeds **30%**.
+
+1. **Baseline On-Demand Monthly Bill:**
+   $$10 \times 0.192\text{ USD/hr} \times 730\text{ hr} = 1{,}401.60\text{ USD/month}.$$
+
+2. **Lever 1 — Right-Sizing (Usage Optimization):**
+   Downgrading from `m6i.xlarge` (4 vCPU) to `m6i.large` (2 vCPU, **0.096 USD/hour**) keeps peak CPU safely around 60% while cutting the bill in half:
+   $$10 \times 0.096 \times 730 = 700.80\text{ USD/month} \quad (-50\%\text{ saved!}).$$
+
+3. **Lever 2 — 1-Year Compute Savings Plan (Rate Optimization, ~35% discount):**
+   $$700.80 \times (1 - 0.35) = 700.80 \times 0.65 = 455.52\text{ USD/month}.$$
+
+**Total monthly savings:** $$1{,}401.60 - 455.52 = 946.08\text{ USD/month}$$ (**67.5% reduction**, or **11,353 USD/year** saved) without writing a single line of application code—and notice why doing right-sizing *before* buying the Savings Plan prevented locking into oversized capacity!
+
 ## Learning objectives
 
 - Read a cloud invoice as **meters × rate × time**, not as a single “cloud fee.”

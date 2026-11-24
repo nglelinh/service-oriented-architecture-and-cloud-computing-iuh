@@ -10,7 +10,25 @@ categories:
 lesson_type: optional
 ---
 
-Phần bắt buộc của Chương 13 giới thiệu giám sát và ghi log; bài tùy chọn Chương 02 lý giải vai trò của trace trong hệ thống không có đồng hồ toàn cục; còn bài 13-02 gắn OpenTelemetry với phát hành canary và xác minh artifact. Bài học này đi sâu hơn vào kỹ thuật thực hành: mỗi loại tín hiệu *trả lời câu hỏi nào*, dữ liệu di chuyển qua kiến trúc OpenTelemetry ra sao, và cách xây dựng hệ thống giám sát trả lời trực tiếp câu hỏi "vì sao thao tác thanh toán bị chậm?".
+Một hệ thống chạy trên đám mây hiếm khi hỏng theo kiểu "tắt ngúm toàn bộ". Thứ làm các kỹ sư trực đêm đau đầu nhất là những sự cố mờ ảo: *tại sao 99% người dùng vẫn vào bình thường, nhưng 1% đơn hàng ở TP.HCM bỗng chậm tới 8 giây rồi hết thời gian chờ?* Nếu chỉ có vài dòng `console.log("Error")` rời rạc, bạn giống như đang mò kim đáy bể trong căn phòng tắt đèn.
+
+**Khả năng quan sát (Observability)**—nâng cấp tư duy từ *monitoring* truyền thống (chỉ biết hệ thống có đang lỗi những gì ta đoán trước hay không) sang năng lực đặt bất kỳ câu hỏi mới nào về trạng thái bên trong hệ thống chỉ từ dữ liệu nó phát ra—là đôi mắt không thể thiếu của mọi hệ phân tán.
+
+## Bản đồ kiến thức nền: Bốn trụ cột kỹ thuật của Observability hiện đại
+
+1. **Ba tín hiệu bổ trợ nhau: Metrics, Logs và Traces**:
+   - **Metrics** (số đo chuỗi thời gian như `http_requests_total`, `p99_latency`): cực rẻ để lưu trữ và vẽ biểu đồ xu hướng, cảnh báo nhanh *có chuyện gì đó bất thường*.
+   - **Structured Logs** (nhật ký JSON có `trace_id`, `level`, `latency_ms`): giải thích chi tiết ngữ cảnh xảy ra tại một thời điểm cụ thể trong một dịch vụ.
+   - **Distributed Traces** (chuỗi các *Span* nối nhau bằng `trace_id` chuẩn W3C `traceparent`): cho thấy chính xác một request đi qua những microservice và câu SQL nào, và tốn bao nhiêu mili-giây ở từng chặng.
+
+2. **Khung đo lường RED (cho dịch vụ) & USE (cho hạ tầng)**:
+   Để không vẽ tràn lan 200 biểu đồ vô nghĩa, mọi dịch vụ hướng người dùng đều đo theo **RED** (**R**ate — lưu lượng req/s, **E**rrors — tỷ lệ lỗi, **D**uration — phân vị độ trễ p50/p95/p99), còn tài nguyên máy chủ/DB đo theo **USE** (**U**tilization — mức sử dụng, **S**aturation — độ bão hòa hàng đợi, **E**rrors).
+
+3. **OpenTelemetry (OTel) — Chuẩn thu thập thống nhất**:
+   Thay vì gắn chặt mã nguồn vào SDK độc quyền của từng hãng (Datadog, New Relic, AWS X-Ray), ứng dụng chỉ cần phát tín hiệu theo chuẩn mở **OpenTelemetry** tới **OTel Collector**; Collector sẽ lọc, lấy mẫu và đẩy tới bất kỳ kho lưu trữ nào (Prometheus, Loki, Tempo/Jaeger).
+
+4. **Lấy mẫu (Sampling) & Kẻ thù mang tên "Bùng nổ Cardinality"**:
+   Ghi 100% trace ở lưu lượng 50.000 req/s sẽ làm chi phí quan sát đắt hơn cả tiền chạy ứng dụng. **Head-based sampling** lấy ngẫu nhiên từ đầu (ví dụ 5%), còn **Tail-based sampling** giữ 100% trace lỗi/chậm và chỉ giữ 1% trace bình thường. Đồng thời, tuyệt đối không đưa trường có vô số giá trị (`user_id`, `order_id`, `ip`) vào nhãn (label) của **Metrics** để tránh sập cơ sở dữ liệu chuỗi thời gian!
 
 ## Mục tiêu học tập
 
@@ -132,6 +150,38 @@ Mỗi cảnh báo khẩn nên đi kèm một **quy trình xử lý nhanh (runboo
 <div class="content-box exercise-box">
 <p><strong>Kiểm chứng thực tế trong bài lab.</strong> Một bảng điều khiển luôn hiển thị màu xanh khi chưa từng thử nghiệm lỗi không chứng minh được hệ thống quan sát hoạt động đúng. Hãy chủ động tiêm lỗi để kiểm tra tín hiệu phản hồi.</p>
 </div>
+
+### Khung giải thích (nên đọc chậm): Tính tay thảm họa "Bùng nổ Cardinality" trong Prometheus và cách sửa đúng
+
+Một trong những lỗi kinh điển nhất khiến hệ thống giám sát (Prometheus) đột ngột hết RAM và sập giữa giờ cao điểm là gắn `user_id` vào nhãn của một HTTP counter:
+
+```text
+# SAI NGHIÊM TRỌNG — đừng bao giờ làm thế này!
+http_requests_total{endpoint="/api/posts", method="GET", status="200", user_id="sv_22019482"}
+```
+
+Hãy tính chính xác số lượng **chuỗi thời gian (active time series)** mà Prometheus phải giữ trong RAM cho một trường đại học có **`100.000` sinh viên** truy cập **`10` endpoint** với **`4` nhóm mã trạng thái** (`200`, `400`, `404`, `500`):
+
+#### Bước 1: Tính số chuỗi thời gian (Cardinality)
+
+- **Khi gắn nhãn `user_id` (độ phân tán cao — high cardinality)**:
+  $$\text{Số chuỗi} = 10\text{ endpoints} \times 4\text{ status} \times 100.000\text{ users} = \mathbf{4.000.000\text{ chuỗi thời gian}}!$$
+  Biết rằng mỗi chuỗi thời gian đang hoạt động trong Prometheus tốn trung bình `~3 KB` RAM cho chỉ mục và bộ đệm:
+  $$\text{RAM tối thiểu} = 4.000.000 \times 3\text{ KB} \approx \mathbf{12\text{ GB RAM}}$$
+  chỉ cho **đúng một metric duy nhất**! Nếu ứng dụng có 5 metric như vậy, cụm giám sát lập tức nổ OOM (`60 GB RAM`)!
+
+- **Khi thiết kế chuẩn (bỏ `user_id` khỏi Metric, đẩy `user_id` sang Structured Log & Trace)**:
+  Nhãn metric chỉ giữ các giá trị hữu hạn (`endpoint` đã chuẩn hóa thành `/api/posts/:id` thay vì `/api/posts/9941`, và `status_class` = `2xx/4xx/5xx`):
+  $$\text{Số chuỗi} = 10\text{ endpoints} \times 3\text{ status\_class} = \mathbf{30\text{ chuỗi thời gian}}!$$
+  $$\text{RAM tiêu thụ} = 30 \times 3\text{ KB} = \mathbf{90\text{ KB}} \quad (\text{giảm } \mathbf{133.333\times}\text{!}).$$
+
+#### Bước 2: Quy tắc phân công tín hiệu cầm tay chỉ việc
+
+| Câu hỏi cần trả lời | Dùng tín hiệu nào? | Tại sao? |
+| :--- | :--- | :--- |
+| *"Tỷ lệ lỗi 5xx của `/api/posts/:id` trong 5 phút qua có vượt 1% không?"* | **Metrics** (30 chuỗi, `90 KB`) | Quét tức thì, cảnh báo siêu rẻ |
+| *"Sinh viên `sv_22019482` vừa gặp lỗi 500 vì nguyên nhân gì?"* | **Structured Log** có `user_id` + `trace_id` | Log tìm theo chỉ mục, không tạo chuỗi thời gian |
+| *"Trong 2,4 giây chậm đó, bước DB hay bước gọi Auth Service chiếm lâu nhất?"* | **Distributed Trace** (xem Waterfall Span theo `trace_id`) | Thấy chính xác từng mili-giây xuyên dịch vụ |
 
 ## Thách thức
 

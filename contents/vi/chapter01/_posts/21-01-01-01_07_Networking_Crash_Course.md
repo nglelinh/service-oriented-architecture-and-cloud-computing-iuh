@@ -10,9 +10,26 @@ categories:
 lesson_type: optional
 ---
 
+Khi ứng dụng chạy trên máy tính cá nhân, `localhost:8080` nối thẳng tới `localhost:5432` dễ đến mức ta gần như quên mất mạng máy tính tồn tại. Nhưng ngay phút đầu tiên đưa ứng dụng lên đám mây công cộng, mọi thứ đổi khác: đột nhiên trình duyệt báo lỗi chứng chỉ đỏ lòm, dịch vụ API không kết nối được tới PostgreSQL dù cả hai đều đang chạy, hoặc tệ hơn — một cổng cơ sở dữ liệu mở nhầm `0.0.0.0/0` bị bot quét toàn cầu phát hiện chỉ sau vài phút.
+
 Đặc trưng *truy cập mạng rộng* của NIST dễ bị hiểu một cách chung chung cho đến khi bạn phải thiết kế để một gói tin đi tới đúng container — và *chỉ* container đó. Bài tùy chọn này tổng hợp ngắn gọn năm khái niệm mạng cốt lõi bạn sẽ gặp xuyên suốt từ Chương 08 trở đi: **VPC, subnet, security group, DNS và TLS**. Thay vì hướng dẫn thao tác từng nút bấm trên giao diện web, bài học tập trung xây dựng hệ thuật ngữ chung để khi làm việc với Docker, Kubernetes và Terraform, các khái niệm mạng trở nên rõ ràng và liên kết với nhau.
 
 Bạn nên đọc bài này sau khi hoàn thành các bài bắt buộc của Chương 01, và xem lại trước khi thực hành [lab Lộ trình triển khai]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_01_Lab_Docker_Local %}).
+
+## Bản đồ kiến thức nền: Năm lớp trụ cột của mạng đám mây
+
+Để không bao giờ nhầm lẫn giữa "không tìm thấy đường đi" và "bị tường lửa chặn", hãy đặt năm khái niệm mạng đám mây vào đúng vị trí của chúng trên đường đi của một gói tin:
+
+1. **VPC & Phân hoạch CIDR (Không gian địa chỉ cô lập)**:
+   Thay vì cắm dây vào một bộ chuyển mạch vật lý dùng chung, đám mây định nghĩa một mạng riêng ảo (SDN) với dải IP nội bộ riêng (ví dụ $$10.20.0.0/16$$). Đây là "ranh giới đất" cô lập hoàn toàn dải IP của bạn với hàng nghìn khách hàng khác trên cùng trung tâm dữ liệu.
+2. **Subnet & Bảng định tuyến (Route Table — Đường đi của gói tin)**:
+   Subnet cắt nhỏ VPC theo từng vùng sẵn sàng (AZ). Bảng định tuyến quyết định *hướng đi* của gói tin (ra Internet qua Internet Gateway, đi nhờ ra ngoài qua NAT Gateway, hay chỉ ở trong nội bộ VPC). Tính "công khai" hay "riêng tư" nằm ở bảng định tuyến, không nằm ở dải số IP.
+3. **Security Group & Nguyên tắc đặc quyền tối thiểu (Tường lửa có trạng thái)**:
+   Gắn trực tiếp lên giao diện mạng (NIC) của từng máy chủ hoặc dịch vụ, hoạt động theo mô hình *danh sách cho phép (allow-list) có trạng thái*. Nó trả lời câu hỏi: "Gói tin đến đúng địa chỉ rồi, nhưng có được phép bước vào cổng này không?"
+4. **DNS (Hệ thống định vị theo tên)**:
+   Ánh xạ tên miền dễ nhớ (`courseboard.example.edu`) hoặc tên dịch vụ nội bộ (`postgres.courseboard.svc`) sang địa chỉ IP động vốn thay đổi liên tục khi hệ thống tự động co giãn (autoscaling).
+5. **TLS (Hợp đồng xác thực danh tính và mã hóa)**:
+   Đảm bảo trình duyệt đang nói chuyện với *đúng* máy chủ sở hữu tên miền đó (qua chứng chỉ số do CA ký) và toàn bộ dữ liệu trên đường truyền được mã hóa chống nghe lén.
 
 ## Mục tiêu học tập
 
@@ -153,6 +170,31 @@ Kiến trúc mạng gợi ý cho ứng dụng **Bảng tin học phần IUH**:
 6. Cấp chứng chỉ TLS cho tên miền đó và cấu hình chuyển hướng HTTP sang HTTPS.
 
 Khi thực hành với Docker Compose trên máy cá nhân (Lab A), bạn sẽ mô phỏng *cùng cấu trúc phân tầng* này thông qua mạng Docker do người dùng tự định nghĩa.
+
+### Khung giải thích (nên đọc chậm): Tính tay quy hoạch CIDR và lần dấu từng bước một gói tin HTTPS
+
+Hãy làm thử hai bài tập nhỏ bằng tay để biến lý thuyết mạng thành phản xạ thực chiến.
+
+#### Bước 1: Tính số địa chỉ IP khả dụng khi chia nhỏ VPC $$10.20.0.0/16$$
+
+Một địa chỉ IPv4 có đúng **32 bit**. Phần tiền tố `/16` giữ cố định 16 bit đầu (`10.20.*.*`), để lại $$32 - 16 = 16$$ bit cho máy chủ:
+$$\text{Tổng IP của VPC } 10.20.0.0/16 = 2^{32-16} = 2^{16} = \mathbf{65.536\text{ địa chỉ}}.$$
+
+Bây giờ ta tách ra các subnet `/24` (ví dụ `10.20.1.0/24` cho tầng công khai, `10.20.2.0/24` cho tầng API và `10.20.3.0/24` cho tầng CSDL):
+- Mỗi subnet `/24` có $$2^{32-24} = 2^8 = \mathbf{256\text{ địa chỉ}}$$.
+- Trên AWS VPC, nhà cung cấp luôn giữ lại **5 địa chỉ** mỗi subnet (địa chỉ mạng `.0`, router VPC `.1`, DNS `.2`, dự phòng `.3`, và broadcast `.255`), nên mỗi subnet `/24` cấp thực tế được $$256 - 5 = \mathbf{251\text{ máy/Pod}}$$ — quá dư dả cho dự án sinh viên nhưng lại vừa vặn để dễ nhớ theo từng nhóm số `10.20.1.x`, `10.20.2.x`, `10.20.3.x`.
+
+#### Bước 2: Lần dấu gói tin khi sinh viên mở `https://courseboard.iuh.edu.vn/courses`
+
+| Chặng | Cửa kiểm soát đi qua | Điều gì xảy ra nếu cấu hình sai? |
+| :--- | :--- | :--- |
+| 1. Phân giải tên | DNS công khai trả về IP của Load Balancer (ví dụ `203.0.113.10`) | Báo lỗi `NXDOMAIN` — gói tin chưa kịp rời khỏi trình duyệt |
+| 2. Vào biên VPC | Bảng định tuyến subnet công khai có tuyến `0.0.0.0/0 → IGW`; `sg-edge` mở inbound `443` | Treo kết nối (`Connection timed out`) vì gói tin bị drop lặng lẽ |
+| 3. Bắt tay TLS | Load Balancer trình chứng chỉ SAN khớp `courseboard.iuh.edu.vn` | Trình duyệt chặn với cảnh báo `NET::ERR_CERT_COMMON_NAME_INVALID` |
+| 4. Gọi tầng API | Load Balancer chuyển tiếp tới `10.20.2.15:8080`; `sg-api` chỉ nhận cổng `8080` từ `sg-edge` | Trả về `502 Bad Gateway` hoặc `504 Gateway Timeout` |
+| 5. Truy vấn CSDL | API gọi `10.20.3.20:5432`; `sg-db` chỉ nhận cổng `5432` từ `sg-api` | API ghi log `psycopg2.OperationalError: timeout`, trong khi kẻ tấn công từ Internet hoàn toàn không chạm được tới `10.20.3.20` |
+
+Nhìn vào bảng 5 chặng trên, mỗi lần gặp lỗi mạng trên đám mây, bạn chỉ cần kiểm tra đúng từ trên xuống dưới (DNS → Route Table → Security Group → TLS → Cổng ứng dụng) thay vì đoán mò.
 
 ## Thách thức thường gặp
 

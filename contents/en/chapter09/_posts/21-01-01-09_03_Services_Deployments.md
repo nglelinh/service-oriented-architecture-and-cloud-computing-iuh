@@ -12,6 +12,39 @@ lesson_type: required
 
 While Pods are the fundamental unit in Kubernetes, they are ephemeral and can be replaced at any time. Services provide stable network endpoints, and Deployments manage pod replicas and updates. This lecture covers these essential Kubernetes objects.
 
+In Kubernetes, Pod IP addresses are as temporary as hotel room numbers: the moment a Pod crashes, scales, or gets replaced during an upgrade, a brand-new Pod appears with a completely different IP. Hard-coding Pod IPs into a frontend configuration would break within minutes. **Services** and **Deployments** are the twin pillars that turn ephemeral Pods into stable, zero-downtime production systems: Services give callers a permanent virtual IP and DNS name, while Deployments orchestrate safe, gradual rollouts from version `v1` to `v2`.
+
+## Background Knowledge Map: Service Discovery, Virtual IPs, and Rolling Updates
+
+### 1. Label Selectors, Services, and EndpointSlices
+A Kubernetes **Service** decouples *who you want to talk to* from *where those Pods currently live*. Using a label selector (such as `app: checkout`), the control plane continuously maintains an **EndpointSlice** listing the IP addresses of all Pods that pass their **readiness probe**. `kube-proxy` translates the Service's stable `ClusterIP` into load-balanced forwarding rules across those ready endpoints, while **CoreDNS** resolves `checkout.default.svc.cluster.local` straight to that `ClusterIP`.
+
+### 2. Traffic Exposure Tiers: ClusterIP, NodePort, LoadBalancer, and Ingress
+- **ClusterIP** (default): internal-only virtual IP reachable strictly inside the cluster.
+- **NodePort**: opens a static port (`30000–32767`) on every node's IP and forwards into the ClusterIP.
+- **LoadBalancer**: provisions a cloud provider's external L4 load balancer targeting those NodePorts.
+- **Ingress / Gateway**: adds L7 HTTP/HTTPS routing (hostnames, URL paths, TLS termination) so dozens of internal Services can share a single external IP address.
+
+### 3. ReplicaSets and Rolling-Update Surge Math
+A Deployment never manages Pods directly—it creates a **ReplicaSet** for each version (`v1`, `v2`) and gradually scales the new ReplicaSet up while scaling the old one down. Two parameters control the speed and safety of that transition: **`maxSurge`** (how many extra Pods above desired count may exist temporarily) and **`maxUnavailable`** (how many Pods may be down during the switch).
+
+### Deep-Dive Explanation: Hand-Tracing a Rolling Update's Pod Count and Per-Pod Load Spike (Read Slowly)
+
+Suppose your checkout API runs a Deployment with **`replicas: 10`**, **`maxUnavailable: 2`**, and **`maxSurge: 3`**, serving a steady **1,000 requests/second (RPS)** through a `ClusterIP` Service.
+
+1. **Bounds during the rolling update:**
+   - **Minimum ready Pods guaranteed:** $$10 - \text{maxUnavailable} = 10 - 2 = 8\text{ Pods}$$.
+   - **Maximum total Pods created simultaneously:** $$10 + \text{maxSurge} = 10 + 3 = 13\text{ Pods}$$.
+   - At the very start of rollout `v1 → v2`, Kubernetes can immediately terminate 2 `v1` Pods (leaving 8 ready) and create $$2 + 3 = 5$$ new `v2` Pods (bringing total Pods to $$8 + 5 = 13$$).
+
+2. **Check the worst-case per-Pod traffic spike during rollout:**
+   - Steady-state load per Pod: $$1{,}000 / 10 = 100\text{ RPS/Pod}$$.
+   - While those 5 new `v2` Pods are still booting (failing readiness probes, so excluded from Endpoints), only **8** `v1` Pods carry the entire 1,000 RPS:
+     $$\text{Peak load per ready Pod} = \frac{1{,}000}{8} = 125\text{ RPS/Pod} \quad (+25\%\text{ load increase!}).$$
+
+3. **Zero-downtime insight:**
+   If each Pod saturates at 115 RPS, setting `maxUnavailable: 2` will trigger cascading timeouts *during your own deployment*! Setting **`maxUnavailable: 0`** and **`maxSurge: 2`** guarantees all 10 existing Pods stay ready until new `v2` Pods pass their readiness probes—keeping per-Pod load capped at 100 RPS at the modest cost of 2 temporary extra Pods.
+
 ## The Networking Challenge
 
 ### Problem: Pods are Ephemeral

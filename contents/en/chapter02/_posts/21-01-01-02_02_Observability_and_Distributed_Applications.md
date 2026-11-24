@@ -18,6 +18,44 @@ The required lesson defines a distributed system by concurrency, no global clock
 - Describe OpenTelemetry as a vendor-neutral telemetry contract (CNCF graduated, May 2026).
 - Connect independent failure to *chaos* and *SLO-based* operations.
 
+At 3:00 AM an alert fires: checkout error rates just spiked to 4%, yet every single server's CPU and RAM dashboard is glowing calm green! In a monolith, you opened one log file and found the stack trace in thirty seconds. In a modern distributed system spanning ten microservices, a single user click fans out across gateways, caches, gRPC stubs, and message queues—making **distributed tracing, structured logs, metrics (OpenTelemetry)**, and **SLO error budgets** the only way to see inside the machine.
+
+## Background Knowledge Map: The Three Pillars of Observability and SLO Engineering
+
+1. **Correlated Telemetry Signals (Metrics, Logs, Traces):** *Metrics* tell you **that** something is slow (p99 latency jumped); *Traces* (`trace_id` + tree of `span_id`s) tell you **where** along the distributed call graph the time went; *Logs* linked by `trace_id` tell you **why** that exact span threw an exception.
+2. **OpenTelemetry (OTel — CNCF Graduated May 2026):** Standardizes context propagation (W3C `traceparent` HTTP header) and wire protocols (OTLP) so services written in Go, Python, and Java emit unified telemetry without vendor lock-in.
+3. **SLOs, Error Budgets, and Chaos Engineering:** A Service Level Objective (e.g., 99.9% successful requests over 30 days) defines an explicit **error budget**—turning reliability from vague anxiety into a shared engineering currency, validated proactively via controlled chaos experiments.
+
+### Worked Example (Step by Step): Reading a Distributed Trace Waterfall and an Error Budget
+
+**Part A — Dissecting a 310 ms distributed trace (`trace_id = 9f3a...`):** A checkout request executes 4 spans (Cart and Cache run in parallel, followed sequentially by Payments):
+
+| Span | Parent Span | Start → End (ms) | Duration | Share of Total |
+|---|---|---|---|---|
+| `api-gateway` (root) | — | `0 → 310` | $$310	ext{ ms}$$ ($$15	ext{ ms}$$ self) | 4.8% self |
+| `cart-service` | `api-gateway` | `10 → 45` | $$35	ext{ ms}$$ | 11.3% (parallel) |
+| `redis-cache` | `api-gateway` | `10 → 30` | $$20	ext{ ms}$$ | 6.5% (parallel) |
+| `payments-grpc` | `api-gateway` | `45 → 285` | **$$240	ext{ ms}$$** | **77.4%** (bottleneck!) |
+
+Looking at the waterfall makes the diagnosis instant: optimizing `redis-cache` from 20 ms to 2 ms saves **0 ms** on total latency (it isn't on the critical path!), whereas fixing `payments-grpc` directly attacks 77.4% of end-to-end latency!
+
+**Part B — 30-day SLO Error Budget math:** A 30-day month has $$30 	imes 24 	imes 60 = 43{,}200	ext{ minutes}$$. Under a **99.9% availability SLO**, your allowed downtime (error budget) is:
+
+$$
+(1 - 0.999) 	imes 43{,}200 = \mathbf{43.2	ext{ minutes/month}}.
+$$
+
+If a bad deploy causes a 30-minute outage on Day 5, you have burned $$30 / 43.2 = \mathbf{69.4\%}$$ of the entire month's budget—triggering an automatic freeze on risky feature launches in favor of reliability work!
+
+### Deep-Dive Explanation: Turning Telemetry into Faster Incident Resolution (Read Slowly)
+
+1. **Propagate `traceparent` across every hop (including queues):** if even one microservice or Kafka consumer forgets to forward the W3C trace header, your trace breaks into disconnected fragments right where you need it most.
+2. **Track tail latency (p95 / p99), never just averages:** an average latency of 40 ms can hide a p99 of 2,500 ms—and in a fan-out service calling 20 backends, **18% of users** will hit a p99 tail delay ($$1 - 0.99^{20} pprox 18.2\%$$)!
+3. **Practice controlled failure (Chaos Engineering):** injecting a 200 ms delay into `payments-grpc` in staging verifies that timeouts and circuit breakers actually work before an unplanned outage tests them in production.
+4. **Use error budgets to align devs and SREs:** when budget remains, ship fast; when budget nears zero, pause features and harden reliability.
+
+**Quick check.** In Part A, if `payments-grpc` latency is cut in half (from 240 ms to 120 ms), what is the new total checkout latency? $$310 - 120 = \mathbf{190	ext{ ms}}$$—a 38.7% end-to-end speedup from fixing a single critical-path span!
+
 ## 1. From “is the host up?” to “is the user journey intact?”
 
 A single checkout may touch an API gateway, a cart service, a payments gRPC stub, a cache, and a warehouse topic. Host CPU being green does not mean the *causal path* succeeded. Modern observability treats a request as a **distributed trace**: a tree of spans with a shared `trace_id`.

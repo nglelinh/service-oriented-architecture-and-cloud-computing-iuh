@@ -10,7 +10,23 @@ categories:
 lesson_type: optional
 ---
 
-Bài 01-06 đã giới thiệu FinOps như mô hình *measured service* có vòng phản hồi, còn phần bắt buộc của Chương 12 đề cập công cụ ước tính giá và phí truyền dữ liệu ra ngoài (egress). Bài học này tập trung vào **kỹ năng đọc và kiểm soát hóa đơn đám mây cho nhóm thực hành tại IUH**: cấu trúc một hóa đơn gồm những thành phần nào, các mục đo dễ phát sinh chi phí ngoài dự kiến và những thiết lập bắt buộc *trước khi* thử nghiệm trên tài khoản free-tier.
+Có một câu chuyện có thật xảy ra với vô số sinh viên và kỹ sư mới ra trường: tạo một cụm thử nghiệm trên đám mây để làm đồ án cuối kỳ, thấy mọi thứ chạy êm nên đóng laptop đi ngủ—và ba tuần sau nhận được hóa đơn thẻ tín dụng báo nợ **150 USD** chỉ vì một chiếc **NAT Gateway** hoặc một máy ảo GPU quên tắt vẫn đang chạy không tải 24/7.
+
+Trên đám mây, **mọi quyết định kiến trúc đều là một quyết định tài chính**. **FinOps (Cloud Financial Operations)** không phải là việc kế toán cắt giảm chi tiêu mù quáng, mà là năng lực đọc hiểu đơn vị tính phí, dự báo chi phí trước khi bấm *Deploy*, và thiết lập vòng phản hồi tự động để mỗi đồng chi ra đều mang lại giá trị kỹ thuật rõ ràng.
+
+## Bản đồ kiến thức nền: Bốn trục tư duy đọc hiểu hóa đơn đám mây (FinOps)
+
+1. **Bốn đơn vị đo lường cốt lõi của Cloud Billing**:
+   Hóa đơn đám mây quy mọi tài nguyên về bốn nhóm đồng hồ đếm: **Tính toán** (`vCPU-giờ`, `GB-RAM-giờ`, `GB-giây` cho serverless), **Lưu trữ** (`GB-tháng` + số lượng thao tác `IOPS`/`PUT`/`GET`), **Mạng** (`GB` truyền ra ngoài *egress*, truyền xuyên Availability Zone, và phí giữ IP công khai/NAT Gateway theo giờ), và **Dịch vụ quản lý** (Managed DB, Load Balancer, kho log).
+
+2. **Mô hình định giá (On-Demand, Reserved/Savings Plans, Spot, Serverless)**:
+   **On-Demand** linh hoạt tối đa nhưng đắt nhất. **Savings Plans / Reserved** giảm $30\%\text{–}60\%$ khi cam kết dùng ổn định 1–3 năm. **Spot / Preemptible** giảm tới $70\%\text{–}90\%$ cho tác vụ chịu được thu hồi bất ngờ (batch, CI runner). **Serverless / Scale-to-Zero** tính theo mili-giây thực chạy—lý tưởng cho đồ án sinh viên có lưu lượng thấp và ngắt quãng.
+
+3. **Các "kẻ đốt tiền thầm lặng" (Hidden Cost Traps)**:
+   Chi phí bất ngờ thường không đến từ máy chủ chính mà từ: ổ đĩa rời (*unattached EBS/Persistent Disk*) bị bỏ quên sau khi xóa VM, **NAT Gateway** tính phí theo giờ lẫn mỗi GB đi qua, lưu lượng **Cross-AZ** giữa hai máy nằm khác vùng sẵn sàng, và log không có chính sách xóa tự động (*retention policy*).
+
+4. **Phân bổ chi phí bằng Nhãn (Tagging) & Hạn mức cảnh báo (Budget Alerts)**:
+   Nguyên tắc số 1 của FinOps: mọi tài nguyên sinh ra phải gắn nhãn (`project`, `env`, `owner`) và đặt **Budget Alert** ở các ngưỡng $50\%$, $80\%$, $100\%$ ngân sách ngay ngày đầu mở tài khoản.
 
 ## Mục tiêu học tập
 
@@ -111,6 +127,21 @@ Nguyên tắc đơn giản: bất kỳ mục tính phí nào không phục vụ 
 - Không chia sẻ thông tin đăng nhập tài khoản root trong nhóm chat.
 - Luôn thao tác đúng trong project hoặc subscription được cấp.
 - Ghi rõ bảng ước lượng chi phí trong báo cáo đồ án, kể cả khi chi phí thực tế bằng $$0$$ do chạy hoàn toàn trên máy cục bộ.
+
+### Khung giải thích (nên đọc chậm): Tính tay hóa đơn 1 tháng của đồ án sinh viên — Kiến trúc "quên tối ưu" vs. Kiến trúc FinOps
+
+Giả sử nhóm hai sinh viên triển khai ứng dụng web Bảng tin học phần có khoảng **200 lượt truy cập/ngày** trong suốt 1 tháng (`730 giờ`). Hãy so sánh hai cấu hình chạy cùng một ứng dụng trên đám mây (đơn giá minh họa sát thực tế AWS/GCP/Azure):
+
+| Hạng mục tài nguyên | Cấu hình A (Dùng máy ảo + NAT Gateway 24/7) | Cấu hình B (FinOps: Scale-to-Zero + Managed Free Tier) |
+| :--- | :--- | :--- |
+| **Compute (Ứng dụng web)** | 1 VM `2 vCPU, 4 GB RAM` chạy 24/7: $730 \times \$0{,}042 = \mathbf{\$30{,}66}$ | Container Serverless (Cloud Run / App Runner), chỉ chạy thực 15 giờ/tháng → **$\$0{,}00$** (trong hạn mức miễn phí) |
+| **NAT Gateway** | 1 NAT Gateway chạy 24/7: $730 \times \$0{,}045 = \mathbf{\$32{,}85}$ (+ `$0,045/GB`) | Không dùng NAT Gateway (dùng Public Subnet an toàn + Security Group chặt) → **$\$0{,}00$** |
+| **Cơ sở dữ liệu** | Managed Postgres `db.t3.small` 24/7 + 50 GB đĩa: `~$28,00` | Postgres tier nhỏ/tự động ngủ hoặc chia sẻ trong lớp + 10 GB đĩa → **$\$0{,}00\text{–}\$5{,}00$** |
+| **Ổ đĩa & Snapshot bỏ quên** | 2 ổ 100 GB quên xóa sau khi thử nghiệm: $200 \times \$0{,}10 = \mathbf{\$20{,}00}$ | Tự động dọn bằng `tofu destroy` + lifecycle 7 ngày → **$\$0{,}00$** |
+| **Log không đặt retention** | In `DEBUG` log 20 GB/tháng lưu vĩnh viễn: `~$10,00` | Chỉ ghi `INFO/ERROR`, retention 14 ngày (`< 1 GB`) → **$\$0{,}00$** |
+| **TỔNG HÓA ĐƠN / THÁNG** | **$\approx \$121{,}51$ (~3.000.000 VNĐ/tháng!)** | **$\$0{,}00\text{–}\$5{,}00$ (~0–125.000 VNĐ/tháng)** |
+
+Con số biết nói: hai kiến trúc phục vụ **cùng một lượng người dùng** nhưng chênh nhau hơn **$24\times$ chi phí**, trong đó riêng một chiếc NAT Gateway chạy không tải đã ngốn gần **$33/tháng**—đắt hơn cả máy chủ chạy ứng dụng!
 
 ## Thách thức
 

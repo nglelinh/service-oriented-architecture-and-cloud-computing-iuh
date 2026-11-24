@@ -14,6 +14,24 @@ lesson_type: optional
 
 Hãy sử dụng trang tổng hợp này khi bạn muốn **tự thiết kế và đưa một dịch vụ đa tầng nhỏ vào vận hành thực tế**, thay vì chỉ dừng ở mức lý thuyết.
 
+Đọc lý thuyết về Docker, Kubernetes, OpenTofu hay FinOps giúp bạn hiểu *bản đồ*, nhưng chỉ khi tự tay viết một tệp `Dockerfile` đa tầng, nhìn thấy dòng `tofu plan` cảnh báo xóa tài nguyên, và giải cứu một container bị lỗi mạng ngay trên terminal của chính mình, kiến thức đó mới thực sự trở thành kỹ năng nghề nghiệp.
+
+Chương 15 là **xưởng thực hành tổng hợp** thiết kế riêng cho sinh viên IUH: mọi bài lab đều được sắp xếp theo nguyên tắc **"cục bộ trước, đám mây sau — an toàn tài chính tuyệt đối"**, dẫn dắt bạn đi từng bước chắc chắn từ chiếc laptop cá nhân đến một đồ án Capstone hoàn chỉnh hai người.
+
+## Bản đồ kiến thức nền: Bốn năng lực thực chiến bạn rèn luyện xuyên suốt Chương 15
+
+1. **Tự chủ môi trường cục bộ (Local-First Cloud Engineering)**:
+   Hơn $85\%$ kỹ năng Cloud-Native (đóng gói container, mạng nhiều dịch vụ, kiểm thử sức khỏe, viết IaC khai báo, ghi log cấu trúc và chạy CI cơ bản) có thể luyện tập nhanh hơn, lặp lại vô hạn lần và **hoàn toàn miễn phí (`$0`)** ngay trên máy cá nhân trước khi chạm tới đám mây thật.
+
+2. **Tư duy "Cơ chế an toàn mặc định" (Guardrails by Default)**:
+   Thay vì sửa sai sau khi đã lộ khóa bí mật hay phát sinh hóa đơn, mọi bài lab trong chương đều thiết lập rào chắn ngay từ bước 0: `.gitignore` chặn `.env` và `*.tfstate`, tắt `tofu apply` lên đám mây theo mặc định, và kiểm tra giới hạn Free Tier trên giấy trước khi bấm nút.
+
+3. **Kỹ năng chẩn đoán hệ thống thực tế (Debugging Methodology)**:
+   Khi một hệ thống nhiều container không chạy, sinh viên học cách điều tra có phương pháp thay vì đoán mò: kiểm tra trạng thái (`docker compose ps`), đọc log có cấu trúc (`logs`), kiểm tra DNS/cổng nội bộ và đối chiếu biến môi trường.
+
+4. **Hợp tác nhóm kỹ thuật (Two-Person Engineering Workflow)**:
+   Đồ án Capstone nhóm hai người mô phỏng đúng quy trình doanh nghiệp: chia nhánh Git rõ ràng, mở Pull Request có đồng đội duyệt, chạy CI tự động kiểm thử, và viết tài liệu bàn giao để người ngoài có thể chạy lại hệ thống của bạn trong 5 phút.
+
 ## Bạn sẽ thực hiện những gì
 
 1. Đọc bốn bài lý thuyết tùy chọn chuyên sâu: mạng đám mây, quan sát hệ thống, CI/CD và FinOps.
@@ -57,6 +75,19 @@ Các phần bổ sung liên kết nằm *ngay trong* bài bắt buộc bản ti�
 | Đồ án triển khai | **[15-04]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_04_Capstone %})** (nhóm 2 sinh viên) |
 
 Nếu CS 40 là môn học chuyên biệt về *triển khai*, thì môn học tại IUH vẫn giữ trọng tâm *nền tảng đám mây và dữ liệu* kết hợp nhánh thực hành tùy chọn này. Bạn vẫn có thể nắm phần lý thuyết cốt lõi mà không cần Chương 15, nhưng để thực sự tự tin triển khai một dịch vụ hoàn chỉnh thì không thể chỉ dựa vào slide bài giảng.
+
+### Khung giải thích (nên đọc chậm): Lộ trình 4 chặng thực hành và ma trận Thời gian – Rủi ro chi phí
+
+Trước khi bắt tay vào Lab 15-01, hãy nhìn toàn cảnh 4 chặng của Chương 15 như một dây chuyền tích lũy kỹ năng—mỗi bài lab phía trước tạo trực tiếp nền móng (và mã nguồn tái sử dụng được!) cho đồ án Capstone 15-04:
+
+| Chặng | Bài thực hành | Sản phẩm kỹ thuật giữ lại cho Capstone | Thời lượng dự kiến | Chi phí tối đa (nếu tuân thủ quy tắc) |
+| :---: | :--- | :--- | :---: | :---: |
+| **1** | **15-01: Docker Local** | `Dockerfile` multi-stage + `compose.yaml` + `/healthz` + Volume DB | `2–3 giờ` | **`$0`** (100% cục bộ) |
+| **2** | **15-02: OpenTofu Concepts** | Thư mục `infra/` với `main.tf`, `variables.tf`, quy trình `fmt/validate/plan` | `2 giờ` | **`$0`** (provider cục bộ) |
+| **3** | **15-03: Free-Tier Notes** | Checklist bảo mật Root MFA, Budget Alert `$1`, bảng ước tính FinOps | `1–1,5 giờ` | **`$0`** (thực hành trên giấy/sandbox) |
+| **4** | **15-04: Capstone (2 SV)** | Ứng dụng **Bảng tin học phần IUH** hoàn chỉnh + CI + tài liệu kiến trúc & FinOps | `1–2 tuần` | **`$0`** (chạy chuẩn cục bộ hoặc free-tier có kiểm soát) |
+
+Nếu hoàn thành tuần tự 4 chặng này, bạn không chỉ qua môn xuất sắc mà còn sở hữu ngay một dự án kỹ thuật sạch sẽ, có thể tự tin đưa vào hồ sơ ứng tuyển (CV/Portfolio) cho vị trí Backend, DevOps hoặc Cloud Engineer.
 
 ## Quy tắc an toàn áp dụng cho mọi bài lab
 

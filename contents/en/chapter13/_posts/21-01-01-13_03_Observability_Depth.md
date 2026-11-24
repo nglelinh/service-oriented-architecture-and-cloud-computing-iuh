@@ -12,6 +12,23 @@ lesson_type: optional
 
 Chapter 13’s required notes mention monitoring and logging. The Chapter 02 optional note explains why traces exist in a system with no global clock. The Chapter 13-02 optional note ties OpenTelemetry to canaries and signed artifacts. This lesson is the **depth pass**: what each signal is *for*, how OpenTelemetry actually moves data, and how an IUH team avoids a dashboard that cannot answer “why is checkout slow?”
 
+At 2:14 AM, your pager fires: checkout latency has spiked from 80 ms to 4.2 seconds, yet CPU on the API gateway is a calm 15% and every container shows green health checks! Without **observability**, debugging a 12-microservice distributed call graph is guesswork in the dark. With **Logs, Metrics, and Distributed Traces** stitched together by **OpenTelemetry (OTel)**, you click one slow trace ID and spot the exact culprit in 10 seconds: a missing database index inside `inventory-service` stalling a synchronous gRPC call.
+
+This lecture goes beyond printing `console.log` to build production-grade observability: RED metrics (Rate, Errors, Duration), W3C `traceparent` context propagation, structured JSON logs correlated by `trace_id`, and OpenTelemetry Collector pipelines.
+
+---
+
+## Background Knowledge Map: The Three Signals & OpenTelemetry Correlation
+
+Four engineering principles turn raw telemetry noise into fast root-cause diagnosis:
+
+1. **Metrics (Aggregated Numbers — What & When):** Time-series counters and histograms (Prometheus / OTel Metrics) answer *"is p99 latency rising right now?"* cheaply across millions of requests—never put high-cardinality `user_id` labels on metrics!
+2. **Distributed Traces (Causal Path — Where):** A `trace_id` propagates across HTTP/gRPC headers (`traceparent`), linking child **spans** across services into a waterfall timeline that pinpoints which downstream hop burned the latency budget.
+3. **Structured Logs (Rich Event Detail — Why):** JSON logs carrying `trace_id` and `span_id` explain *why* a specific span failed (e.g., deadlock error code, invalid payload) without manual timestamp matching.
+4. **OpenTelemetry (Vendor-Neutral Instrumentation):** Instrument your service *once* with OTel SDKs and route signals via the **OTel Collector** to Prometheus, Jaeger/Tempo, or Loki without vendor lock-in.
+
+---
+
 ## Learning objectives
 
 - Separate **logs, metrics, and traces** by the question each answers, then correlate them with one context (`trace_id` / `service.version`).
@@ -163,6 +180,32 @@ Enough for the capstone, not a platform career:
 - **xem trước:** [OpenTelemetry: OpenTelemetry in Five Minutes \| Project Lightning Talk](https://www.youtube.com/watch?v=l8xiNOCIdLY) — CNCF [Cloud Native Computing Foundation], English. Watch first: OpenTelemetry as a pipeline, which is how this depth lesson says telemetry actually moves.
 - [Observability and Its Pillars Explained \| Logs, Metrics & Traces Simplified](https://www.youtube.com/watch?v=rJfZyA831fI) — OpenObserve, English. Logs, metrics, and traces as three jobs, the opening split of the lesson.
 - [OpenTelemetry: Simplifying Hybrid Cloud Monitoring](https://www.youtube.com/watch?v=hLvwoow3XTk) — IBM Technology, English. IBM’s picture of OpenTelemetry across a hybrid estate, for the collector-and-backend section.
+
+---
+
+### Worked Concrete Example: Diagnosing a 420 ms Checkout Spike From One Distributed Trace
+
+Trace a single `POST /checkout` request (`trace_id = 7f3a...`) across 4 spans:
+
+| Span Name | Service | Start (ms) | Duration (ms) | Share of Total Latency |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST /checkout` (root) | `api-gateway` | $$0	ext{ ms}$$ | $$420	ext{ ms}$$ | $$100\%$$ |
+| `verify_jwt` | `auth-service` | $$5	ext{ ms}$$ | $$15	ext{ ms}$$ | $$3.6\%$$ |
+| `reserve_stock` | `inventory-svc` | $$22	ext{ ms}$$ | $$365	ext{ ms}$$ | **$$86.9\%$$ (Bottleneck!)** |
+| `SELECT FOR UPDATE` (child) | `postgres-db` | $$30	ext{ ms}$$ | $$350	ext{ ms}$$ | **$$83.3\%$$ (Root cause!)** |
+
+Adding 20 more `api-gateway` replicas would shave **0 ms** off this outage—the trace waterfall proves immediately that 83.3% of the latency sits in a single contended row lock inside PostgreSQL!
+
+### Deep-Dive Explanation: Four Rules for Production Observability (Read Slowly)
+
+1. **Always alert on user-facing SLO symptoms (RED metrics), not raw CPU:** High CPU with 15 ms p99 latency is healthy utilization; 5% error rate at 10% CPU is an active outage.
+2. **Never put unbounded IDs (`request_id`, `email`) into Prometheus metric labels:** High-cardinality labels explode time-series memory and crash your metrics backend; put IDs in logs and trace attributes instead.
+3. **Use tail-based sampling when trace volume gets expensive:** Sampling 100% of error traces and slow p99 traces while keeping 5% of fast `200 OK` traces cuts storage by 15× without losing a single incident clue.
+4. **Propagate `traceparent` through async queues (Kafka/SQS) too:** Injecting trace context into message headers keeps the causal chain unbroken across event-driven microservices.
+
+**Quick check.** If a service handles 1,000 requests/second and you want to alert when more than 1% of requests return HTTP 5xx, which signal (Logs, Metrics, or Traces) should trigger the alert—and which signal should you open first once the alert fires?
+
+---
 
 ## Exercises
 

@@ -10,7 +10,33 @@ categories:
 lesson_type: required
 ---
 
-This lecture covers fundamental distributed computing models and introduces the Hadoop ecosystem with a focus on YARN for resource management.
+Imagine ten teams at a bank all wanting to run different jobs—SQL reports, fraud-detection ML, and nightly ETL—on the exact same 200-server Hadoop cluster. In early Hadoop 1.0, MapReduce owned *both* cluster scheduling and job execution, forcing every non-MapReduce workload to sit on separate idle hardware! **YARN** (*Yet Another Resource Negotiator*) solved that crisis by splitting **cluster resource management** from **application execution**—becoming the first true distributed operating system for big data.
+
+## Background Knowledge Map: Computing Models, HDFS Storage, and YARN Scheduling
+
+1. **Distributed Computing Models:** *Client–Server* centralizes state behind request/response APIs; *Peer-to-Peer (P2P)* distributes load symmetrically across equal nodes; *Event-Driven* decouples producers and consumers through asynchronous message brokers.
+2. **HDFS (Write-Once, Read-Many Distributed Storage):** Splits multi-terabyte files into large blocks (typically **128 MB**) replicated **3×** across racks—optimizing sequential throughput and tolerating disk/rack loss automatically.
+3. **YARN (Decoupled Cluster OS):** A central **ResourceManager** allocates CPU/RAM containers across **NodeManagers**, while each submitted job spawns its own **ApplicationMaster** to negotiate containers and monitor tasks—letting MapReduce, Spark, and Flink share one physical cluster.
+
+### Worked Example (Step by Step): HDFS Block Replication & YARN Container Packing Math
+
+Suppose you store a **1 TB** ($$1{,}024	ext{ GB}$$) clickstream dataset in HDFS with **128 MB** ($$0.128	ext{ GB}$$) blocks and replication factor **3**, then process it on a **4-node YARN cluster** (64 GB RAM per node = **256 GB** total):
+1. **HDFS block count:** $$\dfrac{1{,}024	ext{ GB}}{0.128	ext{ GB/block}} = \mathbf{8{,}000	ext{ logical blocks}}$$.
+2. **Physical disk footprint (3× replication):** $$8{,}000 	imes 3 = \mathbf{24{,}000	ext{ block replicas}} \implies \mathbf{3	ext{ TB}}$$ of raw disk space across racks.
+3. **YARN container allocation:** reserve 1 container of **4 GB** for the job's `ApplicationMaster`, leaving $$256 - 4 = 252	ext{ GB}$$ for worker containers. If each worker container requests **8 GB RAM**, YARN can schedule:
+   $$
+   \left\lfloor rac{252}{8} ightfloor = \mathbf{31	ext{ parallel worker containers}}
+   $$
+   (with 4 GB unallocated fragmentation).
+
+### Deep-Dive Explanation: Why Separating Storage, Scheduling, and Compute Changed Big Data (Read Slowly)
+
+1. **Large HDFS blocks minimize NameNode RAM pressure:** storing 1 TB in 4 KB OS blocks would require 268 million metadata entries, crashing the NameNode; 128 MB blocks shrink metadata to just 8,000 entries!
+2. **Rack-aware 3× replication balances locality and safety:** HDFS places Replica 1 locally, Replica 2 on a different rack, and Replica 3 on a different node in that second rack—surviving a full rack switch outage while keeping cross-rack traffic low.
+3. **YARN's ApplicationMaster prevents scheduler bottlenecks:** instead of one master tracking 100,000 task states, each job's `ApplicationMaster` handles its own task retries and speculation, letting the `ResourceManager` focus purely on fair capacity allocation.
+4. **See YARN as Kubernetes' conceptual ancestor:** ResourceManager ↔ kube-scheduler, NodeManager ↔ kubelet, YARN Container ↔ Kubernetes Pod!
+
+**Quick check.** If a cluster has **10 TB** of raw disk space and HDFS replication factor is **3**, what is the maximum *usable* dataset size it can store? $$\dfrac{10	ext{ TB}}{3} pprox \mathbf{3.33	ext{ TB}}$$ (and in practice ~2.8 TB leaving 15% headroom for temporary shuffle files!).
 
 ## Distributed Computing Models
 

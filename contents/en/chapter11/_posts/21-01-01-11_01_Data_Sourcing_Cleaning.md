@@ -12,6 +12,38 @@ lesson_type: required
 
 Data preparation is a critical step in any data analytics or machine learning project. This lecture covers the essential techniques for sourcing data from various sources and cleaning it for analysis.
 
+There is an old saying in data engineering that every graduate discovers the hard way on their first production project: *80% of your time goes into finding, cleaning, and validating messy data, and only 20% goes into the shiny analytics or machine-learning model*. Real-world data arrives with duplicate webhook deliveries, mixed date formats (`03/04/2026` vs. `04/03/2026`), missing nulls, and sensor glitches that quietly drag averages off a cliff. **Data sourcing, cleaning, and preparation** is the discipline of turning raw, untrusted feeds into reproducible, statistically sound datasets.
+
+## Background Knowledge Map: From Raw Ingestion to Clean Analytical Tables
+
+### 1. Sourcing Patterns: Pull APIs, CDC Streams, and Schema Drift
+Data enters cloud pipelines through batch file drops, paginated REST/GraphQL pulls, or **Change Data Capture (CDC)** logs streaming row-level inserts/updates straight from operational databases. Because upstream teams evolve application code independently, **schema drift** (renamed columns, changed types, unexpected nulls) is inevitable unless pipelines enforce explicit schema validation at ingestion time.
+
+### 2. Missingness Mechanisms and Imputation Discipline
+Not all missing values mean the same thing. Statisticians distinguish **MCAR** (Missing Completely at Random), **MAR** (Missing at Random, predictable from other columns), and **MNAR** (Missing Not at Random—for example, high-income users deliberately skipping an optional salary field). Blindly dropping rows or filling every null with `0` can introduce severe bias into downstream models.
+
+### 3. Robust Statistics: Why Median and IQR Outperform Mean and Standard Deviation
+A single corrupted record—like a decimal point dropped on a 5.00 USD order turning into 500.00 USD—can distort the arithmetic mean and standard deviation dramatically. **Robust estimators** like the median and **Interquartile Range (IQR)** resist extreme outliers and provide reliable automated anomaly fences during data cleaning.
+
+### Deep-Dive Explanation: Hand-Testing Outlier Detection with IQR and Seeing How One Bad Row Corrupts the Mean (Read Slowly)
+
+Consider a small sample of **7 order amounts (in USD)** extracted from an e-commerce feed where one row has a decimal-point bug:
+$$[20,\; 22,\; 24,\; 25,\; 26,\; 28,\; 500].$$
+
+1. **Compare Mean vs. Median before cleaning:**
+   - **Arithmetic Mean:**
+     $$\bar{x} = \frac{20 + 22 + 24 + 25 + 26 + 28 + 500}{7} = \frac{645}{7} \approx 92.14\text{ USD!}$$
+     Every normal order is between 20 and 28 USD, yet one corrupted row inflates the reported average by nearly **4×**!
+   - **Median** (4th value in sorted order):
+     $$\text{Median} = 25.00\text{ USD}$$ (completely unaffected!).
+
+2. **Apply Tukey's IQR outlier fence by hand:**
+   - Lower half $$[20, 22, 24] \implies Q_1 = 22$$.
+   - Upper half $$[26, 28, 500] \implies Q_3 = 28$$.
+   - Interquartile Range: $$\mathrm{IQR} = Q_3 - Q_1 = 28 - 22 = 6$$.
+   - Upper outlier fence: $$Q_3 + 1.5 \times \mathrm{IQR} = 28 + 1.5 \times 6 = 28 + 9 = 37\text{ USD}$$.
+   - Since $$500 > 37$$, the pipeline automatically quarantines `500` for review; the cleaned 6-order mean immediately snaps back to $$\frac{145}{6} \approx 24.17\text{ USD}$$—matching reality!
+
 ## Data Sourcing
 
 ### Data Licensing

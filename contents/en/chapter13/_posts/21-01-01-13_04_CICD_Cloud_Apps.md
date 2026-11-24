@@ -12,6 +12,21 @@ lesson_type: optional
 
 The required Chapter 13 lesson introduces automated pipelines and names GitHub Actions. This optional lesson is the **IUH working model**: what a two-person team actually puts in the pipeline, how a build artifact reaches a *named environment*, and how you avoid storing cloud passwords in the repo. It is not a copy of any external assignment. The running example is still the **IUH Course Board**.
 
+Picture a team that deploys only once a month on Friday night by SSH-ing into production servers and manually running `git pull && npm restart`. Every release is a nail-biting marathon where 40 merged features collide at once and rolling back takes an hour of panic. Modern cloud teams invert that risk completely through **CI/CD (Continuous Integration & Continuous Delivery)**: every small pull request triggers automated build, test, security scanning, immutable container packaging, and progressive rollout (Blue–Green or Canary) with automatic rollback in seconds!
+
+This lecture maps the complete cloud CI/CD pipeline: artifact immutability (build once, deploy by SHA digest), GitHub Actions workflow anatomy, **Blue–Green vs. Canary** deployment math, and DORA reliability metrics.
+
+---
+
+## Background Knowledge Map: Four Pillars of Cloud-Native CI/CD
+
+1. **Continuous Integration (Fast Quality Gates):** Every commit runs linting, unit tests, static security scans (SAST/dependency audit), and builds a signed immutable container image tagged by Git SHA—catching defects in minutes rather than weeks.
+2. **Build Once, Promote Across Environments:** Never rebuild a fresh Docker image for production! Promote the *exact* digest (`sha256:...`) verified in staging, changing only runtime configuration/secrets via environment injection.
+3. **Progressive Delivery (Rolling, Blue–Green, Canary):** Instead of flipping 100% of traffic onto a new version blindly, route 5% $$	o$$ 25% $$	o$$ 100% while monitoring error-rate SLOs—automatically rolling back if 5xx errors cross a threshold.
+4. **GitOps & Rollback Discipline:** Treating Git as the single source of truth for desired deployment manifests makes rolling back a bad release a single deterministic `git revert`.
+
+---
+
 ## Learning objectives
 
 - Draw a pipeline as **source → verify → package → deploy → observe**, and say which steps a student laptop must not skip.
@@ -165,6 +180,30 @@ Policy as code in Chapter 14-02 is the grown-up form of these gates.
 - **xem trước:** [CI/CD Explained in 5 Minutes](https://www.youtube.com/watch?v=ddDJxFnv-qs) — TechWorld with Nana, English. Watch first: CI and CD as a pipeline, the split this lesson insists are different jobs.
 - [How to use GitHub Actions \| GitHub for Beginners](https://www.youtube.com/watch?v=BQrohJ3PT7I) — GitHub, English. GitHub’s own beginner walkthrough of Actions, the CI system the lesson’s example uses.
 - [Authenticate GitHub Actions with AWS Using OIDC — No Secrets Needed](https://www.youtube.com/watch?v=Sdzd4N6L5Hg) — Integrations Ninjas, English. GitHub Actions authenticating to AWS with OIDC, the “no long-lived cloud password in the repo” section.
+
+---
+
+### Worked Concrete Example: Quantifying Blast Radius in a Canary Rollout vs. Big-Bang Deploy
+
+Suppose a checkout service handles **1,000 requests/minute** and a subtle bug in `v2.4` causes a **10% HTTP 500 error rate** that takes **5 minutes** to detect and roll back:
+
+| Deployment Strategy | Traffic on `v2.4` During Detection | Failed Requests in 5 Minutes | Blast Radius Reduction |
+| :--- | :--- | :--- | :--- |
+| **Big-Bang (100% cutover)** | $$1{,}000	ext{ req/min}$$ | $$5 	imes 1{,}000 	imes 0.10 = \mathbf{500	ext{ failed orders}}$$ | Baseline ($$1	imes$$) |
+| **5% Canary Rollout** | $$50	ext{ req/min}$$ | $$5 	imes 50 	imes 0.10 = \mathbf{25	ext{ failed orders}}$$ | **20× smaller blast radius!** |
+
+And if the Canary controller checks error rate every 60 seconds and auto-aborts when 5xx > 1%, total failed requests drop to just **5 orders**—99% fewer affected users!
+
+### Deep-Dive Explanation: Four Rules for Safe Cloud CI/CD Pipelines (Read Slowly)
+
+1. **Never deploy `:latest` tags:** Tag images with immutable Git SHAs (`app:9f3a8c1`) so you always know *exact* running code and can roll back cleanly.
+2. **Keep database migrations backward-compatible (Expand–Contract):** Never drop or rename a column in the same deploy as application code—during a rolling or canary update, *both* `v1` and `v2` run simultaneously against the same database!
+3. **Never hardcode cloud secrets in workflow YAML:** Use short-lived OIDC federation (GitHub Actions $$	o$$ AWS/GCP IAM role) or encrypted secret stores instead of long-lived static access keys.
+4. **Make pipelines fast (< 10 minutes) with layer caching:** Slow 45-minute CI pipelines tempt developers into batching huge PRs, which directly increases deployment risk.
+
+**Quick check.** During a 10% Canary rollout of `v2` alongside `v1`, why does renaming a PostgreSQL column from `user_name` to `username` in a single migration immediately crash the 90% of traffic still running `v1`?
+
+---
 
 ## Exercises
 

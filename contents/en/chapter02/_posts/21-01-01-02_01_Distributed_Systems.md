@@ -10,8 +10,40 @@ categories:
 lesson_type: required
 ---
 
+On a single laptop, calling a function `chargeCard()` is simple: either it returns a value or the entire program crashes together. Split that same workflow across five networked servers, and reality turns eerie: a packet can vanish silently in the network, leaving you unable to tell whether the payment server crashed *before* charging the customer, crashed *after* charging, or is merely running slow! Mastering those exact three realities—**concurrency, no global clock, and independent failures**—is what separates a single-machine programmer from a distributed-systems engineer.
 
-A distributed system consists of independent computers that communicate to achieve a common goal. This lecture covers the fundamental concepts, characteristics, and design issues of distributed systems.
+## Background Knowledge Map: What Distributed Systems Theory Studies
+
+Three foundational pillars govern every multi-machine architecture from Hadoop to Kubernetes:
+
+1. **Message Passing & Partial Failure:** Networked nodes share no memory and fail independently. Calling a chain of $$k$$ services multiplies failure risk: even highly reliable individual services degrade rapidly in long synchronous call chains.
+2. **Logical Time & Ordering (No Global Clock):** Physical quartz clocks drift by milliseconds across servers, so raw wall-clock timestamps cannot reliably order concurrent events. **Lamport logical clocks** and vector clocks reconstruct causal order (*happens-before*, $$a 	o b$$) purely from message exchanges.
+3. **Consistency, Availability, and Fault Tolerance:** Replicating state across machines solves single-point failure, yet introduces the fundamental trade-off between strong consistency and low-latency availability during network partitions (CAP / PACELC).
+
+### Worked Example (Step by Step): Synchronous Availability Decay and a 3-Event Lamport Clock
+
+**Part A — Serial dependency chain availability:** Suppose a checkout request synchronously calls **5 microservices** in sequence (Gateway → Auth → Cart → Inventory → Payments), and *each* service individually promises **99.5%** availability ($$0.995$$). Because *every* service must succeed for checkout to succeed:
+
+$$
+A_{	ext{chain}} = 0.995^5 pprox \mathbf{0.9752} = \mathbf{97.52\%}!
+$$
+
+That drops your storefront from ~1.8 days/year of downtime per service to **over 9 full days/year of checkout outage**! Breaking non-critical calls into asynchronous queues (e.g., email receipts) protects checkout availability.
+
+**Part B — Tracing a Lamport logical clock:** Each node $$i$$ maintains an integer counter $$L_i$$ (starts at 0), increments by 1 on every local/send event, and on receiving message with timestamp $$t$$ sets $$L_i \leftarrow \max(L_i, t) + 1$$:
+1. Node A executes local event $$a_1$$: $$L_A = 1$$.
+2. Node A sends message $$m$$ to Node B (event $$a_2$$): $$L_A = 2$$, attaches $$t_m = 2$$.
+3. Node B (currently at $$L_B = 0$$) receives $$m$$ (event $$b_1$$): $$L_B = \max(0, 2) + 1 = \mathbf{3}$$.
+Even if Node B's physical wall clock was 5 seconds behind Node A's, Lamport's rule guarantees $$L(a_2) = 2 < L(b_1) = 3$$—preserving causality!
+
+### Deep-Dive Explanation: Designing Around the Eight Fallacies of Distributed Computing (Read Slowly)
+
+1. **Never assume the network is reliable or zero-latency:** every remote call needs explicit **timeouts**, bounded **retries with exponential backoff + jitter**, and **idempotency keys** so retrying `chargeCard()` never double-bills a user.
+2. **Shorten synchronous call chains:** as Part A proved, multiplying 99.5% across 5 hops destroys SLAs; use caching, circuit breakers, and asynchronous message brokers where eventual consistency is acceptable.
+3. **Use causal ordering rather than wall-clock timestamps for state conflicts:** physical NTP clocks can jump backward; rely on logical clocks, version vectors, or monotonic sequence numbers from a leader.
+4. **Design for graceful degradation:** when a non-essential microservice (like personalized recommendations) fails, serve a cached fallback rather than failing the entire page.
+
+**Quick check.** If we decouple 2 of the 5 services in Part A into asynchronous background jobs so only **3** services sit on the synchronous checkout path (each at 99.5%), what is the new checkout availability? $$0.995^3 pprox \mathbf{98.51\%}$$—immediately cutting expected annual downtime by nearly 40%!
 
 ## What is a Distributed System?
 

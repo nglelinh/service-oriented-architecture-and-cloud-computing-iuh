@@ -12,6 +12,38 @@ lesson_type: required
 
 Kubernetes (K8s) is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications. This lecture covers the fundamentals of Kubernetes and its architecture.
 
+Running three Docker containers on your laptop with `docker run` feels effortless. Now imagine running 400 containers across 25 machines when a server power supply fails at 3:00 AM, traffic triples during a flash sale, and your team needs to roll out a security patch without dropping a single user request. Writing fragile bash scripts to SSH into machines and restart containers collapses immediately. **Kubernetes** solves this by replacing imperative scripts with a **declarative control loop**: you tell the cluster *what desired state* you want, and a distributed control plane continuously observes reality and drives the cluster back toward that state.
+
+## Background Knowledge Map: The Control-Loop Architecture of Kubernetes
+
+### 1. Declarative State and Reconciliation Loops (Controllers)
+At the heart of Kubernetes is a classic control-theory feedback loop: **Observe → Diff → Act**. Every object you apply (a Deployment, Service, or ConfigMap) is stored as structured desired state. Independent **controllers** inside `kube-controller-manager` watch for differences between desired state and live cluster state—for example, seeing 2 running replicas when 3 are desired—and issue API calls to close the gap automatically.
+
+### 2. The Control Plane: API Server, etcd, and Scheduler
+- **`kube-apiserver`** is the sole front door for all reads and writes (handling authentication, authorization, and admission webhooks); no other component talks directly to the database.
+- **`etcd`** is a strongly consistent, distributed key-value store backed by the **Raft consensus algorithm** that acts as the cluster's single source of truth.
+- **`kube-scheduler`** watches for newly created Pods with no assigned node, filters out nodes that lack resources or fail affinity rules, scores the remaining candidates, and binds the Pod to the best node.
+
+### 3. Worker Nodes: kubelet, Container Runtime, and kube-proxy
+On every worker machine, **`kubelet`** acts as the local node agent: it watches the API server for Pods bound to its node, instructs the container runtime (containerd/CRI-O) via the CRI interface to start containers, and runs health probes. Meanwhile, **`kube-proxy`** (or an eBPF data plane) programs Linux networking rules so traffic sent to a virtual Service IP reaches healthy Pod endpoints.
+
+### Deep-Dive Explanation: Hand-Calculating etcd Raft Quorum and Why 4 Control-Plane Nodes Is Worse Than 3 (Read Slowly)
+
+Because `etcd` uses the **Raft** consensus protocol, every cluster state write must be acknowledged by a strict majority (**quorum**) of voting members:
+$$Q = \left\lfloor \frac{N}{2} \right\rfloor + 1, \qquad F = N - Q = \left\lfloor \frac{N - 1}{2} \right\rfloor,$$
+where $$N$$ is the number of `etcd` nodes and $$F$$ is the maximum number of simultaneous node failures the cluster can survive without losing write availability.
+
+Let's evaluate $$N = 1, 3, 4, 5$$ by hand:
+
+| `etcd` Nodes ($$N$$) | Quorum Required ($$Q$$) | Max Failures Tolerated ($$F$$) | Production Assessment |
+| :---: | :---: | :---: | :--- |
+| **1** | $$\lfloor 1/2 \rfloor + 1 = 1$$ | $$0$$ | Single point of failure (dev/lab only) |
+| **3** | $$\lfloor 3/2 \rfloor + 1 = 2$$ | $$1$$ | Standard production baseline (survives 1 node loss) |
+| **4** | $$\lfloor 4/2 \rfloor + 1 = 3$$ | $$1$$ | **Anti-pattern!** Same fault tolerance ($$F=1$$) as 3 nodes, yet needs 3 acks per write! |
+| **5** | $$\lfloor 5/2 \rfloor + 1 = 3$$ | $$2$$ | High-availability production (survives 2 simultaneous losses) |
+
+Look closely at the row for $$N = 4$$: you pay for an extra control-plane server and force every Raft commit to wait for **3** acknowledgments instead of **2**, yet losing 2 nodes still breaks quorum (leaving only $$2 < 3$$ alive)! That simple floor-division formula is why production Kubernetes control planes always use **odd** numbers (3 or 5) of `etcd` nodes.
+
 ## What is Container Orchestration?
 
 ### The Challenge

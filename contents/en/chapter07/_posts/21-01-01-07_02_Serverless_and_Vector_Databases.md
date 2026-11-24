@@ -18,6 +18,39 @@ The required lesson covers CAP, BASE vs ACID, and the four NoSQL families. This 
 - Contrast “NoSQL for scale” with distributed SQL (Spanner-class) systems.
 - Explain a vector index as a *new access path*, not a replacement for a system of record.
 
+Between 2022 and 2026, two forces reshaped the database landscape so sharply that the classic "SQL vs. NoSQL" dichotomy is no longer enough. First, teams got tired of paying for idle primary databases at 3:00 AM and demanded **Serverless** and **Distributed SQL** engines (Aurora Serverless, CockroachDB, Spanner) that auto-scale cleanly while keeping ACID transactions. Second, generative AI and **RAG (Retrieval-Augmented Generation)** introduced a brand-new query type: *"find the 5 documents whose meaning is closest to this 1,536-dimensional embedding vector!"*—giving rise to **Vector Indexes** (HNSW, IVF).
+
+## Background Knowledge Map: Serverless Elasticity, Distributed SQL, and Vector Search
+
+1. **Serverless Databases (Decoupled Storage & Compute):** Separates stateless SQL compute nodes from a shared, auto-expanding distributed log/storage tier—allowing compute to scale smoothly from 0.5 ACUs to 128 ACUs (or scale to zero) in seconds.
+2. **Distributed SQL (Raft/Paxos + Multi-Region ACID):** Systems like Spanner and CockroachDB shard relational tables horizontally like NoSQL while running **Raft/Paxos consensus** per shard and synchronized clocks (TrueTime/HLC) to preserve strict serializable SQL transactions!
+3. **Vector Databases & Approximate Nearest Neighbors (ANN):** Stores dense semantic embeddings $$v \in \mathbb{R}^d$$ and accelerates similarity search (cosine / dot-product / $$L_2$$) via graph indexes like **HNSW** (*Hierarchical Navigable Small World*), trading tiny recall loss (98–99% recall) for 10,000× faster retrieval!
+
+### Worked Example (Step by Step): Cosine Similarity and Vector Index Memory Math
+
+**Part A — Exact cosine similarity by hand:** Compare a user query embedding $$q = (1, 0)$$ against two unit-normalized document embeddings $$d_1 = (0.8, 0.6)$$ and $$d_2 = (-0.6, 0.8)$$:
+
+$$
+\cos(q, d_1) = rac{1(0.8) + 0(0.6)}{1 \cdot 1} = \mathbf{+0.80} 	ext{ (strong match!)}, \qquad \cos(q, d_2) = rac{1(-0.6) + 0(0.8)}{1 \cdot 1} = \mathbf{-0.60} 	ext{ (opposite meaning)}.
+$$
+
+**Part B — Why brute-force search breaks at 10 million embeddings:** Suppose a RAG system indexes **$$N = 10{,}000{,}000$$** chunks using **1,536-dimensional** `float32` (4 bytes/float) vectors:
+- Raw vector RAM footprint:
+  $$
+  10^7 	imes 1{,}536 	imes 4	ext{ bytes} pprox 6.144 	imes 10^{10}	ext{ bytes} pprox \mathbf{61.4	ext{ GB RAM}}!
+  $$
+- **Brute-force scan** computes $$10^7 	imes 1{,}536 pprox 1.54 	imes 10^{10}$$ multiply-adds per query (hundreds of milliseconds on CPU).
+- **HNSW graph index** navigates layered skip-list-like neighborhoods in $$O(\log N)$$ hops—visiting only **~200–500 candidate vectors** and answering in **< 5 ms**!
+
+### Deep-Dive Explanation: Placing 2022–2026 Databases Inside Your Architecture (Read Slowly)
+
+1. **Treat a vector index as a secondary access path, not your system of record:** keep authoritative text, permissions, and ACID billing in PostgreSQL (often using `pgvector` for < 10M vectors) or a dedicated store synchronized cleanly with your source of truth.
+2. **Watch cold-start and cross-region consensus costs:** serverless databases save huge money on dev/spiky workloads but can incur brief wake-up latency; Distributed SQL gives global ACID at the cost of cross-AZ Raft round trips on every write.
+3. **Quantize vectors when RAM dominates cost:** compressing `float32` (4 bytes) to `int8` (1 byte) or binary quantization cuts that 61.4 GB RAM bill by **4× to 32×** with minimal RAG recall loss!
+4. **Always pair vector search with metadata filters (Hybrid Search):** combining BM25 keyword search + HNSW vector search + `tenant_id = 42` ACL filtering prevents both hallucinated matches and cross-tenant data leaks.
+
+**Quick check.** If we apply `int8` scalar quantization (1 byte per dimension instead of 4) to our 10 million 1,536-dim vectors, how much RAM does the raw vector table require? $$61.4	ext{ GB} / 4 = \mathbf{15.36	ext{ GB}}$$—easily fitting on a single modest cloud node!
+
 ## 1. Serverless is elasticity applied to the database
 
 NIST rapid elasticity used to mean “more VMs.” Serverless databases scale **capacity with connections and storage**, often with a scale-to-zero pause:

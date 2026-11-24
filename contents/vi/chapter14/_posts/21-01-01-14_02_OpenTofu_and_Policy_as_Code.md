@@ -10,9 +10,23 @@ categories:
 lesson_type: optional
 ---
 
-Phần bắt buộc của chương giới thiệu IaC khai báo, quản lý resource/state trong Terraform và công cụ cấu hình Ansible. Bài tùy chọn này bổ sung ba diễn biến thực tiễn giai đoạn 2023–2026: **sự kiện thay đổi giấy phép tháng 8/2023** (Terraform chuyển sang BSL và sự ra đời của **OpenTofu** theo giấy phép MPL 2.0 thuộc Linux Foundation), kiểm tra **chính sách dưới dạng mã (Policy as Code)** trước khi áp dụng thay đổi, và **platform engineering** với các module hạ tầng chuẩn hóa.
+Khi toàn bộ hạ tầng đám mây đã được viết thành mã nguồn HCL trong kho Git, một câu hỏi quản trị mới lập tức xuất hiện: *làm sao đảm bảo một lập trình viên mới vào nhóm không vô tình mở cổng SSH `0.0.0.0/0`, tạo bucket S3 công khai toàn thế giới, hay bật nhầm máy chủ 64 nhân tốn 2.000 USD/tháng chỉ bằng một Pull Request?* Nếu chỉ dựa vào mắt người duyệt code (manual review), sai sót chắc chắn sẽ lọt qua vào một chiều thứ Sáu bận rộn.
 
-> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+Bài học này khám phá bộ đôi công nghệ định hình ngành **Platform Engineering** giai đoạn 2023–2026: **OpenTofu** (nhánh mã nguồn mở dưới quỹ Linux Foundation tương thích HCL với Terraform) và **Policy as Code** (OPA/Rego, Checkov)—biến mọi quy định bảo mật và ngân sách thành các bài kiểm thử tự động chạy ngay trên đầu ra `plan` trước khi một tài nguyên đám mây nào kịp được tạo ra.
+
+## Bản đồ kiến thức nền: Bốn trụ cột của Hạ tầng mở (OpenTofu) & Chính sách dưới dạng mã
+
+1. **HCL khai báo & Quản trị mã nguồn mở (OpenTofu vs. Terraform)**:
+   Sau khi Terraform chuyển sang giấy phép BSL (2023), cộng đồng đã tạo ra **OpenTofu** (thuộc CNCF/Linux Foundation, giấy phép MPL-2.0) giữ nguyên cú pháp HCL, tương thích rộng rãi với hệ sinh thái provider và bổ sung các tính năng bảo mật được mong đợi như **mã hóa state phía client (state encryption)**.
+
+2. **Chính sách dưới dạng mã (Policy as Code — OPA / Rego / Checkov)**:
+   Thay vì viết một bản tài liệu PDF dài 40 trang nhắc nhở *"cấm mở S3 public"*, đội bảo mật viết các quy tắc thực thi tự động bằng **Rego (Open Policy Agent)** hoặc **Checkov**. Quy tắc đọc trực tiếp tệp kế hoạch JSON (`tofu show -json tfplan`)—nơi mọi biến và biểu thức đã được giải quyết xong—để quyết định `ALLOW` hoặc `DENY` ngay trên CI.
+
+3. **Hai tầng kiểm tra: Shift-Left (Static/Plan) vs. Runtime (Admission)**:
+   Kiểm tra trên `tofu plan` (**Shift-Left**) chặn lỗi từ lúc mở Pull Request—rẻ nhất và nhanh nhất. Kiểm tra ở tầng **Runtime** (Kubernetes Admission / Cloud SCP) đóng vai trò lưới an toàn cuối cùng phòng trường hợp ai đó bấm tay trên Console.
+
+4. **Platform Engineering & "Đường ray vàng" (Golden Paths)**:
+   Thay vì bắt mọi đội ứng dụng tự viết 500 dòng HCL mạng và bảo mật từ đầu, đội nền tảng đóng gói sẵn các **Module IaC chuẩn hóa** (đã tích hợp sẵn mã hóa, tag FinOps, log và quyền tối thiểu) như một sản phẩm nội bộ tự phục vụ (*Internal Developer Platform*).
 
 ## Mục tiêu học tập
 
@@ -70,6 +84,34 @@ graph LR
 <div class="content-box insight-box">
 <p><strong>Quản lý state vẫn là bài toán cốt lõi.</strong> Dù tệp state được OpenTofu mã hóa hay lưu trên HCP Terraform, rủi ro cơ bản trong phần lý thuyết vẫn giữ nguyên: hai tiến trình ghi đồng thời vào cùng một tệp state mà không có cơ chế khóa (state locking) sẽ gây xung đột và sai lệch trạng thái (split-brain).</p>
 </div>
+
+### Khung giải thích (nên đọc chậm): Trace một tệp `tfplan.json` đi qua cổng Policy as Code (OPA/Rego)
+
+Hãy hình dung một sinh viên mở Pull Request thêm 2 tài nguyên vào tệp `main.tf`: một bucket lưu trữ `student_uploads` và một máy ảo `analytics_vm`. Trên CI, pipeline chạy `tofu plan -out=tfplan && tofu show -json tfplan > plan.json` rồi đưa `plan.json` qua 3 luật OPA/Rego.
+
+Giả sử đoạn trích `resource_changes` trong `plan.json` sau khi giải biến có dạng:
+```json
+[
+  {
+    "address": "aws_s3_bucket_acl.uploads",
+    "change": { "after": { "acl": "public-read" } }
+  },
+  {
+    "address": "aws_instance.analytics_vm",
+    "change": { "after": { "instance_type": "m5.4xlarge", "tags": { "env": "dev" } } }
+  }
+]
+```
+
+Theo dõi kết quả đánh giá của từng luật kiểm duyệt tự động:
+
+| Luật Policy as Code | Điều kiện vi phạm (Rego) | Kết quả trên `plan.json` | Hành động của CI |
+| :--- | :--- | :---: | :--- |
+| **Luật 1 (Bảo mật)**: Cấm bucket công khai | `r.type == "aws_s3_bucket_acl"` và `acl == "public-read"` | **VI PHẠM** (`uploads`) | Trả `DENY`: *"Bucket không được phép đặt `public-read`"* |
+| **Luật 2 (FinOps)**: Môi trường `dev` chỉ dùng `t3.micro`/`t3.small` | `tags.env == "dev"` và `instance_type` không thuộc danh sách cho phép | **VI PHẠM** (`analytics_vm`: `m5.4xlarge` $\approx \$560/\text{tháng}$!) | Trả `DENY`: *"Môi trường dev cấm dùng máy chủ vượt `t3.small`"* |
+| **Luật 3 (Quản trị)**: Bắt buộc có nhãn `owner` | Thiếu khóa `tags.owner` | **VI PHẠM** (`analytics_vm`) | Trả `DENY`: *"Mọi tài nguyên phải gắn nhãn `owner`"* |
+
+**Kết quả cuối cùng**: Pipeline CI lập tức báo đỏ (`3 violations found`), khóa nút **Merge** và in hướng dẫn sửa cụ thể ngay dưới Pull Request—**trước khi lệnh `tofu apply` kịp chạm vào đám mây**! Không tốn một xu nào và không có dữ liệu nào bị lộ ra Internet.
 
 ## Thách thức
 

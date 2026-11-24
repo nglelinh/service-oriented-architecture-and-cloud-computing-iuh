@@ -16,6 +16,26 @@ lesson_type: optional
 
 Chính sách free-tier của các nhà cung cấp thay đổi thường xuyên, vì vậy mọi danh mục dịch vụ cần được **kiểm tra trực tiếp trên trang chính thức tại thời điểm thực hành**. Bài này tập trung vào nguyên tắc vận hành an toàn tại IUH, không phải hướng dẫn săn mã ưu đãi và không sao chép từ CS 40.
 
+Chữ **"Free Tier" (Gói miễn phí)** trên trang chủ các nhà cung cấp đám mây là một trong những nguồn hiểu lầm tốn tiền nhất đối với sinh viên mới học Cloud. Miễn phí trên đám mây **không** có nghĩa là "cài gì cũng không tốn tiền"—nó là một hệ thống hạn mức đo lường chính xác theo giờ, theo GB lưu trữ, theo lưu lượng băng thông ra ngoài và theo thời hạn 12 tháng hoặc tín dụng giới hạn.
+
+Bài thực hành này trang bị cho bạn bộ kỹ năng phòng vệ tài chính tối thiểu trước khi tạo bất kỳ tài nguyên đám mây thật nào: phân biệt các loại free-tier, thiết lập cảnh báo ngân sách, khóa quyền tài khoản gốc (root MFA), và xây dựng thói quen dọn dẹp tài nguyên sạch sẽ sau mỗi buổi học.
+
+## Bản đồ kiến thức nền: Bốn nguyên tắc an toàn khi dùng Cloud Free Tier
+
+1. **Ba loại hình Free Tier hoàn toàn khác nhau**:
+   - **Always Free (Miễn phí vĩnh viễn theo hạn mức tháng)**: áp dụng lâu dài nhưng rất nhỏ (ví dụ 1 VM siêu nhỏ, hạn mức serverless hàng tháng).
+   - **12-Month Free (Miễn phí 12 tháng đầu)**: tự động chuyển sang tính tiền đầy đủ ngay ngày thứ 366 nếu bạn quên tắt tài nguyên!
+   - **Trial Credit (Tín dụng dùng thử, ví dụ `$100–$300` trong 90 ngày)**: hết tiền hoặc hết hạn là khóa dịch vụ hoặc trừ thẻ nếu đã nâng cấp tài khoản trả phí.
+
+2. **Hạn mức tính theo *tổng giờ cộng dồn*, không phải "số máy"**:
+   Hạn mức `750 giờ/tháng` của một dòng máy ảo nhỏ nghĩa là tổng thời gian chạy của *tất cả* các máy ảo thuộc dòng đó cộng lại. Chạy 1 máy suốt 31 ngày = `744 giờ` (vừa khít miễn phí); chạy **2 máy song song** sẽ đốt hết `750 giờ` chỉ trong hơn 15 ngày!
+
+3. **Bảo vệ tài khoản trước kẻ tấn công đào tiền ảo (Account Hijacking)**:
+   Tài khoản đám mây không bật **MFA (xác thực đa yếu tố)** trên tài khoản Root hoặc bị lộ Access Key trên GitHub công khai thường bị bot tự động quét thấy chỉ sau **vài phút** và bật hàng chục máy GPU đào coin gây thiệt hại hàng nghìn USD.
+
+4. **Vệ sinh hạ tầng (Teardown Discipline)**:
+   Mọi tài nguyên thử nghiệm đều phải có ngày hết hạn, được tạo bằng IaC hoặc danh sách kiểm kê rõ ràng, và kết thúc buổi thực hành bằng bước kiểm tra bảng tài nguyên ở *tất cả* các Region đã dùng.
+
 ## Mục đích
 
 Hiểu rõ phạm vi thực sự của các gói "miễn phí", nhận diện những khoản mục dễ phát sinh chi phí ngầm, và nắm đúng **trình tự thao tác an toàn** trước khi triển khai ra ngoài `localhost`.
@@ -70,6 +90,25 @@ Không cần tự dựng VPC ba tầng hoàn chỉnh trên tài khoản cá nhâ
 - Không đưa dữ liệu học vụ thật của sinh viên lên dự án free-tier cá nhân.
 - Không chia sẻ mật khẩu tài khoản root cho nhiều người.
 - Nếu vô tình khởi tạo tài nguyên phát sinh chi phí ngoài dự kiến, cần báo ngay cho giảng viên trong ngày để xử lý kịp thời.
+
+### Khung giải thích (nên đọc chậm): Tính tay 2 cái bẫy Free Tier phổ biến nhất khiến sinh viên bị trừ tiền oan
+
+#### Bẫy 1: Hạn mức `750 giờ/tháng` khi bật nhầm 2 máy ảo song song
+
+Giả sử gói 12-Month Free Tier cho phép **`750 giờ/tháng`** máy ảo `t2.micro` / `t3.micro` (giá ngoài hạn mức `$0,012/giờ`). Một sinh viên tạo 1 máy ở buổi học tuần 1, sang tuần 2 tạo thêm máy thứ 2 để thử nghiệm và quên tắt máy thứ 1 trong cả tháng 30 ngày (`720 giờ`):
+- **Tổng số giờ sử dụng thực tế**: $2\text{ máy} \times 720\text{ giờ} = \mathbf{1.440\text{ giờ}}$.
+- **Số giờ vượt hạn mức Free Tier**: $1.440 - 750 = \mathbf{690\text{ giờ bị tính phí}}$!
+- Nếu máy đó lại gắn thêm **IPv4 công khai** (`$0,005/giờ/IP`) hoặc ổ đĩa vượt `30 GB`:
+  $$\text{Phí vượt mức} = (690 \times \$0{,}012) + (1.440 \times \$0{,}005) = \$8{,}28 + \$7{,}20 = \mathbf{\$15{,}48}$$
+  dù sinh viên tin chắc mình "chỉ dùng dòng máy Free Tier"!
+
+#### Bẫy 2: Quên xóa tài nguyên phụ thuộc sau khi xóa máy ảo
+
+| Hành động dọn dẹp | Tài nguyên chính đã xóa? | Tài nguyên "mồ côi" vẫn âm thầm tính tiền | Cách phòng tránh |
+| :--- | :---: | :--- | :--- |
+| Chỉ bấm **Terminate VM** trên Console | Có | Ổ đĩa rời (EBS volume không tích *Delete on termination*), Elastic IP chưa gắn máy (`$3,60/tháng`), NAT Gateway (`$33/tháng`), Snapshot | Tạo mọi thứ bằng OpenTofu rồi chạy **`tofu destroy`**, và kiểm tra lại mục **Billing → Cost Explorer** sau 24 giờ |
+
+Chỉ cần nhớ phép tính `2 máy × 720 giờ = 1.440 giờ > 750 giờ` và thói quen đặt **Budget Alert `$1`** ngay ngày đầu, bạn sẽ không bao giờ bị bất ngờ bởi hóa đơn đám mây.
 
 ## Tiêu chí hoàn thành
 

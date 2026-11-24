@@ -12,6 +12,35 @@ lesson_type: optional
 
 The required chapter defines platforms, pipelines, and Lambda/Kappa processing. This optional lesson is the 2022–2026 **open lakehouse** application: one copy of data in object storage, **Iceberg/Delta/Hudi** table metadata, and many engines (Spark, Flink, Trino, warehouse SaaS) sharing a **REST catalog**.
 
+For years, data teams lived in a split-brain world: cheap **data lakes** (raw files dumped into S3 or GCS) handled unstructured data and machine learning but lacked ACID transactions and routinely turned into untrustworthy "data swamps," while proprietary **data warehouses** delivered crisp SQL governance and fast BI dashboards at steep storage-and-compute lock-in costs. The **Open Lakehouse** architecture (2022–2026) merges both worlds by layering an open transactional metadata log (**Apache Iceberg**, **Delta Lake**, or **Apache Hudi**) directly over open columnar files (**Apache Parquet**) in cheap cloud object storage—letting Spark, Trino, DuckDB, and Python ML frameworks all query the exact same single source of truth safely.
+
+## Background Knowledge Map: Columnar Storage, Open Table Formats, and Multi-Engine Interoperability
+
+### 1. Columnar Files (Apache Parquet) and Vectorized Scanning
+Row-oriented formats (CSV, JSON) force an analytics engine to read every single column of every row just to average one `price` field. **Apache Parquet** stores values column by column in compressed row groups along with **min/max statistics** in the file footer. Queries skip unneeded columns (**column projection**) and skip entire row groups whose min/max bounds cannot match the `WHERE` filter (**predicate pushdown**).
+
+### 2. Open Table Formats: Bringing ACID Transactions to Object Storage
+Cloud object stores like S3 only guarantee atomic single-object puts, not multi-file table updates. **Apache Iceberg** and **Delta Lake** add an immutable **metadata manifest / transaction log** alongside the Parquet files. A writer stages new Parquet files and commits a single atomic pointer swap to the new snapshot—giving readers **snapshot isolation**, **time-travel queries** ("query the table as of yesterday at 14:00"), and safe **schema evolution** without rewriting terabytes of history.
+
+### 3. Decoupled Multi-Engine Compute
+Because table metadata and Parquet files follow open specifications, no single vendor holds your data hostage. A batch ETL pipeline can write with **Spark**, an interactive dashboard can query with **Trino**, and a data scientist can prototype locally on a laptop with **DuckDB**—all reading the exact same Iceberg/Delta snapshot with zero ETL duplication.
+
+### Deep-Dive Explanation: Hand-Calculating How Partition Pruning + Columnar Projection Slash Query I/O by 869× (Read Slowly)
+
+Imagine an Open Lakehouse sales table totaling **1,000 GB (1 TB)** stored in Parquet, spanning **365 daily partitions** (1 full year) and **50 equally sized columns**. An analyst runs a weekly revenue report filtering to the **last 7 days** and selecting only **3 columns** (`order_date`, `region`, `amount`).
+
+Let's compute the bytes scanned step by step:
+1. **Naive full-table row scan (e.g., unpartitioned CSV/JSON):**
+   $$\text{Data scanned} = 1{,}000\text{ GB}.$$
+2. **After Partition Pruning (Iceberg/Delta manifest skips 358 of 365 daily partitions):**
+   $$\text{Data remaining} = 1{,}000\text{ GB} \times \frac{7}{365} \approx 19.18\text{ GB}.$$
+3. **After Parquet Column Projection (reading only 3 of 50 columns):**
+   $$\text{Final data scanned} = 19.18\text{ GB} \times \frac{3}{50} \approx 1.15\text{ GB}.$$
+
+**Total I/O reduction factor:**
+$$\frac{1{,}000\text{ GB}}{1.15\text{ GB}} \approx 869\times\text{ less data read!}$$
+At a typical serverless SQL query price of 5.00 USD per TB scanned, that single query drops from **5.00 USD** down to **0.0058 USD** (less than a penny) and finishes in ~2 seconds instead of minutes—purely from smart open table layout!
+
 ## Learning objectives
 
 - Explain “write once, read in many engines” as a platform architecture, not a file-format trivia item.

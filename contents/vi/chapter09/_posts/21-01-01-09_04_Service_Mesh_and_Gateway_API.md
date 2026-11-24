@@ -10,9 +10,25 @@ categories:
 lesson_type: optional
 ---
 
-Phần bắt buộc của chương đã trình bày về Pod, Service và Deployment. Bài tùy chọn này đi vào lớp *mạng ứng dụng* giai đoạn 2022–2026 nằm phía trên: **Gateway API** (đạt chuẩn GA tháng 10/2023; bổ sung hỗ trợ mesh và `GRPCRoute` ở v1.1 tháng 5/2024), **Istio Ambient Mode** (GA trong Istio 1.24) và data plane dựa trên **eBPF** (Cilium). Khảo sát CNCF 2024 nêu một điểm rất đáng chú ý: dù Kubernetes rất phổ biến (**80%** dùng trong sản xuất), **tỷ lệ áp dụng service mesh trên môi trường sản xuất lại giảm từ 50% xuống 42%**. Điều này cho thấy chi phí độ phức tạp vận hành là yếu tố cần cân nhắc ngay từ đầu.
+Khi hệ thống mới chỉ có 3 dịch vụ chạy trong Kubernetes, một đối tượng `Ingress` đơn giản và vài lời gọi HTTP nội bộ là quá đủ. Nhưng khi doanh nghiệp mở rộng lên 50 hay 200 microservice, hàng loạt câu hỏi hóc búa lập tức xuất hiện: làm sao chuyển đúng 5% lưu lượng người dùng thật sang phiên bản v2 để kiểm thử *canary*? Làm sao mã hóa toàn bộ lưu lượng nội bộ giữa các Pod (mTLS) và xoay chứng chỉ tự động mỗi 24 giờ mà lập trình viên không phải viết lại một dòng mã nào?
 
-> Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
+Bài học này mở khóa lớp **mạng ứng dụng (application networking)** hiện đại trên Kubernetes giai đoạn 2022–2026: **Gateway API** (chuẩn định tuyến kế nhiệm Ingress) và **Service Mesh** (từ kiến trúc sidecar truyền thống đến *ambient mesh* tối ưu tài nguyên).
+
+## Bản đồ kiến thức nền: Bốn mảnh ghép của lớp mạng dịch vụ trên Kubernetes
+
+Để không bị choáng ngợp bởi hàng chục thuật ngữ như `HTTPRoute`, `Envoy`, `mTLS` hay `ztunnel`, hãy đặt chúng vào bốn trụ cột rõ ràng:
+
+1. **Mặt phẳng điều khiển (Control Plane) vs. Mặt phẳng dữ liệu (Data Plane)**:
+   Trong mọi hệ thống mạng hiện đại, **Control Plane** (như `istiod`) không trực tiếp chạm vào gói tin người dùng; nó chỉ đọc cấu hình YAML, cấp phát chứng chỉ số và đẩy luật định tuyến xuống **Data Plane** (proxy hiệu năng cao như Envoy hoặc ztunnel viết bằng Rust), nơi thực sự chuyển tiếp hàng trăm nghìn request mỗi giây.
+
+2. **Gateway API & Tách bạch vai trò vận hành (Role-Oriented Routing)**:
+   `Ingress` đời cũ nhồi nhét mọi cấu hình (chứng chỉ TLS, cân bằng tải, quy tắc rewrite URL, timeout) vào các *annotation* đặc thù của từng hãng. **Gateway API** tách rõ ba tầng tài nguyên: `GatewayClass` (nhà cung cấp hạ tầng), `Gateway` (đội vận hành mở cổng/TLS), và `HTTPRoute` / `GRPCRoute` (đội phát triển tự khai báo chia lưu lượng canary, lọc header, retry) với cùng một chuẩn YAML di động.
+
+3. **mTLS (Mutual TLS) & Danh tính khối lượng công việc (SPIFFE)**:
+   TLS thông thường chỉ xác thực máy chủ với trình duyệt. Trong mạng nội bộ Zero Trust, **mTLS** buộc *cả hai phía* (Pod gọi và Pod được gọi) xuất trình chứng chỉ X.509 ngắn hạn gắn liền với `ServiceAccount` của Pod, ngăn chặn tấn công nghe lén hoặc giả mạo dịch vụ ngay cả khi kẻ tấn công đã lọt vào trong mạng cụm.
+
+4. **Sidecar Mesh vs. Ambient Mesh (Tách lớp L4 và L7)**:
+   Mô hình sidecar gắn 1 container proxy (Envoy) vào *mỗi* Pod—đơn giản về mặt cô lập nhưng tốn rất nhiều RAM/CPU và gây lỗi khởi động tuần tự. **Ambient Mesh** tách riêng một daemon mỏng tầng L4 (`ztunnel`) chạy trên mỗi Node để lo mTLS cho mọi Pod, và chỉ bật **Waypoint proxy** tầng L7 cho những namespace thực sự cần chia tải HTTP/telemetry phức tạp.
 
 ## Mục tiêu học tập
 
@@ -64,6 +80,33 @@ Nên cân nhắc service mesh khi hệ thống thực sự cần **định danh 
 <div class="content-box warning-box">
 <p><strong>Service mesh không thay thế hoàn toàn khả năng quan sát ứng dụng.</strong> Bạn vẫn cần tích hợp OpenTelemetry trong mã nguồn để ghi nhận các span mang ngữ cảnh nghiệp vụ. Tầng data plane cung cấp được các chỉ số mạng cơ bản (golden signals), nhưng không thể tự hiểu các thuộc tính nghiệp vụ như <code>order.id</code>.</p>
 </div>
+
+### Khung giải thích (nên đọc chậm): Tính tay chi phí RAM & độ trễ của Sidecar Mesh so với Ambient Mesh trên cụm 200 Pod
+
+Trước khi bật Service Mesh cho cụm Kubernetes, một kỹ sư hạ tầng luôn phải tính bài toán chi phí–lợi ích bằng con số cụ thể. Giả sử bạn có một cụm gồm **10 Node** chạy tổng cộng **200 Pod microservice**, trong đó chỉ có **4 nhóm dịch vụ** thực sự cần định tuyến L7 phức tạp (chia lưu lượng canary, retry theo mã HTTP), còn lại chỉ cần mã hóa mTLS tầng L4.
+
+#### Bước 1: So sánh chi phí RAM của mặt phẳng dữ liệu (Data Plane)
+
+- **Mô hình Sidecar truyền thống (1 Envoy proxy cho mỗi Pod)**:
+  Mỗi Envoy sidecar tiêu tốn trung bình `65 MB` RAM (chưa kể bộ nhớ tăng thêm theo số lượng endpoint trong cụm):
+  $$\text{RAM}_{\text{Sidecar}} = 200\text{ Pod} \times 65\text{ MB} = \mathbf{13.000\text{ MB}} \approx \mathbf{12{,}7\text{ GB RAM}}.$$
+- **Mô hình Ambient Mesh (1 `ztunnel` L4 mỗi Node + 4 Waypoint proxy L7)**:
+  Mỗi `ztunnel` (viết bằng Rust) tiêu tốn khoảng `25 MB` RAM/Node; mỗi Waypoint proxy L7 (chạy 2 bản sao để sẵn sàng cao = 8 Pod) tiêu tốn `70 MB` RAM:
+  $$\text{RAM}_{\text{Ambient}} = (10 \times 25) + (8 \times 70) = 250 + 560 = \mathbf{810\text{ MB}} \approx \mathbf{0{,}79\text{ GB RAM}}.$$
+
+Chênh lệch dễ thấy: Ambient Mesh cắt giảm hơn **$16\times$** lượng RAM dành cho lớp proxy (tiết kiệm gần **12 GB RAM**, tương đương 1–2 máy ảo đám mây mỗi tháng) mà vẫn phủ mTLS cho 100% Pod!
+
+#### Bước 2: Trace 1 request Canary 90/10 qua `HTTPRoute` của Gateway API
+
+Giả sử đội sản phẩm cấu hình `HTTPRoute` chia tải `weight: 90` cho `orders-v1` và `weight: 10` cho `orders-v2`, đồng thời đo độ trễ trên chuỗi gọi gồm `Gateway → Service A → Service B`:
+
+| Thành phần trên đường đi của Request | Số hop proxy (Sidecar) | Độ trễ proxy cộng thêm (ước lượng p99) | Trải nghiệm người dùng |
+| :--- | :---: | :---: | :--- |
+| Gateway (`HTTPRoute` kiểm tra header/trọng số `90/10`) | 1 hop | $+1{,}5\text{ ms}$ | 90% request vào `v1`, 10% vào `v2` |
+| `Service A` gửi ra (egress proxy) → `Service B` nhận vào (ingress proxy) | 2 hop | $+2 \times 1{,}2\text{ ms} = +2{,}4\text{ ms}$ | Tự động mã hóa mTLS & ghi span trace |
+| **Tổng phụ phí độ trễ trên 1 chuỗi 2 dịch vụ** | **3 hop** | **$+3{,}9\text{ ms}$** | Chấp nhận được với web API (`100 ms`), nhưng cần cân nhắc nếu chuỗi gọi sâu 10 tầng (`+25 ms`) |
+
+Nhờ tính tay hai bảng trên, bạn thấy ngay nguyên tắc vàng: **chỉ bật tầng L7 ở nơi thực sự cần**, và với hệ thống dưới 5 dịch vụ nội bộ đơn giản, một `Gateway` ở biên thường đã đủ sạch và rẻ hơn rất nhiều so với toàn bộ Service Mesh.
 
 ## Thách thức
 

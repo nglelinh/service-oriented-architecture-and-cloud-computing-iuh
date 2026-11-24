@@ -12,6 +12,36 @@ lesson_type: optional
 
 The required lesson is sourcing, cleaning, and validation. This optional note is how 2022–2026 platform teams turned those chores into **SOA contracts**: versioned schemas between producers and consumers, automated quality gates, and *separate* pipelines for **LLM/RAG** data that cannot be treated like another CSV.
 
+Picture an upstream backend team quietly renaming a JSON field from `price_cents` to `price_dollars` on a Friday afternoon. Their unit tests pass, the microservice deploys cleanly—and silently poisons every downstream BI dashboard, recommendation model, and RAG vector index for the next three weeks. **Data Contracts** and **Quality Gates** bring the rigor of API versioning to data engineering: treating every dataset as a formal, machine-verifiable interface between producers and consumers so broken data is caught at the gate before it ever corrupts an AI pipeline.
+
+## Background Knowledge Map: Contracts, Quality Gates, and Trustworthy AI Data
+
+### 1. What Makes a Data Contract Enforceable?
+A real **Data Contract** is not a forgotten Wiki page—it is a versioned specification (JSON Schema, Avro, Protobuf, or YAML) checked in CI/CD and at runtime. It locks down four guarantees: **schema** (field names, types, nullability), **semantics** (units, allowed enums, business invariants like `amount >= 0`), **SLAs** (freshness, completeness), and **ownership** (which producer team gets paged when the contract breaks).
+
+### 2. Circuit Breakers and Quarantine Patterns (Write–Audit–Publish)
+Instead of writing raw batches straight into production analytics tables, mature pipelines follow **Write–Audit–Publish (WAP)**: stage new data into an isolated branch or snapshot, run automated **quality gates** (Great Expectations, dbt tests, Soda), and publish to consumers *only if* every gate passes. Failing records are routed to a **Dead-Letter / Quarantine** table so pipelines fail loudly and safely.
+
+### 3. Why AI and RAG Pipelines Magnify Silent Data Bugs
+In classical SQL reporting, a broken column causes an obvious chart spike. In **machine learning and RAG (Retrieval-Augmented Generation)** pipelines, stale documents, duplicate embeddings, or leaky future labels degrade model accuracy silently without throwing a single HTTP 500 error—making lineage tracking and automated contract gates non-negotiable.
+
+### Deep-Dive Explanation: Hand-Evaluating a Write–Audit–Publish Quality Gate on a Daily Batch (Read Slowly)
+
+Suppose an AI feature store ingests **1,000,000 customer-interaction records** every night under a Data Contract with three hard gates:
+- **Gate 1 (Schema):** `0` unparseable or missing required fields (`100%` valid).
+- **Gate 2 (Completeness):** `null_rate(user_id) <= 0.10%` (at most $$1{,}000$$ nulls per million).
+- **Gate 3 (Freshness):** pipeline completes within **15 minutes** of midnight UTC.
+
+Tonight's staged batch arrives in **11 minutes** with `0` schema errors, **1,500** rows missing `user_id`, and **998,500** clean rows.
+
+1. **Evaluate each gate:**
+   - Gate 1: $$0\text{ errors} \implies \textbf{PASS}$$.
+   - Gate 2: $$\text{null\_rate} = \frac{1{,}500}{1{,}000{,}000} = 0.15\% > 0.10\% \implies \textbf{FAIL}$$.
+   - Gate 3: $$11\text{ min} \le 15\text{ min} \implies \textbf{PASS}$$.
+
+2. **Outcome of the Write–Audit–Publish circuit breaker:**
+   Because Gate 2 failed, the snapshot pointer **does not advance**. Production RAG and ML models continue serving yesterday's verified snapshot with zero corruption, the 1,500 bad rows are isolated in the quarantine bucket, and the owning producer team receives an automated alert pointing straight to the offending upstream release.
+
 ## Learning objectives
 
 - Define a data contract as an interface (schema + SLOs + owner), not a slide.

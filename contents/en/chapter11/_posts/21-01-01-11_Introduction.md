@@ -12,6 +12,31 @@ lesson_type: required
 
 Welcome to Chapter 11: **Data Sourcing and Cleaning**.
 
+Sophisticated cloud architectures and state-of-the-art AI models share one humbling vulnerability: *garbage in, garbage out*. Even a 99.99%-available Kubernetes cluster feeding an Open Lakehouse produces worthless insights if duplicate events, broken timestamps, or silent schema changes slip through ingestion. Chapter 11 focuses on **Data Sourcing and Cleaning**—equipping you with the statistical intuition, contract design, and automated validation habits needed to keep cloud data trustworthy from source to model.
+
+## Background Knowledge Map: Why Data Quality Compounds Across Pipeline Stages
+
+### 1. Multi-Source Heterogeneity and Entity Resolution
+Enterprise data rarely lives in one clean database; it spans CRM exports, payment gateways, web clickstreams, and partner CSVs. Reconciling conflicting identifiers, time zones, and currency units across sources is a core architectural concern, not an afterthought.
+
+### 2. Defensive Ingestion: Idempotency and Deduplication
+Distributed networks guarantee *at-least-once* delivery far more easily than *exactly-once* delivery. Every ingestion pipeline must therefore be **idempotent**—using deterministic event IDs or upsert keys so replaying a failed batch never double-counts revenue.
+
+### 3. Multiplicative Error Propagation Across Pipeline Hops
+Just like availability drops across serial microservices, **data cleanliness compounds downward** across multi-stage ETL pipelines if errors are not caught at each boundary.
+
+### Deep-Dive Explanation: Hand-Calculating Multiplicative Data Decay Across a 4-Stage Pipeline (Read Slowly)
+
+Suppose raw events pass through **4 independent pipeline stages** (Ingestion → Enrichment → Aggregation → Feature Join), and each stage has a seemingly small **2% defect rate** (meaning **98%** of records pass each stage cleanly, independently):
+
+1. **End-to-end clean record yield:**
+   $$Y_{\text{clean}} = (0.98)^4 = 0.922368 \approx 92.24\%.$$
+2. **Resulting corrupted records reaching downstream dashboards/ML:**
+   $$1 - 0.9224 = 7.76\%\text{ of all records!}$$
+   On a 1,000,000-row table, that is **77,600 corrupted records**—nearly four times the per-stage defect rate!
+3. **Impact of tightening each stage with automated contract gates to 0.2% defects (99.8% clean):**
+   $$Y_{\text{gated}} = (0.998)^4 \approx 99.20\% \quad (\text{only } 0.80\% \text{ defects — nearly } 10\times \text{ cleaner!}).$$
+
 ## Chapter Overview
 
 Data quality is critical for successful analytics and machine learning. This chapter covers the essential processes of acquiring data from various sources and preparing it for analysis through cleaning and transformation.

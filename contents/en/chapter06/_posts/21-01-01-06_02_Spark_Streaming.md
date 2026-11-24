@@ -9,7 +9,37 @@ categories:
 - chapter06
 ---
 
-Spark Streaming is Apache Spark's scalable and fault-tolerant stream processing engine that enables processing of live data streams. It extends Spark's core capabilities to handle real-time data ingestion and processing, making it possible to build end-to-end streaming applications.
+A credit-card fraud detector that runs once a night at 2:00 AM is useless—by sunrise, stolen cards have already been maxed out across ten continents. **Stream processing** flips batch analytics on its head: instead of waiting for a dataset to end, **Spark Streaming / Structured Streaming** treats an unbounded live event feed as a continuously appending table, slicing time into fast micro-batches while preserving Spark's exact fault-tolerance guarantees.
+
+## Background Knowledge Map: Real-Time Stream Processing Primitives
+
+1. **Micro-Batch Architecture & Backpressure:** Spark Streaming groups incoming events from Kafka/Kinesis every $$T$$ seconds into an RDD/DataFrame batch. For stability, per-batch processing time must stay strictly below batch interval $$T$$—otherwise queues grow without bound!
+2. **Event Time vs. Processing Time & Watermarks:** Mobile devices go offline in tunnels and upload events 8 minutes late. **Event time** (when the click happened) differs from **processing time** (when the server received it); a **watermark** sets a bounded lateness window so stateful aggregations can eventually evict old state from RAM.
+3. **Fault Tolerance & Exactly-Once Semantics:** Write-ahead logs, checkpointing offsets to durable storage (S3/HDFS), and idempotent sinks ensure that restarting a crashed executor neither drops nor double-counts events.
+
+### Worked Example (Step by Step): Micro-Batch Stability and Watermark Late-Event Math
+
+**Part A — Micro-batch stability check:** A streaming job ingests **10,000 events/s** with a **5-second** micro-batch interval ($$50{,}000	ext{ events/batch}$$):
+- If executors process 50,000 events in **3.2 seconds** ($$3.2 < 5.0$$), utilization is $$3.2 / 5.0 = \mathbf{64\%}$$ — the stream is stable with 1.8 s headroom!
+- If a slow external lookup pushes processing time to **6.0 seconds** ($$6.0 > 5.0$$), every 5 seconds you fall behind by **1.0 second** (10,000 queued events)—after 1 hour (720 batches), lag explodes to **12 minutes** (7.2 million backlogged events)!
+
+**Part B — Watermark rule (10-minute lateness threshold):** Suppose the maximum event timestamp seen so far is **`12:30`**. The watermark advances to:
+
+$$
+	ext{Watermark} = 12{:}30 - 10	ext{ min} = \mathbf{12{:}20}.
+$$
+
+- Late event A arrives stamped **`12:22`** ($$12{:}22 \ge 12{:}20$$) → **accepted** and updates its window!
+- Late event B arrives stamped **`12:15`** ($$12{:}15 < 12{:}20$$) → **dropped**, allowing Spark to safely free state for windows ending before `12:20`!
+
+### Deep-Dive Explanation: Designing Production Streaming Pipelines Without Blowing Up RAM (Read Slowly)
+
+1. **Always bound stateful operators with watermarks:** an unwatermarked `groupBy(user_id).count()` over an infinite stream eventually exhausts executor memory as unique users grow forever.
+2. **Separate tumbling windows from sliding windows:** a 10-minute tumbling window assigns each event to 1 bucket; a 10-minute window sliding every 1 minute duplicates each event across **10 buckets**—multiplying state size 10×!
+3. **Checkpoint offsets + state to durable object storage:** without checkpointing, a driver restart forgets which Kafka offsets were already committed.
+4. **Match latency needs to the right engine:** Structured Streaming excels at 100 ms–10 s micro-batches unified with Spark SQL; if you need sub-10 ms per-event latency, evaluate Apache Flink.
+
+**Quick check.** In Part A, if traffic doubles to **20,000 events/s** (processing time rises proportionally from 3.2 s to **6.4 s** on a 5 s batch), what is the quickest way to restore stability? Scale out executors (2× cores drops processing back to ~3.2 s) or optimize the slow per-event bottleneck!
 
 ## Introduction to Stream Processing
 

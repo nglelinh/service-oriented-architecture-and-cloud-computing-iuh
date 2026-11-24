@@ -10,8 +10,30 @@ categories:
 lesson_type: required
 ---
 
+A hospital storing patient MRIs under national privacy law and an e-commerce site bracing for a 10× holiday traffic spike cannot share the exact same hosting blueprint. **Deployment models**—Public, Private, Hybrid, and Community—answer a deceptively simple architectural question: *who owns the physical hardware, who shares it, and where are your data legally allowed to live?*
 
-Cloud deployment models define how cloud infrastructure is deployed, who has access to it, and how it's managed. Understanding these models is crucial for organizations to choose the right cloud strategy that aligns with their security, compliance, and business requirements.
+## Background Knowledge Map: Isolation, Compliance, and Network Topology Across Deployment Models
+
+1. **Multi-Tenancy vs. Single-Tenancy (Public vs. Private):** Public clouds pool hardware across millions of customers using logical isolation (hypervisors, VPCs, KMS encryption); Private clouds dedicate physical racks to a single organization for deterministic performance and strict regulatory audits.
+2. **Hybrid Cloud & Cloud Bursting:** Connects an on-premises private cluster to a public cloud via encrypted VPN or dedicated fiber (Direct Connect / ExpressRoute), keeping sensitive state local while bursting stateless compute to the public cloud during spikes.
+3. **Community Cloud & Sovereign Boundaries:** Pools infrastructure across organizations with identical compliance mandates (such as healthcare consortia or regional banking networks), sharing audit costs without opening tenancy to the general public.
+
+### Worked Example (Step by Step): Designing a Hybrid Cloud Burst Architecture
+
+A regional bank runs a core ledger database (**200 GB** of regulated PII) that must stay inside its on-premises Private Cloud, while its customer web portal sees **500 req/s** normally and **5,000 req/s** during tax-filing week:
+
+1. **Baseline steady state (500 req/s):** 4 stateless web containers on-premises (125 req/s each) query the local ledger over a $$1	ext{ ms}$$ LAN.
+2. **Tax-week surge (5,000 req/s):** capacity needed is $$5{,}000 / 125 = \mathbf{40}$$ containers. Instead of buying 36 extra physical servers for 1 week/year, the load balancer bursts **36 stateless containers** into the Public Cloud over a dedicated $$10	ext{ Gbps}$$ private link ($$8	ext{ ms}$$ RTT).
+3. **Latency & compliance budget check:** each burst request pays $$8	ext{ ms}$$ extra network RTT to query tokenized records from the on-premises ledger—well under a $$200	ext{ ms}$$ SLA—while **0 bytes of raw PII** are stored persistently in the public cloud!
+
+### Deep-Dive Explanation: Matching Workload Constraints to Deployment Topology (Read Slowly)
+
+1. **Classify data before picking a cloud:** split your system into *stateful regulated data* and *stateless compute*—most "we must stay 100% private" mandates actually apply only to the regulated data tier.
+2. **Account for the hidden cost of hybrid:** connecting two environments introduces cross-cloud latency, split identity systems, and data egress fees that can erase naive compute savings.
+3. **Avoid "private cloud" in name only:** a room of manually ticketed VMware hosts without self-service APIs and elastic quotas is legacy virtualization, not a true private cloud.
+4. **Plan exit and residency up front:** modern data-sovereignty laws (GDPR, national banking rules) dictate *which region* keys and backups reside in—making hybrid and sovereign regions first-class design constraints.
+
+**Quick check.** In the bank's hybrid burst, why did we burst the *stateless web tier* rather than replicating the *200 GB ledger database* into the public cloud? Because bursting stateless containers violates zero data-residency rules and avoids cross-cloud database write-consistency conflicts!
 
 ## Overview of Deployment Models
 

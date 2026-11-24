@@ -14,6 +14,21 @@ This optional **Deploy Track** is an IUH path through the skills that sit *besid
 
 Use this hub when you want to **ship a small multilayer service**, not only explain MapReduce.
 
+Theory without deployment is just a diagram on a whiteboard. Chapter 15 is the hands-on **IUH Deploy Track**—connecting every concept from networking, containers, APIs, observability, and Infrastructure as Code into four progressive labs culminating in your live **IUH Course Board** capstone!
+
+Instead of jumping blindly into a complex cloud console, this track builds your confidence step by step: local multi-tier Docker Compose (Lab A) $$	o$$ zero-cost OpenTofu IaC (Lab B) $$	o$$ free-tier FinOps & security hygiene (Lab C) $$	o$$ end-to-end pair Capstone.
+
+---
+
+## Background Knowledge Map: The Four-Stage Deploy Track Progression
+
+1. **Stage 1 — Local Reproducibility (Docker Compose):** Master service DNS, named volumes, healthchecks, and environment separation with zero cloud cost.
+2. **Stage 2 — Declarative Provisioning (OpenTofu):** Practice `init / plan / apply / destroy` and drift detection safely before touching billed APIs.
+3. **Stage 3 — Cloud FinOps & Security Hygiene:** Lock down MFA, IAM least privilege, and $1 billing alarms so you never suffer a surprise invoice.
+4. **Stage 4 — Integrated Capstone (IUH Course Board):** Combine API design, persistence, CI, observability, and IaC into one portfolio-ready system.
+
+---
+
 ## What you will do here
 
 1. Read four optional theory lessons (networking, observability depth, CI/CD, FinOps).
@@ -68,6 +83,27 @@ CS 40 is a *deployment* course. IUH remains a *platform + data* course with this
 ## Vietnamese companions
 
 New Deploy Track lessons have Vietnamese mirrors (`lang: vi`, same `chapter` + `order`). Required theory for Chapters 02–14 is still English-first; Chapter 01 required theory is bilingual.
+
+---
+
+### Worked Concrete Example: The 4-Lab Readiness Gate Progression
+
+| Lab Stage | Core Deliverable | Cost Risk | Key Skill Verified |
+| :--- | :--- | :--- | :--- |
+| **Lab A (`15-01`)** | Multi-tier `docker-compose.yml` | `$0.00` | Service DNS, volumes, healthchecks |
+| **Lab B (`15-02`)** | Local OpenTofu HCL + drift test | `$0.00` | Declarative state, `plan`/`destroy` |
+| **Lab C (`15-03`)** | MFA + IAM + $1 billing alarm | `$0.00` | Cloud security & FinOps hygiene |
+| **Capstone (`15-04`)** | IUH Course Board (pair deploy) | Controlled | End-to-end SOA + CI + Observability |
+
+### Deep-Dive Explanation: Three Habits That Make the Deploy Track Smooth (Read Slowly)
+
+1. **Complete Labs A, B, and C strictly in order:** Every bug you fix locally in Lab A saves an hour of slow remote debugging in the Capstone.
+2. **Treat your repo README like a runbook:** A teammate (or instructor) should be able to clone your repo and run your stack in two commands without asking you for missing steps.
+3. **Always verify teardown after every cloud experiment:** Leaving zero orphaned resources is a core hallmark of a professional cloud engineer.
+
+**Quick check.** Why does the IUH Deploy Track place **Lab A (Local Docker)** and **Lab B (Local OpenTofu)** *before* **Lab C (Free-Tier Cloud)**?
+
+---
 
 ## Video tham khảo
 

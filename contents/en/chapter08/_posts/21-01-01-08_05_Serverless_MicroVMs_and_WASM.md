@@ -12,6 +12,35 @@ lesson_type: optional
 
 The required lessons already cover hypervisors, Linux namespaces/cgroups, Docker, and AWS Lambda. This optional note tracks what changed *around* those primitives in 2022–2026: **Firecracker snapshots** (Lambda SnapStart), **container-image functions**, and **WebAssembly** as a finer isolation/speed bet—plus why CNCF surveys show serverless adoption is *split*, not uniformly rising.
 
+For a decade, cloud engineers lived with an uncomfortable fork in the road: full virtual machines gave you ironclad hardware isolation but took tens of seconds to boot and burned gigabytes of RAM, while Linux containers booted in milliseconds but shared a single host kernel—meaning one kernel bug could break multi-tenant isolation. Between 2022 and 2026, two new execution layers broke that trade-off wide open: **MicroVMs** (like AWS Firecracker) stripped virtual machines down to a minimal hardware-enforced hypervisor, while **WebAssembly (WASM/WASI)** brought millisecond, language-level sandboxing straight to the network edge.
+
+## Background Knowledge Map: The Modern Isolation Spectrum
+
+### 1. Hardware Virtualization and Minimalist MicroVMs
+Traditional hypervisors emulate legacy PC hardware (BIOS, floppy controllers, PCI buses) that cloud workloads never touch. A **MicroVM** uses Linux KVM hardware virtualization (Intel VT-x / AMD-V) with a tiny, purpose-built virtual machine monitor (VMM) exposing only virtio network and block devices. Each tenant still gets its own guest kernel—preserving VM-grade security—while slashing boot times from ~20 seconds down to ~125 milliseconds.
+
+### 2. Shared-Kernel Containers vs. Capability-Based WASM Sandboxes
+Standard containers rely on Linux namespaces (visibility isolation) and cgroups (resource quotas) enforced by one shared kernel. **WebAssembly (WASM)** takes a fundamentally different route: code compiles to a portable, memory-safe bytecode with a linear memory array and zero ambient authority. Under **WASI (WebAssembly System Interface)**, a module cannot open a socket or read a file unless the host runtime explicitly hands it that capability.
+
+### 3. Matching Isolation Overhead to Workload Lifetimes
+A long-lived database cares little about a 15-second boot time, whereas an edge authentication filter running for 3 milliseconds cannot afford even a 100 ms cold start. Modern cloud platforms therefore stack all three layers: VMs for infrastructure nodes, MicroVMs for multi-tenant serverless functions, and WASM isolates for ultra-low-latency edge compute.
+
+### Deep-Dive Explanation: Hand-Calculating Host Density and Startup Overhead Across Three Runtimes (Read Slowly)
+
+Suppose you operate a bare-metal host with **64 GiB (65,536 MiB)** of usable RAM dedicated to running idle-ready multi-tenant function sandboxes. Compare the theoretical packing density and cold-start penalty of three isolation technologies:
+
+| Runtime Layer | Per-Instance Overhead | Typical Cold Start | Max Empty Sandboxes on 64 GiB Host | Security Boundary |
+| :--- | :---: | :---: | :---: | :--- |
+| **Traditional VM** | 512 MiB | ~20,000 ms | $$65{,}536 / 512 = 128$$ | Dedicated guest kernel (KVM) |
+| **Firecracker MicroVM** | 5 MiB | ~125 ms | $$65{,}536 / 5 \approx 13{,}107$$ | Dedicated guest kernel (KVM) |
+| **WASM / WASI Isolate** | 1 MiB | ~1 ms | $$65{,}536 / 1 = 65{,}536$$ | Linear-memory sandbox + capabilities |
+
+Now verify the **latency overhead ratio** for a short **10 ms** edge API handler:
+- On a **MicroVM** cold start: total time = $$125 + 10 = 135\text{ ms}$$ (the startup is **12.5×** longer than the actual work!).
+- On a **WASM isolate** cold start: total time = $$1 + 10 = 11\text{ ms}$$ (startup adds only **10%** overhead).
+
+These numbers make the architectural rule of thumb obvious: use **MicroVMs** when you need arbitrary Linux binaries with full kernel isolation, and reach for **WASM** when sub-10 ms edge latency and extreme multi-tenant density dominate.
+
 ## Learning objectives
 
 - Explain SnapStart as a snapshot of an initialized Firecracker microVM, not a new programming model.

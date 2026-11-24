@@ -16,6 +16,22 @@ lesson_type: optional
 
 Bài thực hành này được biên soạn riêng cho IUH, **không** sử dụng đề bài của Stanford CS 40.
 
+Trước khi đụng tới Kubernetes hay một tài khoản đám mây có tính phí, mọi kỹ sư hệ thống đều cần làm chủ hoàn toàn "phòng thí nghiệm thu nhỏ" ngay trên laptop cá nhân: đóng gói ứng dụng thành ảnh container tinh gọn, nối nhiều dịch vụ qua mạng riêng Docker Compose, kiểm tra sức khỏe bằng `healthcheck`, và bảo toàn dữ liệu bền vững qua Volume.
+
+## Bản đồ kiến thức nền: Bốn kỹ năng cốt lõi của thực hành Container cục bộ
+
+1. **Multi-Stage Build (Đóng gói đa tầng tối ưu dung lượng & bảo mật)**:
+   Giai đoạn biên dịch (build) cần trình biên dịch (`gcc`, `cargo`, `npm`), nhưng giai đoạn chạy thật (runtime) hoàn toàn không cần chúng. **Multi-stage Dockerfile** biên dịch ở tầng `builder` rồi chỉ copy đúng tệp nhị phân/mã chạy sang ảnh nền siêu nhẹ (`slim` hoặc `distroless`), giảm tới $80\%\text{–}95\%$ dung lượng và thu nhỏ bề mặt tấn công.
+
+2. **Mạng cầu nối riêng (User-Defined Bridge Network) & DNS nội bộ**:
+   Trong `docker compose`, mọi dịch vụ trong cùng một mạng tự động tìm thấy nhau bằng **tên dịch vụ** (ví dụ API kết nối Postgres qua chuỗi `postgres://db:5432/app` thay vì `localhost:5432`—vì `localhost` bên trong container API là chính container API, không phải container DB!).
+
+3. **Tính phù du của Container vs. Volume bền vững**:
+   Mọi tệp ghi vào lớp ghi mặc định của container sẽ biến mất ngay khi chạy `docker compose down`. Dữ liệu cơ sở dữ liệu bắt buộc phải gắn vào **Named Volume** để sống sót qua mọi lần nâng cấp ảnh.
+
+4. **Nguyên tắc bảo mật tối thiểu ngay ở Local (Non-root & `.env`)**:
+   Chạy tiến trình trong container bằng tài khoản thường (`USER appuser`) thay vì `root`, và không bao giờ đưa tệp `.env` chứa mật khẩu vào Git hoặc `COPY . .` vào trong ảnh (luôn liệt kê `.env` trong `.dockerignore`).
+
 ## Mục đích
 
 Xây dựng ứng dụng **Bảng tin học phần gồm ba tầng** chạy cục bộ trên máy tính cá nhân: lớp biên (edge/trình duyệt), lớp API và lớp cơ sở dữ liệu. Sau khi chạy thành công, bạn cần chỉ rõ từng tiến trình tương ứng với tầng kiến trúc nào trong bài 01-07 (biên / ứng dụng / dữ liệu).
@@ -80,6 +96,25 @@ Lớp biên có thể dùng Caddy, nginx hoặc giao diện tĩnh phục vụ qu
 - Cấu hình TLS cục bộ tại lớp biên bằng `mkcert` cho tên miền `courseboard.localhost`.
 - Viết tệp `Makefile` với các lệnh `make up`, `make test` và `make down`.
 - Tích hợp kiểm thử nhanh (smoke test) từ bài 13-04 cho endpoint `/healthz`.
+
+### Khung giải thích (nên đọc chậm): So sánh ảnh Single-Stage (`920 MB`) vs. Multi-Stage (`28 MB`) và trace lỗi `localhost` kinh điển trong Docker Compose
+
+#### 1. Tại sao Multi-Stage Build thu nhỏ ảnh hơn $30\times$?
+
+Giả sử bạn đóng gói một dịch vụ API nhỏ (viết bằng Go/Rust hoặc Python/Node). So sánh hai cách viết `Dockerfile`:
+
+| Cách đóng gói | Thành phần nằm bên trong ảnh cuối cùng | Dung lượng ước lượng | Số lỗ hổng CVE tiềm ẩn |
+| :--- | :--- | :---: | :---: |
+| **Single-stage ngây thơ** (`FROM golang:1.22` hoặc `node:20`) | Toàn bộ OS Debian đầy đủ + trình biên dịch + công cụ git/curl + mã nguồn + cache build | **`~850–920 MB`** | Cao (hàng chục gói OS dư thừa) |
+| **Multi-stage chuẩn** (`builder` → `distroless`/`alpine`/`slim`) | Chỉ đúng tệp thực thi đã biên dịch + chứng chỉ CA gốc + `USER nonroot` | **`~18–28 MB`** | Gần như bằng **0** (không có cả shell `/bin/sh` cho kẻ tấn công!) |
+
+#### 2. Trace lỗi kết nối DB phổ biến nhất ở bài lab (`Connection refused` trên `localhost:5432`)
+
+Khi sinh viên chạy `docker compose up` với 2 dịch vụ `api` và `db`:
+- **Cấu hình sai**: `DATABASE_URL=postgres://user:pass@localhost:5432/board`.
+  - Container `api` có **Network Namespace riêng** (`172.20.0.3`). Gọi `localhost:5432` bên trong `api` nghĩa là hỏi cổng `5432` trên chính `172.20.0.3` → **không có gì lắng nghe → `Connection refused`!**
+- **Cấu hình đúng**: `DATABASE_URL=postgres://user:pass@db:5432/board`.
+  - Container `api` hỏi DNS nội bộ của Docker (`127.0.0.11`) địa chỉ tên miền `db` → Docker DNS trả về IP của container Postgres (`172.20.0.2`) → kết nối TCP `172.20.0.3 → 172.20.0.2:5432` thành công ngay lập tức!
 
 ## Những điều không nên làm
 
