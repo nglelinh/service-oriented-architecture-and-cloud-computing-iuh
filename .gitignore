@@ -49,3 +49,7 @@ Gemfile.lock
 search-index.json
 search-index-vi.json
 
+
+# Python bytecode
+__pycache__/
+*.pyc
