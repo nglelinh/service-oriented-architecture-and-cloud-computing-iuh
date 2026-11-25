@@ -18,7 +18,7 @@ This lecture goes beyond printing `console.log` to build production-grade observ
 
 ---
 
-## Background Knowledge Map: The Three Signals & OpenTelemetry Correlation
+## Key ideas: The Three Signals & OpenTelemetry Correlation
 
 Four engineering principles turn raw telemetry noise into fast root-cause diagnosis:
 
@@ -196,7 +196,7 @@ Trace a single `POST /checkout` request (`trace_id = 7f3a...`) across 4 spans:
 
 Adding 20 more `api-gateway` replicas would shave **0 ms** off this outage—the trace waterfall proves immediately that 83.3% of the latency sits in a single contended row lock inside PostgreSQL!
 
-### Deep-Dive Explanation: Four Rules for Production Observability (Read Slowly)
+### Explanation: Four Rules for Production Observability
 
 1. **Always alert on user-facing SLO symptoms (RED metrics), not raw CPU:** High CPU with 15 ms p99 latency is healthy utilization; 5% error rate at 10% CPU is an active outage.
 2. **Never put unbounded IDs (`request_id`, `email`) into Prometheus metric labels:** High-cardinality labels explode time-series memory and crash your metrics backend; put IDs in logs and trace attributes instead.

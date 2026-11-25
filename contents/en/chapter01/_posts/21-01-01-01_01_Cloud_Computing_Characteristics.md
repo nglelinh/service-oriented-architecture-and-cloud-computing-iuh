@@ -12,7 +12,7 @@ lesson_type: required
 
 Picture a ticketing startup preparing for a concert flash sale: for 22 hours of the day, two modest servers sit quietly at 15% CPU, yet for two explosive evening hours traffic surges fivefold. In the pre-cloud era, you bought ten physical servers upfront and watched eight of them burn electricity doing nothing 90% of the month. The NIST five essential characteristics aren't bureaucratic trivia—they are the exact engineering contract that turns idle hardware into elastic, metered utility computing.
 
-## Background Knowledge Map: The Five NIST Pillars as an Engineering Contract
+## Key ideas: The Five NIST Pillars as an Engineering Contract
 
 For a computer-science graduate, NIST's five characteristics translate directly into concrete systems primitives:
 
@@ -37,7 +37,7 @@ $$
 
 without sacrificing a single peak request!
 
-### Deep-Dive Explanation: Why All Five Characteristics Must Work Together (Read Slowly)
+### Explanation: Why All Five Characteristics Must Work Together
 
 1. **Self-service without pooling doesn't scale:** if a provider didn't pool spare hardware across thousands of tenants, your API call for 8 extra servers at 8:00 PM would fail with "out of stock."
 2. **Elasticity without metering encourages waste:** if engineers never see the bill for forgotten staging clusters, elastic scale-out happens automatically while scale-in never does.

@@ -20,7 +20,7 @@ This chapter delves into MapReduce, the programming paradigm that popularized bi
 
 Why can't you just download a 10-terabyte log file onto one powerful workstation and write a Python `for` loop to count unique visitors? Do the arithmetic, and physics stops you cold: streaming 10 TB over a 1 Gbps network link takes **over 22 hours** before your script even finishes reading the first pass! Chapter 04 introduces the paradigm shift that flipped big data on its head: **stop moving terabytes of data to one CPU—ship tiny kilobytes of code directly to the disks holding the data**.
 
-## Background Knowledge Map: The Big-Data Batch Processing Paradigm
+## Key ideas: The Big-Data Batch Processing Paradigm
 
 1. **Data Locality (Moving Compute to Data):** Pushing lightweight Map tasks directly onto the cluster nodes storing HDFS blocks turns a single-link network bottleneck into aggregate parallel disk bandwidth.
 2. **The Map–Shuffle–Reduce Pipeline:** Breaks arbitrary large-scale aggregations into parallel local transforms (`Map`), network key-grouping (`Shuffle`), and parallel group summaries (`Reduce`).
@@ -38,7 +38,7 @@ Compare scanning a **10 TB** ($$10{,}000	ext{ GB}$$) dataset two ways:
   T_{	ext{local}} = rac{100	ext{ GB}}{0.2	ext{ GB/s}} = \mathbf{500	ext{ seconds}} pprox \mathbf{8.3	ext{ minutes}} \quad (\mathbf{160	imes	ext{ faster!}}).
   $$
 
-### Deep-Dive Explanation: Mastering Chapter 04 in Four Steps (Read Slowly)
+### Explanation: Mastering Chapter 04 in Four Steps
 
 1. **Internalize the physical bottleneck:** big data is usually *I/O and network bound*, not CPU bound—data locality is the first lever.
 2. **Trace every stage by hand (`04-01`):** follow `InputSplit → Map → Combiner → Partitioner → Shuffle → Reduce` on small word-count examples until data movement is crystal clear.

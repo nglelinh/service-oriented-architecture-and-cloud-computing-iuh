@@ -22,7 +22,7 @@ Câu trả lời của ngành điện toán đám mây giai đoạn 2022–2026 
 
 ---
 
-## Bản đồ kiến thức nền: Bốn tầng Cách ly và Mật độ Điện toán Đám mây
+## Kiến thức cần nhớ: Bốn tầng Cách ly và Mật độ Điện toán Đám mây
 
 Để chọn đúng hạ tầng thực thi cho từng loại tải công việc (workload), hãy nhìn qua bốn nấc thang đánh đổi giữa **độ cách ly bảo mật** và **tốc độ khởi động / mật độ**:
 
@@ -33,7 +33,7 @@ Câu trả lời của ngành điện toán đám mây giai đoạn 2022–2026 
 
 ---
 
-## Bản đồ kiến thức nền: Bốn trụ cột của công nghệ cô lập và Serverless hiện đại
+## Kiến thức cần nhớ: Bốn trụ cột của công nghệ cô lập và Serverless hiện đại
 
 1. **Quang phổ Cô lập (VM → microVM → Container → WebAssembly)**:
    Đặt bốn công nghệ trên cùng một trục đánh đổi giữa *ranh giới bảo mật* và *thời gian khởi động / tiêu tốn RAM*: microVM (Firecracker) cắt bỏ toàn bộ thiết bị ảo thừa (USB, BIOS cũ) để giữ cô lập phần cứng KVM nhưng boot chỉ ~125 ms; còn WASM bỏ luôn cả nhân Linux khách để khởi chạy trong vài mili-giây.
@@ -94,7 +94,7 @@ Một mẫu kiến trúc phổ biến giai đoạn 2024–2026 thường kết h
 
 Không nên đặt trực tiếp tác vụ sinh nội dung LLM kéo dài 30 giây bên trong giới hạn timeout của API Gateway mà không tách thành cơ chế xử lý bất đồng bộ kèm mã tác vụ (`job_id`).
 
-### Khung giải thích (nên đọc chậm): Tính tay điểm hòa vốn chi phí giữa AWS Lambda và Container chạy thường trực
+### Giải thích: Tính tay điểm hòa vốn chi phí giữa AWS Lambda và Container chạy thường trực
 
 Giả sử bạn có một API xử lý webhook cần **512 MB RAM** (0,5 GB) và mất trung bình **100 ms** (`0,1 giây`) cho mỗi yêu cầu. Hãy so sánh chi phí tháng giữa **AWS Lambda** (đơn giá minh họa: `0,20 USD / 1 triệu request` + `0,00001667 USD / GB-giây`) và **1 Container nhỏ chạy 24/7** (`0,5 vCPU, 512 MB RAM`, chi phí cố định khoảng **15 USD/tháng**):
 
@@ -113,7 +113,7 @@ Bảng tính tay này giải thích hoàn toàn xu hướng **phân hóa serverl
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: Tính mật độ đóng gói trên một máy chủ vật lý 16 GB RAM
+### Ví dụ thực tế làm từng bước: Tính mật độ đóng gói trên một máy chủ vật lý 16 GB RAM
 
 Giả sử bạn có một máy chủ vật lý dành **16 GB (16.384 MB) RAM** cho các thực thể chạy hàm serverless (mỗi hàm cần 10 MB RAM nghiệp vụ cộng thêm RAM nền của lớp ảo hóa):
 
@@ -125,7 +125,7 @@ Giả sử bạn có một máy chủ vật lý dành **16 GB (16.384 MB) RAM** 
 
 Hãy nhìn cột Cold Start kết hợp với mật độ: với **microVM**, nhà cung cấp đám mây nhồi được hơn 1.000 hàm tách biệt hoàn toàn về phần cứng trên một máy chủ; còn với **WASM**, hàm khởi động nhanh hơn cả một vòng ping mạng (5 ms), xóa sổ gần như hoàn toàn nỗi ám ảnh "cold start" của serverless!
 
-### Khung giải thích: Bốn quy tắc chọn giữa Container, MicroVM và WASM (nên đọc chậm)
+### Giải thích: Bốn quy tắc chọn giữa Container, MicroVM và WASM
 
 1. **Chạy mã tin cậy nội bộ công ty (microservice chạy dài hạn):** Container trên Kubernetes vẫn là lựa chọn thực dụng nhất nhờ hệ sinh thái trưởng thành và đầy đủ thư viện hệ điều hành.
 2. **Chạy mã khách hàng không tin cậy (FaaS, sandbox AI chạy code, CI runners):** Bắt buộc dùng **microVM (Firecracker / Kata Containers)** để bảo vệ nhân hệ điều hành máy chủ.

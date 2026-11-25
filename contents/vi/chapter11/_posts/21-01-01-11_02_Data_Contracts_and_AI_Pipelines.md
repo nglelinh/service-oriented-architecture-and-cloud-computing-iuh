@@ -14,7 +14,7 @@ Hãy hình dung kịch bản quen thuộc ở hầu hết các công ty công ng
 
 Sự cố đó không phải do đội dữ liệu yếu kém, mà do thiếu **Hợp đồng dữ liệu (Data Contracts)**—giao diện có phiên bản, được kiểm chứng tự động giữa bên sinh dữ liệu (producer) và bên tiêu thụ dữ liệu (consumer). Và khi doanh nghiệp nạp dữ liệu vào các mô hình **AI/LLM (RAG, fine-tuning)**, yêu cầu làm sạch dữ liệu còn khắt khe gấp bội: dữ liệu trùng lặp, rác HTML hay rò rỉ thông tin cá nhân (PII) sẽ trực tiếp đầu độc câu trả lời của mô hình.
 
-## Bản đồ kiến thức nền: Bốn trụ cột của kỹ thuật chất lượng dữ liệu thời đại AI
+## Kiến thức cần nhớ: Bốn trụ cột của kỹ thuật chất lượng dữ liệu thời đại AI
 
 1. **Hợp đồng dữ liệu (Data Contracts) & Schema Registry**:
    Hợp đồng dữ liệu quy định rõ bốn cam kết: **lược đồ (schema)** (tên cột, kiểu dữ liệu, bắt buộc/tùy chọn), **ngữ nghĩa (semantics)** (đơn vị tiền tệ, múi giờ), **SLA độ tươi mới** (dữ liệu trễ tối đa bao nhiêu phút) và **quyền sở hữu**. Các công cụ như Avro/Protobuf kết hợp Schema Registry chặn mọi thay đổi phá vỡ tương thích ngược (*breaking changes*) ngay từ bước CI trước khi đẩy lên sản xuất.
@@ -96,7 +96,7 @@ Một mẫu thiết kế an toàn là **phân tách hai vùng dữ liệu**: Vù
 <p><strong>Thu thập tự động (web scraping) không thay thế chiến lược nguồn dữ liệu hợp lệ.</strong> Cần kiểm tra <code>robots.txt</code>, điều khoản giấy phép và quy định bảo vệ dữ liệu cá nhân tại Việt Nam/EU trước khi chạy mã thu thập như <code>BeautifulSoup</code>. So sánh giữa dùng API chính thức và scraping hiện là vấn đề tuân thủ pháp lý quan trọng.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Trace 10.000 tài liệu đi qua 3 cổng kiểm soát chất lượng và tính chi phí token tiết kiệm được cho RAG
+### Giải thích: Trace 10.000 tài liệu đi qua 3 cổng kiểm soát chất lượng và tính chi phí token tiết kiệm được cho RAG
 
 Giả sử bạn xây dựng hệ thống hỏi–đáp nội bộ (RAG) bằng cách thu thập **10.000 trang tài liệu** từ wiki công ty (trung bình `1.200 token/trang`, tương đương **12.000.000 token** thô) để tạo embedding và lưu vào Vector Database.
 

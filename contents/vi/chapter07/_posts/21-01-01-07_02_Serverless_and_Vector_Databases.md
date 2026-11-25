@@ -22,15 +22,16 @@ Bài học này khám phá ba làn sóng cơ sở dữ liệu đám mây giai đ
 
 ---
 
-## Bản đồ kiến thức nền: Ba cuộc cách mạng Cơ sở dữ liệu Đám mây hiện đại
+## Kiến thức cần nhớ: Ba cuộc cách mạng Cơ sở dữ liệu Đám mây hiện đại
 
 1. **CSDL Serverless (Tách Compute–Storage & Scale-to-Zero):** Các hệ thống như Neon, Aurora Serverless v2 lưu trang dữ liệu trên tầng object/page storage dùng chung, cho phép bật/tắt hoặc co giãn nút tính toán trong vài trăm mili-giây — thậm chí **tạo nhánh CSDL (database branching)** tức thì giống Git cho môi trường kiểm thử!
-2. **SQL Phân tán (Distributed SQL — CockroachDB, Spanner, TiDB):** Kết hợp khả năng chia mảnh ngang (sharding) của NoSQL với tính toàn vẹn giao dịch ACID của SQL thông qua giao thức đồng thuận **Raft/Paxos** (cần đa số $$\lfloor N/2floor + 1$$ nút xác nhận).
+2. **SQL Phân tán (Distributed SQL — CockroachDB, Spanner, TiDB):** Kết hợp khả năng chia mảnh ngang (sharding) của NoSQL với tính toàn vẹn giao dịch ACID của SQL thông qua giao thức đồng thuận **Raft/Paxos** (cần đa số $$\lfloor N/2
+floor + 1$$ nút xác nhận).
 3. **Cơ sở dữ liệu Vector & Tìm kiếm gần đúng (ANN / HNSW):** Biểu diễn văn bản/hình ảnh thành vector $$d$$ chiều (ví dụ $$d = 1536$$) và tìm top-$$k$$ tài liệu gần nhất theo **Cosine Similarity** hoặc khoảng cách Euclid. Thay vì quét vét cạn $$O(N\cdot d)$$, chỉ mục **HNSW** (Hierarchical Navigable Small World) nhảy qua đồ thị phân tầng với tốc độ $$O(\log N)$$!
 
 ---
 
-## Bản đồ kiến thức nền: Bốn trụ cột của tầng dữ liệu đám mây hiện đại
+## Kiến thức cần nhớ: Bốn trụ cột của tầng dữ liệu đám mây hiện đại
 
 1. **Đàn hồi tầng dữ liệu (Serverless Database & Connection Pooling)**:
    Đưa đặc trưng *rapid elasticity* của NIST xuống tận động cơ lưu trữ: tách tầng tính toán (compute) khỏi tầng lưu trữ (storage) để tăng giảm đơn vị năng lực (như ACU) theo tải thực tế, nhưng phải kiểm soát **cold start** và **bão kết nối** bằng connection pooler.
@@ -107,7 +108,7 @@ LIMIT 8;
 | Sổ cái / đăng ký học phần | SQL phân tán hoặc RDBMS | Ưu tiên tính nhất quán (CP) |
 | Tìm kiếm ngữ nghĩa | Chỉ mục vector + lọc metadata | Tìm kiếm gần đúng |
 
-### Khung giải thích (nên đọc chậm): Tính tay dung lượng RAM cho 1 triệu vector và độ trễ đồng thuận Raft
+### Giải thích: Tính tay dung lượng RAM cho 1 triệu vector và độ trễ đồng thuận Raft
 
 #### Bước 1: Ước lượng bộ nhớ cho bảng `docs` chứa **1.000.000 đoạn tài liệu** với `vector(1536)`
 
@@ -136,7 +137,7 @@ Chính vì vậy, đừng chọn SQL phân tán đa vùng theo phong trào: hãy
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: Tính chi phí Serverless Scale-to-Zero và chấm điểm Cosine Similarity bằng tay
+### Ví dụ thực tế làm từng bước: Tính chi phí Serverless Scale-to-Zero và chấm điểm Cosine Similarity bằng tay
 
 **Phần A — Bài toán chi phí CSDL Serverless vs. Máy chủ cố định (24/7):**
 Một môi trường phát triển/staging chỉ thực sự có truy vấn **3 giờ mỗi ngày** (90 giờ/tháng) với tải trung bình 2 vCPU:
@@ -148,7 +149,7 @@ Giả sử câu hỏi của người dùng có vector chuẩn hóa $$\mathbf{q} 
 - Tài liệu 1 (cùng chủ đề): $$\mathbf{d}_1 = [0{,}8,\; 0{,}6,\; 0{,}0] \implies \cos(\mathbf{q}, \mathbf{d}_1) = 0{,}6(0{,}8) + 0{,}8(0{,}6) + 0 = \mathbf{0{,}96}$$ (rất gần!).
 - Tài liệu 2 (khác chủ đề): $$\mathbf{d}_2 = [0{,}0,\; 0{,}0,\; 1{,}0] \implies \cos(\mathbf{q}, \mathbf{d}_2) = \mathbf{0{,}00}$$ (vuông góc, không liên quan!).
 
-### Khung giải thích: Bốn nguyên tắc chọn đúng Cơ sở dữ liệu cho hệ thống Cloud/AI (nên đọc chậm)
+### Giải thích: Bốn nguyên tắc chọn đúng Cơ sở dữ liệu cho hệ thống Cloud/AI
 
 1. **Đừng dựng ngay một CSDL Vector chuyên biệt nếu dữ liệu còn dưới vài triệu vector:** Nếu bạn đã dùng PostgreSQL, cài thêm mở rộng **`pgvector` (với chỉ mục HNSW)** cho phép lọc siêu dữ liệu SQL (`WHERE tenant_id = 42`) ngay chung một giao dịch ACID với tìm kiếm vector!
 2. **Hiểu cái giá của Scale-to-Zero (Cold Start):** Nút tính toán ngủ đông cần 300 ms–1 giây để đánh thức ở truy vấn đầu tiên — rất tuyệt cho staging và ứng dụng tải theo đợt, nhưng với API thanh toán yêu cầu p99 < 20 ms, hãy đặt mức tối thiểu (`min_capacity > 0`).

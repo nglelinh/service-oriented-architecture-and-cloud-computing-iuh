@@ -16,7 +16,7 @@ Phần lý thuyết bắt buộc định nghĩa hệ thống phân tán thông q
 
 > Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
-## Bản đồ kiến thức nền: Bốn trụ cột của khả năng quan sát hệ phân tán
+## Kiến thức cần nhớ: Bốn trụ cột của khả năng quan sát hệ phân tán
 
 Để chuyển từ thói quen "SSH vào từng máy đọc file log" sang tư duy quan sát hệ thống phân tán chuyên nghiệp, hãy nắm vững bốn trụ cột:
 
@@ -98,7 +98,7 @@ def call_with_budget(fn, timeout_s=0.2, attempts=3):
 
 Theo khảo sát CNCF 2024 (công bố tháng 4/2025), **80%** tổ chức tham gia đã vận hành Kubernetes trên môi trường sản xuất. Mật độ dịch vụ tăng kéo theo chi phí và độ phức tạp giám sát tăng mạnh; OpenTelemetry giữ vai trò lớp hợp đồng ổn định ngay cả khi hệ thống lưu trữ phía sau thay đổi.
 
-### Khung giải thích (nên đọc chậm): Tính tay ngân sách lỗi (Error Budget) và "hiệu ứng khuếch đại độ trễ đuôi"
+### Giải thích: Tính tay ngân sách lỗi (Error Budget) và "hiệu ứng khuếch đại độ trễ đuôi"
 
 Hãy cầm bút tính thử hai con số mà mọi kỹ sư SRE đều phải thuộc lòng khi đọc dashboard.
 

@@ -22,7 +22,7 @@ Trước đây, mỗi khi một kỹ sư dữ liệu muốn gọi Apache Spark t
 
 ---
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Kiến trúc Dữ liệu Lớn Cloud-Native
+## Kiến thức cần nhớ: Bốn trụ cột của Kiến trúc Dữ liệu Lớn Cloud-Native
 
 Để hiểu vì sao Spark Connect thay đổi hoàn toàn cách tích hợp Big Data vào kiến trúc hướng dịch vụ (SOA), hãy nắm bốn trụ cột sau:
 
@@ -33,7 +33,7 @@ Trước đây, mỗi khi một kỹ sư dữ liệu muốn gọi Apache Spark t
 
 ---
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Spark thế hệ cloud-native
+## Kiến thức cần nhớ: Bốn trụ cột của Spark thế hệ cloud-native
 
 1. **Tách rời Client và Driver (Spark Connect trên gRPC)**:
    Thay vì nhúng JVM vào ứng dụng người dùng, client mỏng (~1,5 MB với `pyspark-client`) chỉ biên dịch các lệnh DataFrame thành **Unresolved Logical Plan** rồi gửi qua gRPC tới Spark Connect Server trên cụm.
@@ -105,7 +105,7 @@ graph TB
 <p><strong>Lưu ý về bài tập RDD và Spark Connect.</strong> Nếu bài thực hành vẫn yêu cầu dùng <code>sc.parallelize</code> và quản lý phân vùng thủ công, bạn đang làm việc trên Spark Classic. Cách tiếp cận này hữu ích để hiểu cơ chế lineage, nhưng không phản ánh mặc định của các ứng dụng triển khai giai đoạn 2025 trở đi.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): So sánh định lượng ảnh Docker & quy hoạch Pod cho một microservice gọi Spark
+### Giải thích: So sánh định lượng ảnh Docker & quy hoạch Pod cho một microservice gọi Spark
 
 Giả sử nhóm bạn xây dựng một dịch vụ FastAPI nhỏ (`reports-api`, chạy **10 bản sao Pod**) thỉnh thoảng cần gọi Spark để tổng hợp báo cáo từ 500 GB dữ liệu Parquet. Hãy đặt hai kiến trúc lên bàn cân bằng con số cụ thể:
 
@@ -129,7 +129,7 @@ Giả sử nhóm bạn xây dựng một dịch vụ FastAPI nhỏ (`reports-api
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: So sánh tài nguyên giữa PySpark cổ điển và Spark Connect trên 10 microservice
+### Ví dụ thực tế làm từng bước: So sánh tài nguyên giữa PySpark cổ điển và Spark Connect trên 10 microservice
 
 Giả sử một hệ thống SOA có **10 microservice/notebook** cùng truy vấn dữ liệu từ cụm Spark trên Kubernetes:
 
@@ -140,7 +140,7 @@ Giả sử một hệ thống SOA có **10 microservice/notebook** cùng truy v�
 | **Phạm vi ảnh hưởng khi 1 client crash** | Có thể kéo sập toàn bộ Driver dùng chung | **Cô lập hoàn toàn** — chỉ ngắt 1 phiên gRPC |
 | **Khả năng gọi từ ngôn ngữ ngoài JVM** | Rất khó (bị trói vào JVM/Py4J) | Gọi tự nhiên từ Python, Go, Rust qua gRPC |
 
-### Khung giải thích: Bốn nguyên tắc thiết kế ứng dụng Spark Cloud-Native (nên đọc chậm)
+### Giải thích: Bốn nguyên tắc thiết kế ứng dụng Spark Cloud-Native
 
 1. **Đừng kéo dữ liệu lớn về client bằng `.collect()`:** Spark Connect vẫn truyền dữ liệu qua mạng gRPC; hãy tổng hợp (`groupBy`, `agg`, `limit`) ngay trên cụm máy chủ và chỉ kéo về client vài nghìn dòng kết quả.
 2. **Tận dụng tính lười biếng (Lazy Evaluation):** Các phép biến đổi `filter`, `select`, `join` chỉ xây dựng cây Protobuf cực nhẹ ở phía client; mạng gRPC chỉ thực sự chạy khi bạn gọi hành động (`show`, `write`, `toPandas`).

@@ -17,7 +17,7 @@ Bài mở đầu ngắn này định vị vai trò của Chương 05 trong toàn
 
 ---
 
-## Bản đồ kiến thức nền: Ba trụ cột kết nối Big Data với Điện toán Đám mây
+## Kiến thức cần nhớ: Ba trụ cột kết nối Big Data với Điện toán Đám mây
 
 1. **Đẩy tính toán về phía dữ liệu (Compute–Storage Co-design):** Đọc định dạng cột (Parquet) kèm cắt tỉa phân vùng (*partition pruning*) và đẩy điều kiện lọc (*predicate pushdown*) giúp giảm lưu lượng mạng hàng trăm lần.
 2. **Tách rời lớp điều khiển khỏi lớp thực thi:** Spark Connect biến cụm xử lý dữ liệu lớn thành một **dịch vụ chuẩn gRPC** có thể gọi từ bất kỳ microservice hay sổ tay phân tích nào.
@@ -25,7 +25,7 @@ Bài mở đầu ngắn này định vị vai trò của Chương 05 trong toàn
 
 ---
 
-## Bản đồ kiến thức nền: Ba khái niệm cốt lõi của Chương 05 — Nền tảng Apache Spark
+## Kiến thức cần nhớ: Ba khái niệm cốt lõi của Chương 05 — Nền tảng Apache Spark
 
 1. **Kiến trúc Driver – Executor – Cluster Manager**:
    *Driver* là bộ não lập kế hoạch truy vấn và chia nhỏ công việc thành các task; các *Executor* là công nhân chạy song song trên các nút máy chủ để tính toán và giữ cache trong RAM; còn *Cluster Manager* (YARN hoặc Kubernetes) cấp phát CPU/RAM cho cụm.
@@ -34,7 +34,7 @@ Bài mở đầu ngắn này định vị vai trò của Chương 05 trong toàn
 3. **Biến đổi hẹp (Narrow) vs. Biến đổi rộng (Wide Transformation)**:
    Biến đổi hẹp (`map`, `filter`) chạy hoàn toàn cục bộ trên từng phân vùng nên cực nhanh; biến đổi rộng (`groupBy`, `join`) bắt buộc phải trao đổi dữ liệu qua mạng (Shuffle), tạo ranh giới cắt DAG thành các giai đoạn (*Stage*).
 
-### Khung giải thích (nên đọc chậm): So sánh thời gian chạy một thuật toán lặp 10 vòng trên MapReduce vs. Spark
+### Giải thích: So sánh thời gian chạy một thuật toán lặp 10 vòng trên MapReduce vs. Spark
 
 Giả sử bạn chạy một vòng lặp huấn luyện đơn giản **10 bước** trên tập dữ liệu **100 GB** (tốc độ đọc/ghi đĩa cục bộ hiệu dụng của cụm là `2 GB/s`, tốc độ đọc RAM hiệu dụng là `40 GB/s`):
 
@@ -53,7 +53,7 @@ Khi kết hợp tốc độ trong bộ nhớ này với kiến trúc **Spark Con
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: Sức mạnh của Predicate Pushdown trên 100 GB dữ liệu Parquet
+### Ví dụ thực tế làm từng bước: Sức mạnh của Predicate Pushdown trên 100 GB dữ liệu Parquet
 
 Giả sử kho dữ liệu giao dịch lưu **100 GB** tệp Parquet trên S3 (gồm 20 cột, trải đều 100 ngày, mỗi ngày 1 GB), và một dịch vụ chỉ cần tính tổng doanh thu của **1 ngày duy nhất** trên **2 cột** (`date`, `amount`):
 - **Cách ngây thơ (kéo toàn bộ bảng về dịch vụ):** Phải truyền qua mạng $$100	ext{ GB}$$; ở băng thông $$1	ext{ Gbps}$$ ($$125	ext{ MB/s}$$) mất **800 giây (~13,3 phút)**!
@@ -61,7 +61,7 @@ Giả sử kho dữ liệu giao dịch lưu **100 GB** tệp Parquet trên S3 (g
   - Cắt tỉa phân vùng theo ngày giữ lại $$1 / 100 \implies 1	ext{ GB}$$.
   - Chỉ đọc 2/20 cột ($$10\%$$) $$\implies \mathbf{100	ext{ MB}}$$ (giảm **1.000 lần** lượng I/O, hoàn thành trong chưa đầy **1 giây**!).
 
-### Khung giải thích: Ba câu hỏi cần tự hỏi trước khi bước vào bài chuyên sâu Chương 05 (nên đọc chậm)
+### Giải thích: Ba câu hỏi cần tự hỏi trước khi bước vào bài chuyên sâu Chương 05
 
 1. **Bài toán này thực sự cần phân tán chưa?** Dưới vài chục GB, DuckDB/Polars trên một máy chủ đơn thường nhanh và rẻ hơn nhiều so với dựng cả cụm Spark.
 2. **Dịch vụ của bạn giao tiếp với tầng dữ liệu lớn qua giao diện nào?** Tránh nhúng trực tiếp thư viện nặng vào API phục vụ người dùng — hãy tách qua giao thức RPC mỏng như Spark Connect hoặc hàng đợi sự kiện.

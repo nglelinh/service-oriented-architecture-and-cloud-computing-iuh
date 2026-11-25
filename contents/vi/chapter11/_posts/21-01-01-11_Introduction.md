@@ -13,7 +13,7 @@ Trong khoa học dữ liệu và kiến trúc đám mây có một quy luật ng
 
 Chương 11 tập trung vào chặng đường đầu tiên nhưng chiếm tới **60–80% công sức** của mọi kỹ sư dữ liệu: **thu thập (ingestion), làm sạch (cleaning) và chuẩn hóa dữ liệu** sao cho đường ống vừa chịu lỗi tốt, vừa chạy lại được an toàn khi sự cố xảy ra.
 
-## Bản đồ kiến thức nền: Bốn nguyên lý của đường ống thu thập và làm sạch dữ liệu
+## Kiến thức cần nhớ: Bốn nguyên lý của đường ống thu thập và làm sạch dữ liệu
 
 1. **ETL vs. ELT (Biến đổi trước hay sau khi nạp?)**:
    Mô hình **ETL (Extract–Transform–Load)** truyền thống biến đổi và làm sạch dữ liệu trên một máy chủ trung gian trước khi nạp vào kho dữ liệu đắt tiền. Mô hình **ELT (Extract–Load–Transform)** hiện đại trên đám mây đổ thẳng dữ liệu thô vào Object Storage/Lakehouse (tầng *Bronze*), rồi dùng sức mạnh SQL phân tán (dbt, Spark) biến đổi dần sang tầng sạch (*Silver*) và tầng tổng hợp kinh doanh (*Gold* — còn gọi là **Kiến trúc Medallion**).
@@ -21,13 +21,13 @@ Chương 11 tập trung vào chặng đường đầu tiên nhưng chiếm tới
 2. **Schema-on-Write vs. Schema-on-Read**:
    **Schema-on-Write** kiểm tra chặt kiểu dữ liệu ngay lúc ghi (tránh dữ liệu bẩn nhưng kém linh hoạt khi nguồn thay đổi). **Schema-on-Read** chấp nhận lưu dữ liệu bán cấu trúc (JSON/log) ngay lập tức và áp lược đồ lúc đọc—linh hoạt khi thu thập nhưng đòi hỏi lớp kiểm định chặt ở tầng Silver.
 
-3. **Tính lũy đẳng (Idempotency) — Phép thử sống còn của đường ống dữ liệu**:
+3. **Tính lũy đẳng (Idempotency) — Phép thử quan trọng của đường ống dữ liệu**:
    Trong hệ phân tán, mạng luôn có thể đứt đúng giây thứ 59 khiến tác vụ chạy lại (retry). Một đường ống được gọi là **lũy đẳng** nếu chạy nó **1 lần hay 5 lần** trên cùng một tệp đầu vào đều cho ra **đúng một kết quả cuối cùng**, không bao giờ nhân đôi doanh thu hay đếm đúp giao dịch.
 
 4. **Phân biệt dữ liệu thiếu, nhiễu và ngoại lai (Missing, Noise, Outliers)**:
    Xóa mù quáng mọi dòng có `NULL` có thể làm lệch mẫu thống kê nghiêm trọng (ví dụ khách hàng không điền tuổi lại là nhóm chi tiêu cao nhất). Làm sạch đúng nghĩa luôn gắn liền với ngữ nghĩa nghiệp vụ: điền giá trị mặc định có ghi chú, chuẩn hóa múi giờ về UTC, và tách riêng bản ghi bất thường để kiểm chứng.
 
-### Khung giải thích (nên đọc chậm): Tính tay hậu quả khi pipeline không lũy đẳng chạy lại 2 lần trên 500 đơn hàng
+### Giải thích: Tính tay hậu quả khi pipeline không lũy đẳng chạy lại 2 lần trên 500 đơn hàng
 
 Giả sử cuối ngày `2026-10-20`, tệp `orders_20261020.csv` có đúng **500 đơn hàng**, tổng doanh thu thực tế là **`250.000.000 VNĐ`**. Đường ống nạp dữ liệu đọc từng dòng và ghi vào bảng `fact_orders`. Lúc đang ghi đến đơn thứ `320`, kết nối mạng tới kho dữ liệu bị ngắt, trình lập lịch (Airflow) tự động thử chạy lại (retry) từ đầu tệp!
 

@@ -14,7 +14,7 @@ Nếu 5 bài trước là tấm bản đồ kinh điển của điện toán đ�
 
 ---
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Đám mây Hiện đại (2022–2026)
+## Kiến thức cần nhớ: Bốn trụ cột của Đám mây Hiện đại (2022–2026)
 
 ### 1. Kiến trúc Đa đám mây & Mặt phẳng Điều khiển Thống nhất
 Doanh nghiệp hiện đại hiếm khi ở 100% một nhà cung cấp: họ có thể chạy sản phẩm web trên AWS, kho dữ liệu phân tích trên Google BigQuery và dịch vụ AI trên Azure OpenAI. Thách thức lớn nhất không phải mở tài khoản thứ hai, mà là **kiểm soát phí truyền dữ liệu liên đám mây (egress)** và thống nhất bảo mật danh tính.
@@ -111,9 +111,9 @@ Bốn mô hình public, private, hybrid và community vẫn giữ nguyên giá t
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: Tính chi phí đơn vị FinOps — Khi nào hóa đơn tăng lại là tin vui?
+### Ví dụ làm từng bước 1: Tính chi phí đơn vị FinOps — Khi nào hóa đơn tăng lại là tin vui?
 
 So sánh hiệu quả FinOps của một dịch vụ thanh toán giữa Quý 1 và Quý 2:
 
@@ -125,13 +125,13 @@ So sánh hiệu quả FinOps của một dịch vụ thanh toán giữa Quý 1 v
 
 **Kết luận FinOps:** Nếu chỉ nhìn tổng hóa đơn (+30%), bộ phận tài chính sẽ báo động đỏ. Nhưng nhìn **chi phí đơn vị**, đội kỹ thuật đã tối ưu hiệu suất cực kỳ xuất sắc — cắt giảm 35% chi phí trên mỗi giao dịch!
 
-### Ví dụ cầm tay chỉ việc 2: Tính nhanh bộ nhớ VRAM cần thiết để phục vụ mô hình LLM 7B
+### Ví dụ làm từng bước 2: Tính nhanh bộ nhớ VRAM cần thiết để phục vụ mô hình LLM 7B
 
 Giả sử bạn triển khai một mô hình LLM **7 tỷ tham số (7B)** lên GPU trên đám mây:
 - **Ở độ chính xác FP16 (2 byte/tham số):** Chỉ riêng trọng số mô hình đã chiếm $$7 	imes 10^9 	imes 2	ext{ byte} pprox \mathbf{14	ext{ GB VRAM}}$$. Cộng thêm **KV-cache** cho các phiên chat đồng thời (~6–10 GB), bạn cần tối thiểu 1 thẻ GPU **24 GB VRAM** (như NVIDIA L4 hoặc A10G).
 - **Lượng tử hóa xuống INT4 (0.5 byte/tham số):** Trọng số tụt xuống còn **~3.5–4.5 GB VRAM**, chạy gọn trên GPU rẻ hơn hoặc tăng gấp 3 số người dùng đồng thời trên cùng một thẻ GPU!
 
-### Khung giải thích: 4 bước tư duy kiến trúc đám mây thời đại AI & FinOps (nên đọc chậm)
+### Giải thích: 4 bước tư duy kiến trúc đám mây thời đại AI & FinOps
 
 #### Bước 1: Chỉ chọn Multi-Cloud khi có lý do kinh doanh cụ thể
 Đừng chạy cùng một microservice trên 3 nhà cung cấp chỉ vì "nghe có vẻ hiện đại" — bạn sẽ phải trả giá bằng độ trễ mạng, phí egress và 3 hệ thống IAM. Multi-cloud hiệu quả nhất là **best-of-breed**: mỗi khối công việc độc lập đặt ở nhà cung cấp mạnh nhất cho nó.

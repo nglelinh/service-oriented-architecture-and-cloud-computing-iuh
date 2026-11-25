@@ -18,7 +18,7 @@ This lesson ties together **OpenTofu**, **Policy as Code**, and **Internal Devel
 
 ---
 
-## Background Knowledge Map: Open-Source IaC, Automated Guardrails, and Golden Paths
+## Key ideas: Open-Source IaC, Automated Guardrails, and Golden Paths
 
 1. **OpenTofu (Open-Source Governance & State Encryption):** Drop-in HCL-compatible open-source engine under the CNCF/Linux Foundation, adding community-driven features like native client-side **state encryption**.
 2. **Policy as Code (OPA / Rego):** Evaluates the structured JSON output of `tofu show -json plan.bin` against declarative compliance rules—automatically denying public S3 buckets, unencrypted volumes, or missing cost-center tags at PR time.
@@ -110,7 +110,7 @@ Policy Rule: deny if resource.type == "aws_s3_bucket_acl" AND resource.values.ac
 
 Notice the key insight: `tofu validate` and `tofu plan` both *succeeded* because a public bucket is syntactically legal—**Policy as Code** is the automated security gate that stops it before it ever touches AWS!
 
-### Deep-Dive Explanation: Four Principles of Policy-as-Code & Platform Engineering (Read Slowly)
+### Explanation: Four Principles of Policy-as-Code & Platform Engineering
 
 1. **Separate *advisory warnings* from *hard deny* policies:** Block severe security/cost violations (`0.0.0.0/0` on DB ports, missing encryption), while warning gently on minor style conventions so teams don’t bypass CI.
 2. **Test your policies with unit tests too:** OPA Rego policies are real code—keep positive and negative fixture JSONs so a buggy policy doesn’t accidentally block every deploy!

@@ -13,7 +13,7 @@ Chạy 3 container bằng `docker compose up` trên một máy chủ đơn lẻ 
 
 **Kubernetes (K8s)** ra đời để giải quyết chính bài toán điều phối (orchestration) quy mô cụm đó. Thay vì ra lệnh mệnh lệnh kiểu *"hãy chạy container X trên máy B"*, bạn chỉ cần khai báo **trạng thái mong muốn (desired state)** bằng YAML, và hệ thống tự động liên tục kéo trạng thái thực tế về khớp với bản khai báo đó.
 
-## Bản đồ kiến thức nền: Bốn nguyên lý làm nên bộ máy tự phục hồi của Kubernetes
+## Kiến thức cần nhớ: Bốn nguyên lý làm nên bộ máy tự phục hồi của Kubernetes
 
 Để đọc hiểu mọi tài liệu Kubernetes mà không lạc lối giữa hàng chục loại tài nguyên, hãy nắm bốn trục cốt lõi:
 
@@ -29,7 +29,7 @@ Chạy 3 container bằng `docker compose up` trên một máy chủ đơn lẻ 
 4. **Service & Deployment (Ổn định địa chỉ và vòng đời)**:
    **Deployment** quản lý `ReplicaSet` để giữ đúng số bản sao Pod và hỗ trợ cập nhật cuốn chiếu (*rolling update*) không gián đoạn. **Service** cung cấp một tên DNS nội bộ cố định (ví dụ `orders.default.svc.cluster.local`) cùng IP ảo ổn định để cân bằng tải động tới các Pod đang khỏe mạnh (vượt qua `readinessProbe`).
 
-### Khung giải thích (nên đọc chậm): Trace vòng lặp hòa giải khi 1 Node chết trên cụm 3 Node (`replicas: 4`)
+### Giải thích: Trace vòng lặp hòa giải khi 1 Node chết trên cụm 3 Node (`replicas: 4`)
 
 Giả sử bạn triển khai ứng dụng `api-web` với `replicas: 4` trên một cụm gồm 3 Worker Node (`Node-1`, `Node-2`, `Node-3`). Trạng thái ban đầu đang khỏe mạnh:
 - `Node-1`: `Pod-A`, `Pod-B`

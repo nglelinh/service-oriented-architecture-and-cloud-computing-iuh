@@ -15,7 +15,7 @@ Dữ liệu tĩnh trong kho giống như một bức ảnh chụp quá khứ; d�
 
 ---
 
-## Bản đồ kiến thức nền: So sánh ba nhịp độ xử lý dữ liệu trên Đám mây
+## Kiến thức cần nhớ: So sánh ba nhịp độ xử lý dữ liệu trên Đám mây
 
 1. **Xử lý theo lô (Batch — hàng giờ/ngày):** Tối ưu thông lượng cực đại và chi phí thấp nhất (báo cáo tài chính, huấn luyện lại mô hình lớn), nhưng độ trễ cao.
 2. **Vi lô (Micro-batch — 100 ms đến vài giây):** Structured Streaming gom sự kiện thành từng lô cực nhỏ, tái sử dụng cùng một engine tối ưu SQL/DataFrame với batch.
@@ -23,7 +23,7 @@ Dữ liệu tĩnh trong kho giống như một bức ảnh chụp quá khứ; d�
 
 ---
 
-## Bản đồ kiến thức nền: Ba trụ cột của Hệ sinh thái Spark (Chương 06)
+## Kiến thức cần nhớ: Ba trụ cột của Hệ sinh thái Spark (Chương 06)
 
 1. **Spark SQL & DataFrame**:
    Đưa truy vấn SQL quen thuộc lên dữ liệu phân tán hàng terabyte, tự động tối ưu thứ tự lọc, chiếu và nối bảng nhờ bộ tối ưu Catalyst thay vì bắt lập trình viên tự viết tay từng bước RDD.
@@ -32,7 +32,7 @@ Dữ liệu tĩnh trong kho giống như một bức ảnh chụp quá khứ; d�
 3. **Cầu nối sang Học máy & Tầng phục vụ trực tuyến (Online Serving)**:
    Spark xuất sắc ở việc biến đổi dữ liệu, tính đặc trưng và cập nhật **Feature Store**, nhưng không trực tiếp đứng ở đầu API trả lời người dùng trong 20 ms — phần đó được bàn giao cho tầng phục vụ mô hình chuyên biệt.
 
-### Khung giải thích (nên đọc chậm): So sánh ngân sách độ trễ giữa nhánh Streaming và nhánh Serving trực tuyến
+### Giải thích: So sánh ngân sách độ trễ giữa nhánh Streaming và nhánh Serving trực tuyến
 
 Giả sử ứng dụng thương mại điện tử cần gợi ý sản phẩm ngay khi người dùng vừa xem 3 món đồ mới:
 
@@ -50,7 +50,7 @@ Tách đúng hai nhánh này giúp hệ thống vừa phản ứng nhanh với h
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: Chọn nhịp độ xử lý cho 3 bài toán nghiệp vụ khác nhau
+### Ví dụ thực tế làm từng bước: Chọn nhịp độ xử lý cho 3 bài toán nghiệp vụ khác nhau
 
 | Bài toán thực tế | Ngân sách độ trễ | Kiến trúc phù hợp | Lý do cốt lõi |
 | :--- | :--- | :--- | :--- |
@@ -58,7 +58,7 @@ Tách đúng hai nhánh này giúp hệ thống vừa phản ứng nhanh với h
 | **Cập nhật bảng xếp hạng xu hướng** | $$5	ext{–}30	ext{ giây}$$ | Micro-batch (Spark Structured Streaming) | Cân bằng giữa độ tươi và chi phí cụm |
 | **Đối soát sổ cái kế toán cuối ngày** | $$1	ext{–}6	ext{ giờ}$$ | Batch (Parquet / Lakehouse) | Cần tính chính xác tuyệt đối 100%, không cần tức thì |
 
-### Khung giải thích: Ba câu hỏi trước khi chuyển một hệ thống sang thời gian thực (nên đọc chậm)
+### Giải thích: Ba câu hỏi trước khi chuyển một hệ thống sang thời gian thực
 
 1. **Độ trễ thấp có thực sự tạo ra giá trị kinh doanh không?** Hệ thống streaming đắt và khó vận hành hơn batch từ 3–5 lần — chỉ xây thời gian thực khi quyết định chậm vài phút thực sự gây mất tiền hoặc mất trải nghiệm.
 2. **Trạng thái (state) được lưu và khôi phục ở đâu khi máy chủ khởi động lại?** Luôn cần cơ chế checkpoint bền vững để không mất cửa sổ đếm đang chạy dở.

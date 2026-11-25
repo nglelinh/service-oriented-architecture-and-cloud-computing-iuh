@@ -18,7 +18,7 @@ Bài thực hành này được biên soạn riêng cho IUH, **không** sử d�
 
 Trước khi đụng tới Kubernetes hay một tài khoản đám mây có tính phí, mọi kỹ sư hệ thống đều cần làm chủ hoàn toàn "phòng thí nghiệm thu nhỏ" ngay trên laptop cá nhân: đóng gói ứng dụng thành ảnh container tinh gọn, nối nhiều dịch vụ qua mạng riêng Docker Compose, kiểm tra sức khỏe bằng `healthcheck`, và bảo toàn dữ liệu bền vững qua Volume.
 
-## Bản đồ kiến thức nền: Bốn kỹ năng cốt lõi của thực hành Container cục bộ
+## Kiến thức cần nhớ: Bốn kỹ năng cốt lõi của thực hành Container cục bộ
 
 1. **Multi-Stage Build (Đóng gói đa tầng tối ưu dung lượng & bảo mật)**:
    Giai đoạn biên dịch (build) cần trình biên dịch (`gcc`, `cargo`, `npm`), nhưng giai đoạn chạy thật (runtime) hoàn toàn không cần chúng. **Multi-stage Dockerfile** biên dịch ở tầng `builder` rồi chỉ copy đúng tệp nhị phân/mã chạy sang ảnh nền siêu nhẹ (`slim` hoặc `distroless`), giảm tới $80\%\text{–}95\%$ dung lượng và thu nhỏ bề mặt tấn công.
@@ -97,7 +97,7 @@ Lớp biên có thể dùng Caddy, nginx hoặc giao diện tĩnh phục vụ qu
 - Viết tệp `Makefile` với các lệnh `make up`, `make test` và `make down`.
 - Tích hợp kiểm thử nhanh (smoke test) từ bài 13-04 cho endpoint `/healthz`.
 
-### Khung giải thích (nên đọc chậm): So sánh ảnh Single-Stage (`920 MB`) vs. Multi-Stage (`28 MB`) và trace lỗi `localhost` kinh điển trong Docker Compose
+### Giải thích: So sánh ảnh Single-Stage (`920 MB`) vs. Multi-Stage (`28 MB`) và trace lỗi `localhost` kinh điển trong Docker Compose
 
 #### 1. Tại sao Multi-Stage Build thu nhỏ ảnh hơn $30\times$?
 

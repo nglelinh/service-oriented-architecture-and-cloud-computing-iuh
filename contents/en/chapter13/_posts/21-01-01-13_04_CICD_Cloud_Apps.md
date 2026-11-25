@@ -18,7 +18,7 @@ This lecture maps the complete cloud CI/CD pipeline: artifact immutability (buil
 
 ---
 
-## Background Knowledge Map: Four Pillars of Cloud-Native CI/CD
+## Key ideas: Four Pillars of Cloud-Native CI/CD
 
 1. **Continuous Integration (Fast Quality Gates):** Every commit runs linting, unit tests, static security scans (SAST/dependency audit), and builds a signed immutable container image tagged by Git SHA—catching defects in minutes rather than weeks.
 2. **Build Once, Promote Across Environments:** Never rebuild a fresh Docker image for production! Promote the *exact* digest (`sha256:...`) verified in staging, changing only runtime configuration/secrets via environment injection.
@@ -194,7 +194,7 @@ Suppose a checkout service handles **1,000 requests/minute** and a subtle bug in
 
 And if the Canary controller checks error rate every 60 seconds and auto-aborts when 5xx > 1%, total failed requests drop to just **5 orders**—99% fewer affected users!
 
-### Deep-Dive Explanation: Four Rules for Safe Cloud CI/CD Pipelines (Read Slowly)
+### Explanation: Four Rules for Safe Cloud CI/CD Pipelines
 
 1. **Never deploy `:latest` tags:** Tag images with immutable Git SHAs (`app:9f3a8c1`) so you always know *exact* running code and can roll back cleanly.
 2. **Keep database migrations backward-compatible (Expand–Contract):** Never drop or rename a column in the same deploy as application code—during a rolling or canary update, *both* `v1` and `v2` run simultaneously against the same database!

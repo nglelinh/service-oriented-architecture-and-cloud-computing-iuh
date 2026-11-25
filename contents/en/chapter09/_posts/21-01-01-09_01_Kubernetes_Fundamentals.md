@@ -14,7 +14,7 @@ Kubernetes (K8s) is an open-source container orchestration platform that automat
 
 Running three Docker containers on your laptop with `docker run` feels effortless. Now imagine running 400 containers across 25 machines when a server power supply fails at 3:00 AM, traffic triples during a flash sale, and your team needs to roll out a security patch without dropping a single user request. Writing fragile bash scripts to SSH into machines and restart containers collapses immediately. **Kubernetes** solves this by replacing imperative scripts with a **declarative control loop**: you tell the cluster *what desired state* you want, and a distributed control plane continuously observes reality and drives the cluster back toward that state.
 
-## Background Knowledge Map: The Control-Loop Architecture of Kubernetes
+## Key ideas: The Control-Loop Architecture of Kubernetes
 
 ### 1. Declarative State and Reconciliation Loops (Controllers)
 At the heart of Kubernetes is a classic control-theory feedback loop: **Observe → Diff → Act**. Every object you apply (a Deployment, Service, or ConfigMap) is stored as structured desired state. Independent **controllers** inside `kube-controller-manager` watch for differences between desired state and live cluster state—for example, seeing 2 running replicas when 3 are desired—and issue API calls to close the gap automatically.
@@ -27,7 +27,7 @@ At the heart of Kubernetes is a classic control-theory feedback loop: **Observe 
 ### 3. Worker Nodes: kubelet, Container Runtime, and kube-proxy
 On every worker machine, **`kubelet`** acts as the local node agent: it watches the API server for Pods bound to its node, instructs the container runtime (containerd/CRI-O) via the CRI interface to start containers, and runs health probes. Meanwhile, **`kube-proxy`** (or an eBPF data plane) programs Linux networking rules so traffic sent to a virtual Service IP reaches healthy Pod endpoints.
 
-### Deep-Dive Explanation: Hand-Calculating etcd Raft Quorum and Why 4 Control-Plane Nodes Is Worse Than 3 (Read Slowly)
+### Explanation: Hand-Calculating etcd Raft Quorum and Why 4 Control-Plane Nodes Is Worse Than 3
 
 Because `etcd` uses the **Raft** consensus protocol, every cluster state write must be acknowledged by a strict majority (**quorum**) of voting members:
 $$Q = \left\lfloor \frac{N}{2} \right\rfloor + 1, \qquad F = N - Q = \left\lfloor \frac{N - 1}{2} \right\rfloor,$$

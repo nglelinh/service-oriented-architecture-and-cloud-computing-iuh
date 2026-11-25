@@ -14,7 +14,7 @@ Welcome to Chapter 08, where we explore **Virtualization and Containerization** 
 
 Walk into an enterprise data center from the early 2000s and you would see racks of humming physical servers where each machine ran a single application—an email server here, a billing database there—sitting at 10% CPU utilization most of the day while burning electricity and cooling nonstop. **Virtualization** and **containerization** are the two waves of abstraction that turned those rigid physical boxes into fluid, programmable compute pools, laying the foundation for every modern cloud platform.
 
-## Background Knowledge Map: How Abstraction Layers Share Physical Silicon
+## Key ideas: How Abstraction Layers Share Physical Silicon
 
 ### 1. Type-1 vs. Type-2 Hypervisors and Hardware Virtualization
 A **hypervisor** (Virtual Machine Monitor) sits between physical hardware and guest operating systems, intercepting privileged CPU instructions and multiplexing RAM, storage, and NICs. **Type-1 (bare-metal)** hypervisors like KVM, VMware ESXi, and Xen run directly on the hardware for cloud-grade efficiency, whereas **Type-2** hypervisors (VirtualBox, VMware Workstation) run on top of a host OS for desktop development.
@@ -25,7 +25,7 @@ Containers skip emulating hardware altogether. Every container on a host shares 
 ### 3. The Operational Shift from "Pets" to "Cattle"
 Before container images, deploying software meant hand-configuring servers ("pets") that drifted over time until nobody dared reboot them. Immutable container images package code, runtime, and system libraries into a single content-addressed artifact so any instance can be destroyed and replaced identically in seconds.
 
-### Deep-Dive Explanation: Hand-Calculating Server Consolidation and Memory Footprint Savings (Read Slowly)
+### Explanation: Hand-Calculating Server Consolidation and Memory Footprint Savings
 
 Consider a university department running **8 physical servers**, each rated at 100% CPU capacity, but averaging only **12% CPU utilization** per server:
 1. **Total aggregate compute demand:**

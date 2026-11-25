@@ -13,7 +13,7 @@ Hãy tưởng tượng bạn vừa mất ba ngày bấm chuột miệt mài trê
 
 **Hạ tầng dưới dạng mã (Infrastructure as Code — IaC)** chấm dứt hoàn toàn kỷ nguyên ClickOps. Toàn bộ máy chủ, mạng ảo, tường lửa và quyền truy cập được mô tả bằng các tệp mã nguồn văn bản có kiểm soát phiên bản (Git), duyệt qua Pull Request, kiểm thử tự động và tái tạo chính xác 100% chỉ bằng một câu lệnh.
 
-## Bản đồ kiến thức nền: Bốn nguyên lý cốt lõi của Infrastructure as Code
+## Kiến thức cần nhớ: Bốn nguyên lý cốt lõi của Infrastructure as Code
 
 1. **Khai báo (Declarative) vs. Mệnh lệnh (Imperative)**:
    Script Bash/Python kiểu **mệnh lệnh** mô tả *từng bước làm* (`tạo VM → gắn IP → mở cổng 80`); chạy lại lần 2 thường báo lỗi "đã tồn tại". Công cụ **khai báo** (OpenTofu/Terraform) chỉ mô tả *trạng thái đích mong muốn*; công cụ tự so sánh với thực tế và tính ra danh sách thay đổi tối thiểu cần thiết.
@@ -27,7 +27,7 @@ Hãy tưởng tượng bạn vừa mất ba ngày bấm chuột miệt mài trê
 4. **Lệch cấu hình (Configuration Drift)**:
    **Drift** xảy ra khi ai đó đăng nhập thẳng vào Web Console và bấm tay sửa một luật tường lửa mà không cập nhật mã IaC. Lệnh `plan` sẽ phát hiện sự sai lệch giữa mã, state và hạ tầng thật để kéo mọi thứ về đồng bộ.
 
-### Khung giải thích (nên đọc chậm): Trace lệnh `tofu plan` khi xảy ra Drift và phân biệt `~` (sửa tại chỗ) với `-/+` (xóa và tạo lại!)
+### Giải thích: Trace lệnh `tofu plan` khi xảy ra Drift và phân biệt `~` (sửa tại chỗ) với `-/+` (xóa và tạo lại!)
 
 Giả sử bạn đã chạy `tofu apply` tạo ra 1 Security Group (chỉ mở cổng `443`) và 1 máy ảo `web_server` nằm ở vùng `ap-southeast-1a`. Tối hôm đó, hai việc xảy ra:
 - Đồng nghiệp bấm tay trên Console mở thêm cổng `22` vào Security Group (**Drift**).
@@ -40,7 +40,7 @@ Khi chạy `tofu plan`, công cụ đọc lại hạ tầng thực tế (*refres
 | `aws_security_group.web_sg` (gỡ cổng `22` bị mở tay) | **`~` (update in-place)** | Sửa trực tiếp luật tường lửa trên đối tượng hiện có | **Thấp / 0 downtime** (đóng lỗ hổng Drift) |
 | `aws_instance.web_server` (đổi `availability_zone`) | **`-/+` (destroy and then create replacement)** | **XÓA BỎ** máy ảo cũ rồi mới tạo máy ảo mới ở AZ mới! | **CỰC CAO** (mất dữ liệu đĩa tạm & gián đoạn kết nối nếu không có `create_before_destroy`!) |
 
-Quy tắc sống còn khi dùng IaC: **không bao giờ bấm `apply` khi chưa đếm số lượng dấu `-` (destroy) và `-/+` (replace) trong bản `plan`**—đặc biệt là với cơ sở dữ liệu sản xuất!
+Quy tắc quan trọng khi dùng IaC: **không bao giờ bấm `apply` khi chưa đếm số lượng dấu `-` (destroy) và `-/+` (replace) trong bản `plan`**—đặc biệt là với cơ sở dữ liệu sản xuất!
 
 > **Lưu ý lộ trình:** Phần lý thuyết bắt buộc của **Chương 14 (Hạ tầng dưới dạng mã — Infrastructure as Code)** hiện được trình bày bằng tiếng Anh. Lộ trình tiếng Việt ở chương này bổ sung **một bài ứng dụng tùy chọn**.
 > 

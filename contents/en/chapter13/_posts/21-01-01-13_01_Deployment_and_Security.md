@@ -14,7 +14,7 @@ Deploying applications to the cloud requires not just getting the code running, 
 
 Writing clean code is only half the engineering battle; pushing that code safely into production—while keeping attackers out and staying compliant with privacy regulations—is where real systems earn trust. A single botched Friday deployment or one publicly exposed database port can undo months of product work in minutes. **Deployment strategies, cloud security, and compliance** work hand in hand to ensure every release is reversible, every identity carries least privilege, and every piece of sensitive data is encrypted both in transit and at rest.
 
-## Background Knowledge Map: Progressive Delivery, Defense in Depth, and Compliance
+## Key ideas: Progressive Delivery, Defense in Depth, and Compliance
 
 ### 1. Progressive Deployment Strategies: Blue-Green, Canary, and Rolling
 Instead of shutting down production for a risky "big-bang" upgrade, cloud teams separate *deployment* (putting code on servers) from *release* (routing live users to it). **Blue-Green** keeps two identical environments for instant traffic flip and rollback; **Canary** shifts a tiny slice (1%–5%) of real traffic to the new version first to measure error rates before expanding; **Rolling** replaces instances gradually in place.
@@ -25,7 +25,7 @@ Never rely on a single firewall perimeter. **Defense in Depth** stacks independe
 ### 3. Compliance as Continuous Engineering (GDPR, SOC 2, ISO 27001)
 Compliance frameworks are not just legal paperwork—they map directly to concrete technical controls: audit trails (immutable logs), data residency (keeping EU/VN user data in approved regions), right-to-erasure pipelines, and automated secret scanning.
 
-### Deep-Dive Explanation: Hand-Calculating Blast Radius in an All-at-Once Release vs. a 5% Canary Release (Read Slowly)
+### Explanation: Hand-Calculating Blast Radius in an All-at-Once Release vs. a 5% Canary Release
 
 Suppose your payment API handles **100,000 requests/minute**, and a newly released version `v2.4` contains a subtle bug that triggers HTTP 500 errors on **20%** of requests. Your monitoring alert fires and rolls back automatically after **2 minutes**.
 

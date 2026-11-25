@@ -11,7 +11,7 @@ categories:
 
 Hãy tưởng tượng một nhà bếp lớn phục vụ 500 thực khách mỗi giờ. Nếu bồi bàn đứng chắn ngay cửa bếp chờ đầu bếp nấu xong từng món rồi mới đi nhận bàn tiếp theo, cả nhà hàng sẽ tắc cứng. Ngược lại, nếu chỉ có mỗi tấm bảng kẹp hóa đơn mà không có quản lý phân chia bếp trưởng, bếp phụ và lò nướng, các món sẽ chồng chéo và cháy khét. Trong điện toán đám mây, **mô hình tính toán (computing paradigms)** quyết định cách các dịch vụ trao đổi công việc, còn **bộ lập lịch cụm (cluster scheduler)** đóng vai trò người điều phối tài nguyên toàn cục.
 
-## Bản đồ kiến thức nền: Ba câu hỏi lớn của Chương 03
+## Kiến thức cần nhớ: Ba câu hỏi lớn của Chương 03
 
 1. **Client–Server (Đồng bộ) vs. Event-Driven (Bất đồng bộ)**:
    Khi nào bên gọi cần giữ kết nối chờ kết quả ngay (REST, gRPC) và khi nào nên phát sự kiện vào hàng đợi (Kafka, CloudEvents) để tách rời thời gian xử lý và cô lập lỗi?
@@ -20,7 +20,7 @@ Hãy tưởng tượng một nhà bếp lớn phục vụ 500 thực khách mỗ
 3. **Quản trị tài nguyên cụm (YARN → Kubernetes)**:
    Làm sao tách rời lớp *cấp phát CPU/RAM/GPU* khỏi lớp *logic ứng dụng* để hàng trăm nhóm phát triển dùng chung một cụm máy chủ một cách công bằng, tự phục hồi khi nút bị hỏng.
 
-### Khung giải thích (nên đọc chậm): Phân biệt nhanh 3 mô hình giao tiếp trên cùng một bài toán "Đặt vé xem phim"
+### Giải thích: Phân biệt nhanh 3 mô hình giao tiếp trên cùng một bài toán "Đặt vé xem phim"
 
 Xét luồng người dùng bấm **Thanh toán vé** trên ứng dụng rạp chiếu phim:
 

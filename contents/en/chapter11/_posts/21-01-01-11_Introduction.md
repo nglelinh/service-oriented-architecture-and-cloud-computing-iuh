@@ -14,7 +14,7 @@ Welcome to Chapter 11: **Data Sourcing and Cleaning**.
 
 Sophisticated cloud architectures and state-of-the-art AI models share one humbling vulnerability: *garbage in, garbage out*. Even a 99.99%-available Kubernetes cluster feeding an Open Lakehouse produces worthless insights if duplicate events, broken timestamps, or silent schema changes slip through ingestion. Chapter 11 focuses on **Data Sourcing and Cleaning**—equipping you with the statistical intuition, contract design, and automated validation habits needed to keep cloud data trustworthy from source to model.
 
-## Background Knowledge Map: Why Data Quality Compounds Across Pipeline Stages
+## Key ideas: Why Data Quality Compounds Across Pipeline Stages
 
 ### 1. Multi-Source Heterogeneity and Entity Resolution
 Enterprise data rarely lives in one clean database; it spans CRM exports, payment gateways, web clickstreams, and partner CSVs. Reconciling conflicting identifiers, time zones, and currency units across sources is a core architectural concern, not an afterthought.
@@ -25,7 +25,7 @@ Distributed networks guarantee *at-least-once* delivery far more easily than *ex
 ### 3. Multiplicative Error Propagation Across Pipeline Hops
 Just like availability drops across serial microservices, **data cleanliness compounds downward** across multi-stage ETL pipelines if errors are not caught at each boundary.
 
-### Deep-Dive Explanation: Hand-Calculating Multiplicative Data Decay Across a 4-Stage Pipeline (Read Slowly)
+### Explanation: Hand-Calculating Multiplicative Data Decay Across a 4-Stage Pipeline
 
 Suppose raw events pass through **4 independent pipeline stages** (Ingestion → Enrichment → Aggregation → Feature Join), and each stage has a seemingly small **2% defect rate** (meaning **98%** of records pass each stage cleanly, independently):
 

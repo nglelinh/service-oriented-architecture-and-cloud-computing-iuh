@@ -20,7 +20,7 @@ The required stack (Spark SQL, Structured Streaming, optional MLlib) is enough t
 
 A common rookie mistake in cloud AI projects is wiring a customer's checkout HTTP request directly into an Apache Spark job—and watching page load time explode to 4 seconds! Production 2023–2026 ML systems run on **two completely separate clocks**: a fast **online request path** (Feature Store + gRPC Model Server answering in ~25 ms) and an asynchronous **event-driven Spark/Kafka path** that continuously updates rolling features and lakehouse training tables in the background.
 
-## Background Knowledge Map: Two-Clock Event-Driven ML Architecture
+## Key ideas: Two-Clock Event-Driven ML Architecture
 
 1. **The Online Serving Clock (Milliseconds):** User requests hit an API gateway → fetch precomputed low-latency features from an **Online Feature Store** (Redis/DynamoDB) → call a dedicated **Model Server** (KServe, Triton, vLLM over gRPC) → return prediction in < 50 ms. Spark is *never* on this hot path!
 2. **The Asynchronous Streaming Clock (Seconds):** Every click, payment, or sensor ping publishes a **CloudEvent** to Kafka; **Spark Structured Streaming** (or Flink) computes rolling aggregates (e.g., *"transactions in last 5 minutes"*) and writes them both to the Online Feature Store and to an **Offline Lakehouse** (Iceberg/Delta).
@@ -40,7 +40,7 @@ A payments API has a strict **50 ms p99 latency SLA** at checkout:
 
 Meanwhile, on the **asynchronous clock**, Spark Structured Streaming consumes `tx.scored` from Kafka every **2 seconds**, recomputes each user's rolling 5-minute spend, and updates Redis—so the next transaction sees fresh features without ever waiting on Spark!
 
-### Deep-Dive Explanation: Wiring Spark Into Event-Driven SOA Cleanly (Read Slowly)
+### Explanation: Wiring Spark Into Event-Driven SOA Cleanly
 
 1. **Keep Spark off the synchronous user path:** Spark's job scheduling overhead (100–500 ms minimum) makes it ideal for high-throughput stream/batch computation, never for single-request HTTP serving.
 2. **Use a dual-sink lakehouse pattern:** write curated stream outputs to *both* low-latency Redis (for live inference) and immutable Iceberg tables (for reproducible model retraining and audits).

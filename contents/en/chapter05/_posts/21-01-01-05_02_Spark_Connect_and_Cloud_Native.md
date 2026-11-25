@@ -20,7 +20,7 @@ The required lesson covers drivers, executors, RDDs, and cluster managers (inclu
 
 For a decade, running PySpark from a laptop or microservice came with a notorious operational headache: every user process had to embed a heavy local JVM **Driver** locked to the exact Scala/Spark version of the cluster! One mismatched Python library or laptop sleep killed the entire job. With **Spark Connect** and **Spark 4.0 (May 2025)** running on **Kubernetes**, Spark finally decoupled into a true cloud-native **client–server service** over gRPC—letting thin 50 MB Python/Go clients drive massive remote clusters cleanly.
 
-## Background Knowledge Map: Decoupled Spark Connect and Cloud-Native Execution
+## Key ideas: Decoupled Spark Connect and Cloud-Native Execution
 
 1. **Client–Server Decoupling via gRPC:** Spark Connect splits the monolithic Driver: the user's notebook, IDE, or microservice runs a tiny stateless client that serializes DataFrame operations as **unresolved logical plans** over **gRPC + Protobuf** to a remote Spark Connect server.
 2. **Spark 4.0 & Cloud-Native Kubernetes:** Instead of maintaining a permanent idle YARN cluster, teams submit ephemeral Spark executors as **Kubernetes Pods** that scale to zero when idle—matching modern FinOps elasticity.
@@ -32,7 +32,7 @@ Compare **20 data scientists** running interactive notebooks against a shared an
 - **Classic Fat-Driver architecture:** each notebook spawns a local Spark Driver JVM reserving **4 GB RAM** + **2 vCPUs** → $$20 	imes 4	ext{ GB} = \mathbf{80	ext{ GB RAM}}$$ and **40 vCPUs** consumed just on client/bastion machines (and a single driver crash takes down the notebook kernel!).
 - **Spark Connect architecture:** each notebook runs a lightweight `pyspark-client` (~**50 MB RAM**, zero JVM!) → $$20 	imes 50	ext{ MB} = \mathbf{1	ext{ GB RAM}}$$ total on client machines—an **80× reduction in client memory**—while the remote Spark Connect server pools and auto-scales Kubernetes executor pods on demand!
 
-### Deep-Dive Explanation: Deciding When to Adopt Spark Connect on Kubernetes (Read Slowly)
+### Explanation: Deciding When to Adopt Spark Connect on Kubernetes
 
 1. **Gain instant IDE & microservice integration:** because the client is a pure lightweight library with no JVM, you can embed Spark queries directly inside FastAPI web services, VS Code notebooks, or CI runners.
 2. **Upgrade the cluster without breaking every user's laptop:** the gRPC Protobuf plan contract isolates client SDKs from server-side JVM/Scala upgrades.

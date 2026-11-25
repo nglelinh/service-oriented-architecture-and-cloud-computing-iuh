@@ -20,7 +20,7 @@ This chapter explores various Distributed Computing Models and introduces Apache
 
 How do you coordinate a thousand computers so they behave like one coherent platform rather than a chaotic pile of laptops? Chapter 03 bridges the gap between abstract distributed-systems theory and real cluster infrastructure—contrasting **Client–Server**, **Peer-to-Peer**, and **Event-Driven** computing models before unpacking **HDFS** and **YARN** (and their modern successors gRPC and Kubernetes).
 
-## Background Knowledge Map: Communication Topologies and Cluster Operating Systems
+## Key ideas: Communication Topologies and Cluster Operating Systems
 
 1. **Interaction Topologies (Client–Server, P2P, Event-Driven):** Define *who talks to whom*—centralized request/response, symmetric peer sharing, or broker-mediated publish/subscribe.
 2. **Distributed Storage + Compute Co-Design (Hadoop HDFS & YARN):** Shows how commodity clusters achieve massive throughput by moving computation close to replicated data blocks while cleanly separating resource scheduling from job logic.
@@ -33,9 +33,10 @@ Suppose you must distribute a **10 MB** ($$80	ext{ Mb}$$) software patch to **$$
   $$
   T_{	ext{CS}} = rac{80{,}000	ext{ Mb}}{1{,}000	ext{ Mbps}} = \mathbf{80	ext{ seconds}} \quad (	ext{scales linearly as } O(N)).
   $$
-- **Peer-to-Peer (each client also uploads once it receives chunks):** total upload capacity doubles every round! Reaching 1,000 peers takes only $$\lceil \log_2(1{,}000) ceil = \mathbf{10	ext{ rounds}}$$—dramatically collapsing distribution time as $$N$$ grows!
+- **Peer-to-Peer (each client also uploads once it receives chunks):** total upload capacity doubles every round! Reaching 1,000 peers takes only $$\lceil \log_2(1{,}000) 
+ceil = \mathbf{10	ext{ rounds}}$$—dramatically collapsing distribution time as $$N$$ grows!
 
-### Deep-Dive Explanation: Reading Chapter 03 as a Blueprint for Cluster Design (Read Slowly)
+### Explanation: Reading Chapter 03 as a Blueprint for Cluster Design
 
 1. **Match the computing model to the traffic pattern:** Client–Server excels at authoritative state; P2P excels at bulk content distribution; Event-Driven excels at decoupled fan-out.
 2. **Appreciate YARN's architectural breakthrough (`03-01`):** decoupling the `ResourceManager` from job-specific `ApplicationMasters` unlocked multi-tenant big data clusters.

@@ -14,7 +14,7 @@ The required lesson covers IAM, encryption, blue/green/canary, CI/CD, and monito
 
 You might audit every single line of code your team wrote—and still get compromised because a tiny logging library three levels deep inside your dependency tree was hijacked before your container image was built. High-profile incidents like SolarWinds, Log4Shell, and XZ Utils taught the software industry a permanent lesson: **your application is only as secure as its build pipeline and transitive dependencies**. Modern cloud security combines **Software Supply-Chain Security (SBOM, SLSA, cryptographic signing)** with **Production Observability** so you can both prove *where* every binary came from and detect *what* it is doing in real time.
 
-## Background Knowledge Map: Verifiable Builds, Provenance, and Runtime Visibility
+## Key ideas: Verifiable Builds, Provenance, and Runtime Visibility
 
 ### 1. SBOMs and Transitive Dependency Risk
 An **SBOM (Software Bill of Materials)**—in CycloneDX or SPDX format—is the complete "nutrition label" of every direct and transitive package inside your container image. When a zero-day CVE is announced, teams with automated SBOMs know in 10 seconds which exact production services are affected, instead of spending days grepping repositories.
@@ -25,7 +25,7 @@ An **SBOM (Software Bill of Materials)**—in CycloneDX or SPDX format—is the 
 ### 3. Connecting Build Provenance to Production Observability
 Security does not stop at deployment. Tagging runtime telemetry (logs, metrics, traces) with the exact immutable image digest (`sha256:...`) and Git commit SHA connects every anomalous outbound network call or latency spike in production directly back to the exact build artifact that caused it.
 
-### Deep-Dive Explanation: Hand-Calculating Transitive Dependency CVE Exposure (Read Slowly)
+### Explanation: Hand-Calculating Transitive Dependency CVE Exposure
 
 Suppose your Node.js or Python microservice declares only **12 direct dependencies** in `package.json` or `requirements.txt`, and each direct package pulls in an average of **15 transitive dependencies**:
 

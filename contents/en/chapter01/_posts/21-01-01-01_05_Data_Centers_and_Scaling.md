@@ -12,7 +12,7 @@ lesson_type: optional
 
 When someone says "the data lives in the cloud," what they really mean is a windowless warehouse the size of ten football fields packed with 100,000 commodity servers, chilled water pipes, and diesel backup generators. At that scale, a bizarre shift happens: **hardware failure stops being a rare emergency and becomes a daily routine**. Understanding how a single server scales into a warehouse-scale computer is the physical foundation of every distributed system in this course.
 
-## Background Knowledge Map: Scaling Laws, Warehouse Failure Rates, and Fault-Tolerant Software
+## Key ideas: Scaling Laws, Warehouse Failure Rates, and Fault-Tolerant Software
 
 1. **Vertical Scaling (Scale Up) vs. Horizontal Scaling (Scale Out):** Vertical scaling adds CPU/RAM to one machine—simple for code, yet hits hard physical ceilings and leaves a single point of failure. Horizontal scaling adds commodity nodes behind a load balancer—virtually unbounded, yet requires stateless services, partitioning, and distributed coordination.
 2. **Amdahl's Law (The Serial Bottleneck):** Adding $$N$$ machines cannot speed up the serial fraction $$s$$ of a workload: maximum speedup is bounded by $$S(N) = \dfrac{1}{s + (1-s)/N} \le \dfrac{1}{s}$$.
@@ -29,7 +29,7 @@ When someone says "the data lives in the cloud," what they really mean is a wind
 - In a **1,000-server** cluster: expected failures $$= 1{,}000 	imes 0.02 = \mathbf{20	ext{ servers/year}}$$ (~1 failure every 18 days).
 - In a **50,000-server** hyperscale data center: expected failures $$= 50{,}000 	imes 0.02 = \mathbf{1{,}000	ext{ servers/year}}$$ — nearly **3 server failures every single day**!
 
-### Deep-Dive Explanation: Designing Software for Warehouse-Scale Computers (Read Slowly)
+### Explanation: Designing Software for Warehouse-Scale Computers
 
 1. **Hunt down serial bottlenecks before throwing hardware at a problem:** as Amdahl's Law showed, a 10% database lock caps a 100-node cluster at 9.17× speedup; sharding or caching the bottleneck beats buying more servers.
 2. **Treat servers as cattle, not pets:** when 3 machines die every day, humans cannot SSH in to repair them—orchestrators detect missed heartbeats and reschedule workloads automatically.

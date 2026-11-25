@@ -16,7 +16,7 @@ Bài học này phân tách ranh giới trách nhiệm giữa bạn và nhà cun
 
 ---
 
-## Bản đồ kiến thức nền: Mô hình Trách nhiệm Chia sẻ (Shared Responsibility)
+## Kiến thức cần nhớ: Mô hình Trách nhiệm Chia sẻ (Shared Responsibility)
 
 ### 1. Ranh giới trừu tượng hóa ngăn xếp (Abstraction Layers)
 Một ứng dụng chạy trên 9 tầng từ thấp đến cao: *Mạng vật lý → Lưu trữ → Máy chủ → Ảo hóa → Hệ điều hành (OS) → Middleware → Runtime → Dữ liệu → Ứng dụng*. IaaS bàn giao cho bạn từ tầng **OS** trở lên; PaaS chỉ giao **Ứng dụng + Dữ liệu**; còn SaaS quản trị trọn gói, bạn chỉ cấu hình người dùng và dữ liệu nghiệp vụ.
@@ -164,9 +164,9 @@ Bài tiếp theo sẽ trình bày các mô hình triển khai đám mây và cá
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: Tính tổng chi phí sở hữu (TCO) thực tế — IaaS rẻ hơn hay PaaS rẻ hơn?
+### Ví dụ làm từng bước 1: Tính tổng chi phí sở hữu (TCO) thực tế — IaaS rẻ hơn hay PaaS rẻ hơn?
 
 Một nhóm phát triển cần chạy ứng dụng web thương mại điện tử suốt 1 năm. Nhìn bảng giá niêm yết, IaaS có vẻ rẻ hơn PaaS — nhưng hãy tính đủ **chi phí nhân công vận hành (DevOps)**:
 
@@ -178,14 +178,14 @@ Một nhóm phát triển cần chạy ứng dụng web thương mại điện t
 
 **Bài học:** Hóa đơn cloud của PaaS đắt hơn 2.1 lần, nhưng **tổng chi phí sở hữu lại rẻ hơn 60%** vì đội kỹ sư được giải phóng 22 giờ mỗi tháng để xây tính năng tạo doanh thu!
 
-### Ví dụ cầm tay chỉ việc 2: Xác định trách nhiệm khi xảy ra sự cố bảo mật
+### Ví dụ làm từng bước 2: Xác định trách nhiệm khi xảy ra sự cố bảo mật
 
 Xét lỗ hổng thực thi mã từ xa trong thư viện OpenSSL của hệ điều hành Ubuntu:
 - **Khách hàng dùng IaaS (EC2):** Nhà cung cấp chỉ vá hypervisor; **bạn phải tự chạy `apt upgrade` và khởi động lại toàn bộ máy ảo**! Nếu bỏ quên, hệ thống bị xâm nhập là lỗi của bạn.
 - **Khách hàng dùng PaaS (Cloud Run / Heroku):** Nhà cung cấp tự động cập nhật image hệ điều hành nền; bạn chỉ cần kiểm tra thư viện cấp ứng dụng (như `package.json` / `requirements.txt`).
 - **Khách hàng dùng SaaS (Gmail / Salesforce):** Nhà cung cấp vá toàn bộ từ hạ tầng tới ứng dụng; bạn chỉ quản lý phân quyền tài khoản (MFA, RBAC).
 
-### Khung giải thích: Quy tắc 4 bước chọn đúng mô hình dịch vụ cho dự án (nên đọc chậm)
+### Giải thích: Quy tắc 4 bước chọn đúng mô hình dịch vụ cho dự án
 
 #### Bước 1: Nếu nghiệp vụ không phải lợi thế cạnh tranh lõi → mua SaaS ngay
 Đừng bao giờ tự dựng máy chủ email, CRM, quản lý nhân sự hay công cụ chat nội bộ. SaaS luôn thắng về tốc độ và chi phí cho các bài toán chuẩn hóa.

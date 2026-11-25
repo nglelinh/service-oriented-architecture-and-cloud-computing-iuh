@@ -20,7 +20,7 @@ The required notes contrast client–server, peer-to-peer, and event-driven mode
 
 When two microservices sit inside the same Kubernetes cluster and exchange 50,000 internal requests per second, formatting every tiny payload into verbose human-readable JSON text over HTTP/1.1 wastes massive CPU cycles and bandwidth. Meanwhile, when an order completes and five downstream services (billing, shipping, analytics, loyalty, email) all need to react, hardcoding five synchronous RPC calls turns a minor email outage into a checkout crash. Modern 2022–2026 SOA solves both halves cleanly with **gRPC** for tight synchronous contracts and **CloudEvents + Brokers** for loose asynchronous fan-out.
 
-## Background Knowledge Map: Modern Synchronous vs. Asynchronous Service Contracts
+## Key ideas: Modern Synchronous vs. Asynchronous Service Contracts
 
 1. **gRPC + Protocol Buffers (Synchronous Internal RPC):** Runs over **HTTP/2** (multiplexed streams on one TCP connection, header compression, bidirectional streaming) with compact binary Protobuf schemas—delivering typed contracts and 5–10× smaller payloads than JSON/REST.
 2. **Event-Driven Architecture & CloudEvents (Asynchronous Decoupling):** Producers emit immutable facts (`order.placed`) wrapped in a standard **CloudEvents** envelope (`id`, `source`, `type`, `time`) to a durable broker (Kafka, Pub/Sub, RabbitMQ); consumers subscribe independently at their own pace.
@@ -39,7 +39,7 @@ Compare transmitting a 10-field `OrderItem` message across an internal microserv
   $$
 Not only does network bandwidth drop by **84%**, binary Protobuf parsing cuts serialization CPU overhead dramatically—freeing cores for business logic!
 
-### Deep-Dive Explanation: Picking gRPC vs. Events Without Over-Engineering (Read Slowly)
+### Explanation: Picking gRPC vs. Events Without Over-Engineering
 
 1. **Use gRPC when the caller needs an immediate answer:** auth checks, inventory reservations, and Spark Connect query submission require low-latency request/response with strict schema validation.
 2. **Use Event-Driven brokers when work can fan out or retry later:** receipts, audit logs, search indexing, and ML feature updates should never block a customer's checkout latency.

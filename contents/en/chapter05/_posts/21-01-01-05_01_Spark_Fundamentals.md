@@ -12,7 +12,7 @@ lesson_type: required
 
 Once data scientists tried training iterative machine learning models like Logistic Regression or PageRank on Hadoop MapReduce, they hit a painful wall: every single iteration had to write gigabytes of intermediate state out to slow HDFS disks and read it all back in for the next step! **Apache Spark** shattered that bottleneck by keeping working datasets **in distributed RAM** inside **Resilient Distributed Datasets (RDDs)** and compiling multi-step transformations into an optimized **Directed Acyclic Graph (DAG)**—delivering 10× to 100× speedups over classic MapReduce.
 
-## Background Knowledge Map: Spark's In-Memory DAG Architecture
+## Key ideas: Spark's In-Memory DAG Architecture
 
 1. **Driver, Executors, and Cluster Manager:** The **Driver** hosts `SparkSession`, translates your code into a logical DAG, splits it into stages, and dispatches tasks to **Executor** JVMs allocated by YARN or Kubernetes.
 2. **RDDs, Immutability, and Lineage-Based Fault Tolerance:** Rather than replicating every intermediate RAM dataset across nodes (expensive!), Spark records the exact **lineage graph** of transformations that built each partition; if a node crashes, Spark recomputes *only* the lost partitions from parent data!
@@ -29,7 +29,7 @@ Consider **10 iterations** of Logistic Regression over a **100 GB** training dat
 
 Caching the dataset in distributed RAM delivers a **$$4{,}000 / 250 = \mathbf{16	imes}$$ speedup** on the exact same cluster hardware!
 
-### Deep-Dive Explanation: How Spark's DAG Engine Plans and Recovers Jobs (Read Slowly)
+### Explanation: How Spark's DAG Engine Plans and Recovers Jobs
 
 1. **Lazy evaluation enables global optimization:** because Spark waits until an Action (`count()`, `write()`) before running, it can fuse `filter().map().map()` into a single loop over each partition with zero intermediate arrays.
 2. **Stage boundaries occur exclusively at Wide transformations:** *narrow* ops (`map`, `filter`) keep each child partition dependent on 1 parent partition (zero network); *wide* ops (`groupByKey`, `join`, `repartition`) require a full network shuffle and start a new DAG stage.

@@ -12,7 +12,7 @@ lesson_type: required
 
 Imagine ten teams at a bank all wanting to run different jobs—SQL reports, fraud-detection ML, and nightly ETL—on the exact same 200-server Hadoop cluster. In early Hadoop 1.0, MapReduce owned *both* cluster scheduling and job execution, forcing every non-MapReduce workload to sit on separate idle hardware! **YARN** (*Yet Another Resource Negotiator*) solved that crisis by splitting **cluster resource management** from **application execution**—becoming the first true distributed operating system for big data.
 
-## Background Knowledge Map: Computing Models, HDFS Storage, and YARN Scheduling
+## Key ideas: Computing Models, HDFS Storage, and YARN Scheduling
 
 1. **Distributed Computing Models:** *Client–Server* centralizes state behind request/response APIs; *Peer-to-Peer (P2P)* distributes load symmetrically across equal nodes; *Event-Driven* decouples producers and consumers through asynchronous message brokers.
 2. **HDFS (Write-Once, Read-Many Distributed Storage):** Splits multi-terabyte files into large blocks (typically **128 MB**) replicated **3×** across racks—optimizing sequential throughput and tolerating disk/rack loss automatically.
@@ -25,11 +25,13 @@ Suppose you store a **1 TB** ($$1{,}024	ext{ GB}$$) clickstream dataset in HDFS 
 2. **Physical disk footprint (3× replication):** $$8{,}000 	imes 3 = \mathbf{24{,}000	ext{ block replicas}} \implies \mathbf{3	ext{ TB}}$$ of raw disk space across racks.
 3. **YARN container allocation:** reserve 1 container of **4 GB** for the job's `ApplicationMaster`, leaving $$256 - 4 = 252	ext{ GB}$$ for worker containers. If each worker container requests **8 GB RAM**, YARN can schedule:
    $$
-   \left\lfloor rac{252}{8} ightfloor = \mathbf{31	ext{ parallel worker containers}}
+   \left\lfloor rac{252}{8} 
+ight
+floor = \mathbf{31	ext{ parallel worker containers}}
    $$
    (with 4 GB unallocated fragmentation).
 
-### Deep-Dive Explanation: Why Separating Storage, Scheduling, and Compute Changed Big Data (Read Slowly)
+### Explanation: Why Separating Storage, Scheduling, and Compute Changed Big Data
 
 1. **Large HDFS blocks minimize NameNode RAM pressure:** storing 1 TB in 4 KB OS blocks would require 268 million metadata entries, crashing the NameNode; 128 MB blocks shrink metadata to just 8,000 entries!
 2. **Rack-aware 3× replication balances locality and safety:** HDFS places Replica 1 locally, Replica 2 on a different rack, and Replica 3 on a different node in that second rack—surviving a full rack switch outage while keeping cross-rack traffic low.

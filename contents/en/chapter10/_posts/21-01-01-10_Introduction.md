@@ -14,7 +14,7 @@ Welcome to Chapter 10: **Big Data Platforms and Processing**.
 
 Every second, ride-hailing apps, payment networks, and connected sensors emit millions of tiny JSON events that individually mean very little—but aggregated across millions of users, reveal fraud rings, traffic bottlenecks, and shifting demand. Chapter 10 introduces **Big Data Platforms and Processing**, showing how distributed storage and parallel compute engines replace single-node databases once data outgrows one machine's RAM, disk, and network interface.
 
-## Background Knowledge Map: The Architecture of Large-Scale Data Systems
+## Key ideas: The Architecture of Large-Scale Data Systems
 
 ### 1. Vertical Scaling Limits vs. Horizontal Partitioning (Sharding)
 A single server eventually hits hard physical ceilings on memory channels, disk IOPS, and NIC throughput. Big Data platforms scale **horizontally** by partitioning datasets across clusters of commodity machines—trading simple single-machine transactions for massive aggregate bandwidth and fault-tolerant parallel execution.
@@ -26,7 +26,7 @@ A single server eventually hits hard physical ceilings on memory channels, disk 
 ### 3. Separation of Storage and Compute in the Cloud
 Early on-premise Hadoop clusters tightly coupled local disks and CPUs on every node. Cloud-native platforms decouple elastic compute clusters from durable object storage (S3/GCS/ADLS) and open table formats (Iceberg/Delta), letting teams spin up 100 workers for 10 minutes and pay zero compute when idle.
 
-### Deep-Dive Explanation: Hand-Calculating Daily Event Volume, Throughput, and Freshness Trade-Offs (Read Slowly)
+### Explanation: Hand-Calculating Daily Event Volume, Throughput, and Freshness Trade-Offs
 
 Suppose a mobile platform ingests **100,000 click events per second**, where each compressed event averages **500 bytes**:
 

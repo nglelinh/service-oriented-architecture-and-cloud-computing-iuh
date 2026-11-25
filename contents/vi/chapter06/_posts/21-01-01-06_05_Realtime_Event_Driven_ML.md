@@ -22,7 +22,7 @@ Bài học này bóc tách các cơ chế cốt lõi của hệ thống ML hư�
 
 ---
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Kiến trúc ML Hướng Sự Kiện (Event-Driven ML)
+## Kiến thức cần nhớ: Bốn trụ cột của Kiến trúc ML Hướng Sự Kiện (Event-Driven ML)
 
 1. **Event Time vs. Processing Time:** Sự kiện sinh ra trên điện thoại người dùng lúc `10:00:05` (*event time*) nhưng vì mất sóng 4G có thể đến máy chủ lúc `10:00:18` (*processing time*). Cửa sổ thời gian đúng nghiệp vụ luôn phải nhóm theo *event time*.
 2. **Watermark & Quản lý trạng thái hữu hạn:** Nếu cứ giữ mở mãi mọi cửa sổ cũ chờ sự kiện đến trễ, bộ nhớ RAM của hệ thống streaming sẽ phình to đến khi sập! **Watermark** đặt một ngưỡng trễ tối đa (ví dụ 10 giây): sự kiện trễ trong ngưỡng được cập nhật bình thường; quá ngưỡng sẽ bị loại bỏ gọn gàng để giải phóng trạng thái.
@@ -31,7 +31,7 @@ Bài học này bóc tách các cơ chế cốt lõi của hệ thống ML hư�
 
 ---
 
-## Bản đồ kiến thức nền: Bốn mảnh ghép của hệ thống dữ liệu và học máy thời gian thực
+## Kiến thức cần nhớ: Bốn mảnh ghép của hệ thống dữ liệu và học máy thời gian thực
 
 1. **Ba thang thời gian (Event-time, Request-time, Batch-time)**:
    Phân biệt rạch ròi giữa *tính toán cận thời gian thực theo sự kiện* (tính bằng giây, do Spark/Flink đảm nhận), *phục vụ yêu cầu đồng bộ* (tính bằng mili-giây, do Redis/Feature Store + Model Server đảm nhận) và *tổng hợp lô định kỳ* (tính bằng giờ, cho khóa sổ/backfill).
@@ -108,7 +108,7 @@ Sự tách biệt này giúp cơ chế đảm bảo ghi chính xác (exactly-onc
 <p><strong>Watermark là một quy tắc nghiệp vụ.</strong> Ngưỡng watermark 10 phút phản ánh trực tiếp cam kết về mức độ trễ chấp nhận được của sự kiện từ thiết bị di động, không chỉ là một tham số kỹ thuật của Spark. Hãy tài liệu hóa ngưỡng này ngay cạnh SLO của dịch vụ.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Chạy tay cơ chế Watermark 10 phút với các sự kiện đến muộn
+### Giải thích: Chạy tay cơ chế Watermark 10 phút với các sự kiện đến muộn
 
 Xét đúng đoạn mã Structured Streaming ở Mục 1 với cửa sổ 1 giờ `[10:00, 11:00)` và ngưỡng **Watermark = 10 phút**. Quy tắc tính Watermark của Spark là:
 $$\text{Watermark} = \max(\text{event\_ts đã thấy}) - 10\text{ phút}.$$
@@ -133,7 +133,7 @@ Từ bảng chạy tay này, bạn thấy ngay hai sự thật: Watermark nhỏ 
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: Truy vết từng sự kiện đi qua Watermark 10 giây
+### Ví dụ thực tế làm từng bước: Truy vết từng sự kiện đi qua Watermark 10 giây
 
 Giả sử hệ thống chống gian lận đếm số giao dịch trong từng cửa sổ 1 phút (ví dụ `[10:00, 10:01)`) với **ngưỡng trễ Watermark = 10 giây**. Công thức cập nhật: $$	ext{Watermark} = \max(	ext{Event Time đã thấy}) - 10	ext{s}$$. Truy vết 4 sự kiện đến Kafka lần lượt:
 
@@ -146,7 +146,7 @@ Giả sử hệ thống chống gian lận đếm số giao dịch trong từng 
 
 Bảng 4 dòng này cho thấy bản chất của Watermark: đó là **sự đánh đổi tường minh giữa độ chính xác đầy đủ và độ trễ/bộ nhớ** — tăng ngưỡng trễ từ 10s lên 60s sẽ giữ được sự kiện #4 nhưng buộc hệ thống phải giữ trạng thái lâu gấp 6 lần!
 
-### Khung giải thích: Bốn kỷ luật thiết kế hệ thống ML thời gian thực (nên đọc chậm)
+### Giải thích: Bốn kỷ luật thiết kế hệ thống ML thời gian thực
 
 1. **Phân tách luồng sự kiện khỏi luồng suy luận (Inference):** Kafka đóng vai trò bộ đệm giảm chấn (shock absorber); nếu dịch vụ chấm điểm ML chậm lại 2 giây, sự kiện xếp hàng an toàn trên Kafka thay vì mất trắng.
 2. **Đo độ trễ ở cả tầng p99 lẫn độ tươi của đặc trưng (Feature Freshness):** Mô hình chạy trong 5 ms nhưng đọc đặc trưng từ bảng batch cũ 6 tiếng vẫn sẽ chấm sai giao dịch gian lận mới tinh.

@@ -12,7 +12,7 @@ lesson_type: required
 
 Every cloud vendor pitch decks opens with glowing slides about infinite scale and zero upfront cost—and omits the cautionary tales of teams hit with surprise $$\$40{,}000$$ data-egress bills or misconfigured storage buckets. Engineering maturity means holding **both halves of the balance sheet** in your head at once: the genuine CapEx-to-OpEx leverage *and* the operational risks of lock-in, egress, and shared security.
 
-## Background Knowledge Map: Cloud Economics, Lock-In, and the Shared Security Model
+## Key ideas: Cloud Economics, Lock-In, and the Shared Security Model
 
 1. **Financial Shift (CapEx → OpEx):** Buying servers ties up capital for 3–5 years regardless of utilization; cloud OpEx converts infrastructure into variable monthly spend—which saves money *only* when paired with active cost governance (FinOps).
 2. **Data Gravity & Vendor Lock-In:** Compute is easy to port (containers), but **data egress fees** and proprietary managed APIs create switching friction—known as *data gravity*.
@@ -32,7 +32,7 @@ $$
 
 just to *copy your own data out once*!
 
-### Deep-Dive Explanation: Evaluating Cloud Trade-Offs Like a Systems Architect (Read Slowly)
+### Explanation: Evaluating Cloud Trade-Offs Like a Systems Architect
 
 1. **Match pricing model to workload shape:** spiky, uncertain, or short-lived workloads win dramatically on on-demand cloud; predictable 24/7 baselines should use Reserved Instances, Savings Plans, or bare metal.
 2. **Isolate proprietary APIs behind thin interfaces:** wrap cloud-specific queues or storage SDKs behind clean adapter modules so switching providers is a localized refactor, not a rewrite.

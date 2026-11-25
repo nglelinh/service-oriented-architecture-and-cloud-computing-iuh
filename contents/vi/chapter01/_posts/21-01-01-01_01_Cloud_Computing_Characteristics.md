@@ -16,7 +16,7 @@ Trước năm 2006, nếu một công ty khởi nghiệp muốn ra mắt trang t
 
 ---
 
-## Bản đồ kiến thức nền: Năm đặc trưng NIST dưới góc nhìn kỹ thuật hệ thống
+## Kiến thức cần nhớ: Năm đặc trưng NIST dưới góc nhìn kỹ thuật hệ thống
 
 ### 1. Ảo hóa & API hóa hạ tầng (Self-Service & Broad Network Access)
 Thay vì gửi email nhờ quản trị viên cắm cáp, tầng điều khiển đám mây (Control Plane) phơi bày toàn bộ phần cứng dưới dạng **API chuẩn hóa** (REST/CLI/Terraform). Hypervisor và SDN (mạng định nghĩa bằng phần mềm) cắt máy chủ vật lý thành các lát ảo độc lập chỉ trong vài giây.
@@ -120,9 +120,9 @@ Bài học tiếp theo sẽ phân tích cách các đặc trưng này thể hi�
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: So sánh chi phí tải đỉnh mùa sale — Máy chủ cố định vs. Đàn hồi nhanh
+### Ví dụ làm từng bước 1: So sánh chi phí tải đỉnh mùa sale — Máy chủ cố định vs. Đàn hồi nhanh
 
 Giả sử một sàn thương mại điện tử cần **10 máy chủ** suốt 28 ngày thường và **100 máy chủ** trong 2 ngày siêu sale (tổng 30 ngày = 720 giờ), đơn giá đám mây là **$$0.10/	ext{giờ/máy}$$**:
 
@@ -133,7 +133,7 @@ Giả sử một sàn thương mại điện tử cần **10 máy chủ** suốt
 
 **Kết quả:** Đặc trưng **Rapid Elasticity + Measured Service** cắt giảm ngay **84% hóa đơn hạ tầng** (tiết kiệm $$6{,}048$$ USD/tháng) mà vẫn giữ nguyên năng lực chịu tải 100 máy trong 48 giờ cao điểm!
 
-### Ví dụ cầm tay chỉ việc 2: Kiểm tra bài test NIST — VPS truyền thống có phải Cloud thật không?
+### Ví dụ làm từng bước 2: Kiểm tra bài test NIST — VPS truyền thống có phải Cloud thật không?
 
 Đặt một dịch vụ thuê VPS truyền thống (phải mở ticket chờ nhân viên kích hoạt trong 24 giờ, thanh toán gói cố định theo tháng, muốn nâng RAM phải tắt máy chuyển sang máy khác) lên bàn cân 5 tiêu chí NIST:
 1. *On-Demand Self-Service:* **Không đạt** (phải chờ con người duyệt ticket).
@@ -143,7 +143,7 @@ Giả sử một sàn thương mại điện tử cần **10 máy chủ** suốt
 5. *Measured Service:* **Không đạt** (tính phí phẳng cả tháng dù chỉ dùng 2 giờ).
 → Kết luận: Đó chỉ là **hosting ảo hóa**, chưa phải điện toán đám mây theo chuẩn NIST!
 
-### Khung giải thích: Vì sao 5 đặc trưng NIST không thể tách rời nhau (nên đọc chậm)
+### Giải thích: Vì sao 5 đặc trưng NIST không thể tách rời nhau
 
 #### Bước 1: Không có tự động hóa (Self-Service) thì không thể có Đàn hồi nhanh
 Nếu mỗi lần tăng từ 10 lên 50 máy cần con người bấm duyệt, hệ thống sẽ sập trước khi máy thứ 11 kịp khởi động. API tự phục vụ chính là nền móng để bộ Auto-Scaler tự động gọi lệnh mở rộng trong vài chục giây.

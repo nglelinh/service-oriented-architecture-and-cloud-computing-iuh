@@ -14,7 +14,7 @@ Khi hệ thống mới chỉ có 3 dịch vụ chạy trong Kubernetes, một đ
 
 Bài học này mở khóa lớp **mạng ứng dụng (application networking)** hiện đại trên Kubernetes giai đoạn 2022–2026: **Gateway API** (chuẩn định tuyến kế nhiệm Ingress) và **Service Mesh** (từ kiến trúc sidecar truyền thống đến *ambient mesh* tối ưu tài nguyên).
 
-## Bản đồ kiến thức nền: Bốn mảnh ghép của lớp mạng dịch vụ trên Kubernetes
+## Kiến thức cần nhớ: Bốn mảnh ghép của lớp mạng dịch vụ trên Kubernetes
 
 Để không bị choáng ngợp bởi hàng chục thuật ngữ như `HTTPRoute`, `Envoy`, `mTLS` hay `ztunnel`, hãy đặt chúng vào bốn trụ cột rõ ràng:
 
@@ -81,7 +81,7 @@ Nên cân nhắc service mesh khi hệ thống thực sự cần **định danh 
 <p><strong>Service mesh không thay thế hoàn toàn khả năng quan sát ứng dụng.</strong> Bạn vẫn cần tích hợp OpenTelemetry trong mã nguồn để ghi nhận các span mang ngữ cảnh nghiệp vụ. Tầng data plane cung cấp được các chỉ số mạng cơ bản (golden signals), nhưng không thể tự hiểu các thuộc tính nghiệp vụ như <code>order.id</code>.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Tính tay chi phí RAM & độ trễ của Sidecar Mesh so với Ambient Mesh trên cụm 200 Pod
+### Giải thích: Tính tay chi phí RAM & độ trễ của Sidecar Mesh so với Ambient Mesh trên cụm 200 Pod
 
 Trước khi bật Service Mesh cho cụm Kubernetes, một kỹ sư hạ tầng luôn phải tính bài toán chi phí–lợi ích bằng con số cụ thể. Giả sử bạn có một cụm gồm **10 Node** chạy tổng cộng **200 Pod microservice**, trong đó chỉ có **4 nhóm dịch vụ** thực sự cần định tuyến L7 phức tạp (chia lưu lượng canary, retry theo mã HTTP), còn lại chỉ cần mã hóa mTLS tầng L4.
 

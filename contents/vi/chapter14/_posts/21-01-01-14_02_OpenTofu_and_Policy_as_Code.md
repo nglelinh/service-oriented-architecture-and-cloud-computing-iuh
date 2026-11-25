@@ -14,7 +14,7 @@ Khi toàn bộ hạ tầng đám mây đã được viết thành mã nguồn HC
 
 Bài học này khám phá bộ đôi công nghệ định hình ngành **Platform Engineering** giai đoạn 2023–2026: **OpenTofu** (nhánh mã nguồn mở dưới quỹ Linux Foundation tương thích HCL với Terraform) và **Policy as Code** (OPA/Rego, Checkov)—biến mọi quy định bảo mật và ngân sách thành các bài kiểm thử tự động chạy ngay trên đầu ra `plan` trước khi một tài nguyên đám mây nào kịp được tạo ra.
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Hạ tầng mở (OpenTofu) & Chính sách dưới dạng mã
+## Kiến thức cần nhớ: Bốn trụ cột của Hạ tầng mở (OpenTofu) & Chính sách dưới dạng mã
 
 1. **HCL khai báo & Quản trị mã nguồn mở (OpenTofu vs. Terraform)**:
    Sau khi Terraform chuyển sang giấy phép BSL (2023), cộng đồng đã tạo ra **OpenTofu** (thuộc CNCF/Linux Foundation, giấy phép MPL-2.0) giữ nguyên cú pháp HCL, tương thích rộng rãi với hệ sinh thái provider và bổ sung các tính năng bảo mật được mong đợi như **mã hóa state phía client (state encryption)**.
@@ -85,7 +85,7 @@ graph LR
 <p><strong>Quản lý state vẫn là bài toán cốt lõi.</strong> Dù tệp state được OpenTofu mã hóa hay lưu trên HCP Terraform, rủi ro cơ bản trong phần lý thuyết vẫn giữ nguyên: hai tiến trình ghi đồng thời vào cùng một tệp state mà không có cơ chế khóa (state locking) sẽ gây xung đột và sai lệch trạng thái (split-brain).</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Trace một tệp `tfplan.json` đi qua cổng Policy as Code (OPA/Rego)
+### Giải thích: Trace một tệp `tfplan.json` đi qua cổng Policy as Code (OPA/Rego)
 
 Hãy hình dung một sinh viên mở Pull Request thêm 2 tài nguyên vào tệp `main.tf`: một bucket lưu trữ `student_uploads` và một máy ảo `analytics_vm`. Trên CI, pipeline chạy `tofu plan -out=tfplan && tofu show -json tfplan > plan.json` rồi đưa `plan.json` qua 3 luật OPA/Rego.
 

@@ -16,7 +16,7 @@ Khi ứng dụng chạy trên máy tính cá nhân, `localhost:8080` nối thẳ
 
 Bạn nên đọc bài này sau khi hoàn thành các bài bắt buộc của Chương 01, và xem lại trước khi thực hành [lab Lộ trình triển khai]({{ site.baseurl }}{% multilang_post_url contents/chapter15/21-01-01-15_01_Lab_Docker_Local %}).
 
-## Bản đồ kiến thức nền: Năm lớp trụ cột của mạng đám mây
+## Kiến thức cần nhớ: Năm lớp trụ cột của mạng đám mây
 
 Để không bao giờ nhầm lẫn giữa "không tìm thấy đường đi" và "bị tường lửa chặn", hãy đặt năm khái niệm mạng đám mây vào đúng vị trí của chúng trên đường đi của một gói tin:
 
@@ -171,7 +171,7 @@ Kiến trúc mạng gợi ý cho ứng dụng **Bảng tin học phần IUH**:
 
 Khi thực hành với Docker Compose trên máy cá nhân (Lab A), bạn sẽ mô phỏng *cùng cấu trúc phân tầng* này thông qua mạng Docker do người dùng tự định nghĩa.
 
-### Khung giải thích (nên đọc chậm): Tính tay quy hoạch CIDR và lần dấu từng bước một gói tin HTTPS
+### Giải thích: Tính tay quy hoạch CIDR và lần dấu từng bước một gói tin HTTPS
 
 Hãy làm thử hai bài tập nhỏ bằng tay để biến lý thuyết mạng thành phản xạ thực chiến.
 

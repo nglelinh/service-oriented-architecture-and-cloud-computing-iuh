@@ -14,7 +14,7 @@ Data preparation is a critical step in any data analytics or machine learning pr
 
 There is an old saying in data engineering that every graduate discovers the hard way on their first production project: *80% of your time goes into finding, cleaning, and validating messy data, and only 20% goes into the shiny analytics or machine-learning model*. Real-world data arrives with duplicate webhook deliveries, mixed date formats (`03/04/2026` vs. `04/03/2026`), missing nulls, and sensor glitches that quietly drag averages off a cliff. **Data sourcing, cleaning, and preparation** is the discipline of turning raw, untrusted feeds into reproducible, statistically sound datasets.
 
-## Background Knowledge Map: From Raw Ingestion to Clean Analytical Tables
+## Key ideas: From Raw Ingestion to Clean Analytical Tables
 
 ### 1. Sourcing Patterns: Pull APIs, CDC Streams, and Schema Drift
 Data enters cloud pipelines through batch file drops, paginated REST/GraphQL pulls, or **Change Data Capture (CDC)** logs streaming row-level inserts/updates straight from operational databases. Because upstream teams evolve application code independently, **schema drift** (renamed columns, changed types, unexpected nulls) is inevitable unless pipelines enforce explicit schema validation at ingestion time.
@@ -25,7 +25,7 @@ Not all missing values mean the same thing. Statisticians distinguish **MCAR** (
 ### 3. Robust Statistics: Why Median and IQR Outperform Mean and Standard Deviation
 A single corrupted record—like a decimal point dropped on a 5.00 USD order turning into 500.00 USD—can distort the arithmetic mean and standard deviation dramatically. **Robust estimators** like the median and **Interquartile Range (IQR)** resist extreme outliers and provide reliable automated anomaly fences during data cleaning.
 
-### Deep-Dive Explanation: Hand-Testing Outlier Detection with IQR and Seeing How One Bad Row Corrupts the Mean (Read Slowly)
+### Explanation: Hand-Testing Outlier Detection with IQR and Seeing How One Bad Row Corrupts the Mean
 
 Consider a small sample of **7 order amounts (in USD)** extracted from an e-commerce feed where one row has a decimal-point bug:
 $$[20,\; 22,\; 24,\; 25,\; 26,\; 28,\; 500].$$

@@ -20,7 +20,7 @@ MapReduce’s programming model (map, shuffle, reduce, re-execute on failure) is
 
 Almost nobody writes raw Java `Mapper<LongWritable, Text, ...>` boilerplate in 2026—yet the **MapReduce paradigm never died**. Every time you run a `GROUP BY` in BigQuery, compact Parquet files in an **Apache Iceberg** lakehouse, or execute a nightly GDPR deletion pipeline in Spark or Flink batch, the exact same three-act play—parallel map, distributed shuffle, and fault-tolerant reduce—is running underneath a modern SQL/DataFrame compiler!
 
-## Background Knowledge Map: From Raw MapReduce to Open Lakehouse Batch
+## Key ideas: From Raw MapReduce to Open Lakehouse Batch
 
 1. **Compiled Batch Engines:** Modern engines (Spark SQL, Flink Batch, BigQuery, Trino) compile declarative SQL/DataFrame queries into multi-stage DAGs of map-and-shuffle operators—optimizing predicate pushdown and memory pipelines automatically.
 2. **Open Table Formats (Apache Iceberg / Delta Lake):** Store immutable Parquet files on cheap cloud object storage (S3/GCS) alongside versioned metadata manifests—bringing ACID transactions, time-travel queries, and partition pruning to batch lakes.
@@ -37,7 +37,7 @@ Suppose a streaming pipeline writes **10,000 tiny 1 MB Parquet files** (10 GB to
   - File-open overhead: $$100 	imes 5	ext{ ms} = \mathbf{0.5	ext{ seconds}}$$ (**100× less metadata overhead!**).
   - Data read: $$50	ext{ seconds}$$ → total **50.5 seconds** (and Parquet column compression + min/max statistics pruning improve simultaneously!).
 
-### Deep-Dive Explanation: Why Batch Processing Thrives Alongside Real-Time Streaming (Read Slowly)
+### Explanation: Why Batch Processing Thrives Alongside Real-Time Streaming
 
 1. **Separate paradigm from syntax:** Hadoop Java MapReduce faded because of verbose APIs and forced HDFS disk spills, *not* because map–shuffle–reduce stopped being useful.
 2. **Use partition pruning before shuffling:** Iceberg manifests record min/max column values per file—letting a batch query skip 95% of files without ever reading them from S3.

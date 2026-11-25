@@ -16,7 +16,7 @@ Vào những năm 1990, nếu một cơ sở dữ liệu chạy chậm, giải p
 
 ---
 
-## Bản đồ kiến thức nền: Kiến trúc Trung tâm Dữ liệu & Luật Mở rộng
+## Kiến thức cần nhớ: Kiến trúc Trung tâm Dữ liệu & Luật Mở rộng
 
 ### 1. Mở rộng dọc (Scale-Up) vs. Mở rộng ngang (Scale-Out)
 - **Scale-Up:** Nâng cấp CPU/RAM trên 1 máy. Lập trình cực dễ (không cần phân tán trạng thái), nhưng có **trần vật lý cứng**, chi phí phi tuyến và luôn là một điểm lỗi đơn (**Single Point of Failure**).
@@ -87,9 +87,9 @@ Với các dịch vụ phục vụ người dùng toàn cầu, một trung tâm 
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: Tính trần tăng tốc theo Định luật Amdahl khi mở rộng ngang
+### Ví dụ làm từng bước 1: Tính trần tăng tốc theo Định luật Amdahl khi mở rộng ngang
 
 Giả sử một API xử lý yêu cầu có **$$s = 10\%$$ (0.10)** công việc buộc phải chạy tuần tự (ví dụ: xin cấp phát số hóa đơn tăng dần từ 1 bảng khóa chung), và **90% (0.90)** còn lại song song hoàn toàn trên $$N$$ máy chủ:
 
@@ -102,13 +102,13 @@ Giả sử một API xử lý yêu cầu có **$$s = 10\%$$ (0.10)** công việ
 
 **Bài học xương máu:** Nếu không xóa bỏ điểm nghẽn tuần tự 10% (ví dụ chuyển sang sinh mã UUID/Snowflake phân tán không cần khóa chung), dù bạn ném tiền mua **1.000 máy chủ** thì hệ thống vẫn không bao giờ vượt qua ngưỡng **10×**!
 
-### Ví dụ cầm tay chỉ việc 2: Tính chi phí điện năng thực tế theo chỉ số PUE
+### Ví dụ làm từng bước 2: Tính chi phí điện năng thực tế theo chỉ số PUE
 
 Một cụm máy chủ IT tiêu thụ thực tế **1.0 MW** điện liên tục suốt 1 năm (8.760 giờ), giá điện công nghiệp **$$0.10/	ext{kWh}$$**:
 - **Trung tâm dữ liệu doanh nghiệp cũ (PUE = 2.0):** Tổng điện tiêu thụ $$= 2.0	ext{ MW} \implies 17{,}520{,}000	ext{ kWh/năm} \implies$$ tiền điện **$$1{,}752{,}000$$ USD/năm** (nửa hóa đơn chỉ để chạy điều hòa và tổn hao điện!).
 - **Trung tâm dữ liệu Hyperscaler hiện đại (PUE = 1.12):** Tổng điện tiêu thụ $$= 1.12	ext{ MW} \implies$$ tiền điện **$$981{,}120$$ USD/năm** — tiết kiệm tới **$$770{,}880$$ USD mỗi năm** cho cùng một năng lực tính toán!
 
-### Khung giải thích: 4 bước biến ứng dụng đơn máy thành hệ thống Scale-Out thực thụ (nên đọc chậm)
+### Giải thích: 4 bước biến ứng dụng đơn máy thành hệ thống Scale-Out thực thụ
 
 #### Bước 1: Đẩy toàn bộ trạng thái phiên (Session/File tạm) ra khỏi máy chủ ứng dụng
 Nếu người dùng đăng nhập được lưu trong RAM của Máy A, bộ cân bằng tải không thể chuyển yêu cầu kế tiếp sang Máy B. Hãy chuyển phiên đăng nhập sang **Redis** hoặc **JWT**, còn ảnh tải lên đẩy thẳng vào **Object Storage (S3)** để tầng web hoàn toàn *stateless*.

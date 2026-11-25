@@ -14,7 +14,7 @@ The required lesson maps EC2/VM, S3/Blob, and free tiers across AWS, Azure, and 
 
 In boardroom slides, "Multi-Cloud" sounds like the ultimate insurance policy: *never get locked into one vendor, and always pick the best service from every cloud!* In production engineering, however, naive multi-cloud often doubles operational complexity, duplicates IAM policies, and triggers eye-watering network egress bills. Between 2022 and 2026, the most pragmatic multi-cloud pattern has become **workload-specialized multi-cloud**—for example, running core transactional microservices on one primary cloud while consuming managed **AI/LLM services** (Bedrock, Vertex AI, Azure OpenAI) or specialized analytics where they offer clear model, latency, or compliance advantages.
 
-## Background Knowledge Map: Multi-Cloud Trade-Offs, Data Gravity, and Managed AI APIs
+## Key ideas: Multi-Cloud Trade-Offs, Data Gravity, and Managed AI APIs
 
 ### 1. Data Gravity and Egress Economics
 Code is tiny and portable (a 100 MB Docker image moves anywhere in seconds); **data is heavy and expensive to move**. Cloud providers make data *ingress* free but charge steep **egress fees** (often 0.08–0.12 USD/GB) to pull data out to the Internet or another cloud. Moving compute close to where your primary data lives almost always beats shipping terabytes across clouds.
@@ -25,7 +25,7 @@ Running open-weights LLMs on dedicated GPU VMs gives full control over weights a
 ### 3. Avoiding Lowest-Common-Denominator Lock-In Traps
 Trying to abstract every cloud down to bare VMs throws away the productivity of managed services. Smart teams standardize on **open portable layers** (Kubernetes, OpenTofu/Terraform, OpenTelemetry, Iceberg/Parquet, OpenAI-compatible inference gateways) so workloads remain portable *without* sacrificing managed-cloud speed.
 
-### Deep-Dive Explanation: Hand-Comparing Monthly LLM Token Costs vs. Cross-Cloud Data Egress (Read Slowly)
+### Explanation: Hand-Comparing Monthly LLM Token Costs vs. Cross-Cloud Data Egress
 
 Suppose a SaaS app hosted on Cloud A calls a managed LLM API on Cloud B for **100,000 customer support tickets/month**, and also syncs **5 TB (5,120 GB)** of training logs every month from Cloud A to Cloud B.
 

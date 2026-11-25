@@ -22,7 +22,7 @@ Lab A walks you through building a clean, reproducible local multilayer stack wi
 
 ---
 
-## Background Knowledge Map: Four Docker Compose Mechanics Behind Local Multi-Tier Apps
+## Key ideas: Four Docker Compose Mechanics Behind Local Multi-Tier Apps
 
 1. **User-Defined Bridge Networks & Service DNS:** Containers on the same Compose network resolve each other by **service name** (e.g., `postgres://db:5432`), never by brittle `localhost` or hardcoded container IPs!
 2. **Named Volumes vs. Ephemeral Container Layers:** Anything written inside a container’s writable layer disappears on `docker compose down`; mounting a **named volume** (`/var/lib/postgresql/data`) preserves database tables across restarts.
@@ -121,7 +121,7 @@ Suppose your `api` container tries to connect to your `db` container inside `doc
 | `postgres://user:pw@172.18.0.2:5432/app` | Hardcoded container IP (changes on next restart!) | Fragile — breaks randomly |
 | `postgres://user:pw@db:5432/app` | Docker’s internal DNS resolving service `db` | **Works reliably every time!** |
 
-### Deep-Dive Explanation: Four Habits for Clean Local Docker Labs (Read Slowly)
+### Explanation: Four Habits for Clean Local Docker Labs
 
 1. **Always check `docker compose ps` and `docker compose logs -f api` first:** 90% of startup failures show up clearly in the first 20 lines of container logs.
 2. **Use `.env` (gitignored!) + `.env.example` (committed):** Teammates copy `.env.example` to `.env` locally so no passwords ever enter Git history.

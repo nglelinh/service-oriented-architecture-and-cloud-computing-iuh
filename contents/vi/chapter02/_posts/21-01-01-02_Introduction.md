@@ -11,7 +11,7 @@ categories:
 
 Trên một chiếc máy tính đơn lẻ, chương trình chạy tuần tự rất dễ đoán: nếu máy mất điện, cả hệ thống dừng cùng một lúc; nếu hai hàm gọi nhau, đồng hồ hệ thống luôn cho biết chính xác việc nào xảy ra trước. Nhưng ngay khi bạn tách ứng dụng ra chạy trên **nhiều máy chủ nối mạng với nhau**, mọi giả định êm đềm đó sụp đổ. Leslie Lamport từng đúc kết một câu nổi tiếng: *"Hệ thống phân tán là nơi một máy tính mà bạn thậm chí không biết nó tồn tại có thể khiến chính máy tính của bạn không thể sử dụng được."*
 
-## Bản đồ kiến thức nền: Ba đặc trưng cốt lõi của Hệ thống phân tán
+## Kiến thức cần nhớ: Ba đặc trưng cốt lõi của Hệ thống phân tán
 
 Trước khi đi sâu vào các kỹ thuật quan sát và chịu lỗi, hãy nắm vững ba tính chất nền tảng định nghĩa mọi hệ thống phân tán:
 
@@ -22,7 +22,7 @@ Trước khi đi sâu vào các kỹ thuật quan sát và chịu lỗi, hãy n�
 3. **Lỗi độc lập (Independent Failures)**:
    Một máy chủ có thể treo, một cáp mạng có thể đứt gây chia cắt mạng (network partition), trong khi các máy khác vẫn hoạt động bình thường. Hệ thống bắt buộc phải chấp nhận lỗi cục bộ thay vì để một mắt xích nhỏ kéo sập toàn bộ.
 
-### Khung giải thích (nên đọc chậm): Minh họa "không có đồng hồ toàn cục" qua bài toán ghi log hai máy chủ
+### Giải thích: Minh họa "không có đồng hồ toàn cục" qua bài toán ghi log hai máy chủ
 
 Giả sử **Máy A (API Gateway)** nhận yêu cầu chuyển khoản và gọi sang **Máy B (Payment Service)**. Do lệch đồng hồ NTP, đồng hồ của Máy A chạy nhanh hơn Máy B đúng **15 ms**, còn thời gian truyền gói tin qua mạng nội bộ là **4 ms**:
 

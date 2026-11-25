@@ -16,7 +16,7 @@ It will not make you a finance team. It will stop a “small demo” from becomi
 
 In the old on-premise era, buying a new server required a purchase order, three manager signatures, and a six-week wait. In the cloud, a single developer can spin up 16 GPU instances with one `terraform apply`—and forget to shut them down before a long weekend, generating a 10,000 USD surprise invoice by Monday morning. **FinOps (Cloud Financial Operations)** bridges engineering, finance, and product teams so cloud cost becomes a first-class engineering metric right alongside latency and availability, rather than an unpleasant monthly accounting shock.
 
-## Background Knowledge Map: Cloud Pricing Models, Cost Allocation, and Unit Economics
+## Key ideas: Cloud Pricing Models, Cost Allocation, and Unit Economics
 
 ### 1. The Four Cloud Purchasing Models
 - **On-Demand:** pay by the second/hour with zero commitment—maximum flexibility, highest unit price.
@@ -30,7 +30,7 @@ You cannot optimize what you cannot attribute. Enforcing mandatory resource tags
 ### 3. The Three FinOps Levers: Right-Sizing, Scheduling, and Rate Optimization
 Always optimize **usage before rate**: first delete orphaned volumes and **right-size** overprovisioned instances, second turn off dev/staging clusters at night and on weekends, and *only then* buy Savings Plans for the lean, steady baseline.
 
-### Deep-Dive Explanation: Hand-Calculating a 67.5% Cloud Bill Reduction Using Right-Sizing + Savings Plans (Read Slowly)
+### Explanation: Hand-Calculating a 67.5% Cloud Bill Reduction Using Right-Sizing + Savings Plans
 
 Suppose a production team runs **10 always-on `m6i.xlarge` instances** (4 vCPU, 16 GiB RAM) at **0.192 USD/hour** On-Demand across a standard **730-hour month**, and CloudWatch metrics reveal peak CPU never exceeds **30%**.
 

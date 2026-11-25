@@ -14,7 +14,7 @@ Hãy thử hỏi bất kỳ đội phần mềm nào từng triển khai thủ c
 
 **CI/CD (Continuous Integration / Continuous Delivery)** biến việc phát hành phần mềm từ một nghi lễ căng thẳng đầy rủi ro thành một dây chuyền tự động, lặp lại được và kiểm chứng chặt chẽ ở từng cổng. Bài học này trình bày chuẩn mực xây dựng pipeline đám mây hiện đại cho nhóm nhỏ: *build một lần, thăng cấp theo digest, xác thực không mật khẩu bằng OIDC, và kiểm thử khói (smoke test) tự động*.
 
-## Bản đồ kiến thức nền: Bốn nguyên tắc vàng của đường ống CI/CD đám mây hiện đại
+## Kiến thức cần nhớ: Bốn nguyên tắc vàng của đường ống CI/CD đám mây hiện đại
 
 1. **Tách bạch CI (Tích hợp liên tục) và CD (Chuyển giao / Triển khai liên tục)**:
    **CI** chạy trên mọi Pull Request để xác minh chất lượng (lint, unit test, quét lỗ hổng, đóng gói artifact). **CD** tiếp nhận artifact đã đạt chuẩn CI để đưa dần qua các môi trường (`Dev → Staging → Production`) kèm chính sách phê duyệt và kiểm thử sau triển khai.
@@ -151,7 +151,7 @@ Một quy trình CI chỉ thực sự đáng tin khi chạy trên môi trường
 - Lệnh chạy kiểm thử bị che lỗi bằng `|| true`.
 - Tệp Docker Compose mở cổng cơ sở dữ liệu `5432` ra toàn bộ giao diện `0.0.0.0`.
 
-### Khung giải thích (nên đọc chậm): Trace từng bước luồng xác thực OIDC không mật khẩu và thăng cấp Digest từ PR lên Production
+### Giải thích: Trace từng bước luồng xác thực OIDC không mật khẩu và thăng cấp Digest từ PR lên Production
 
 Hãy theo dõi trọn vẹn một lượt phát hành của nhóm 2 sinh viên từ lúc bấm **Merge Pull Request** trên GitHub cho tới khi người dùng thấy tính năng mới trên Production—không hề lưu một khóa mật khẩu đám mây dài hạn nào!
 

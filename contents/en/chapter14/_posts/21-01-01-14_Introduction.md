@@ -15,7 +15,7 @@ If you can rebuild your entire cloud architecture—networks, databases, load ba
 
 ---
 
-## Background Knowledge Map: Three Shifts From Manual Cloud Ops to Automated IaC
+## Key ideas: Three Shifts From Manual Cloud Ops to Automated IaC
 
 1. **Declarative Topology:** Describe *what* cloud resources should exist in Git rather than *how* to click them together manually.
 2. **Drift Detection & Idempotency:** Continuously compare live cloud state against code so environments (dev, staging, prod) stay consistent.
@@ -48,7 +48,7 @@ Required theory in this chapter is unchanged. For OpenTofu vs Terraform BSL, OPA
 | Auditing who opened port 5432 | Hunt through CloudTrail logs | `git blame security_groups.tf` (2 seconds!) |
 | Tearing down a lab to stop billing | Easy to forget 1 NAT Gateway ($32/mo!) | **`tofu destroy`** removes 100% of tracked resources! |
 
-### Deep-Dive Explanation: Three Habits to Build in Chapter 14 (Read Slowly)
+### Explanation: Three Habits to Build in Chapter 14
 
 1. **Always run `plan` before `apply`:** Read every single line of the diff like a code review.
 2. **Keep environments parameterized, never copy-pasted:** Share modules and pass environment-specific sizes (`dev` vs. `prod`) as variables.

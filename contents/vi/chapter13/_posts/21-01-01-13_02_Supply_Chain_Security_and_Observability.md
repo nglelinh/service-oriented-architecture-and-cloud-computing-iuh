@@ -14,7 +14,7 @@ Bạn đã viết mã nguồn cực kỳ cẩn thận, bật HTTPS, khóa chặt
 
 Đó là bản chất của **tấn công chuỗi cung ứng phần mềm (Software Supply Chain Attack)**—mối đe dọa hàng đầu giai đoạn 2022–2026 (như vụ SolarWinds, Codecov, XZ Utils). Bài học này trang bị cho bạn hai lớp lá chắn gắn chặt với quy trình phát hành hiện đại: **xác minh mật mã chuỗi cung ứng** (SBOM, chữ ký số, digest bất biến) và **khả năng quan sát gắn liền với mỗi bản phát hành** để tự động quay lui khi chỉ số lỗi tăng vọt.
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Bảo mật Chuỗi cung ứng & Phát hành Zero Trust
+## Kiến thức cần nhớ: Bốn trụ cột của Bảo mật Chuỗi cung ứng & Phát hành Zero Trust
 
 1. **Danh mục thành phần phần mềm (SBOM — Software Bill of Materials)**:
    Giống như bảng thành phần dinh dưỡng in trên hộp thực phẩm, **SBOM** (chuẩn SPDX hoặc CycloneDX) liệt kê đầy đủ mọi thư viện trực tiếp và bắc cầu cùng phiên bản chính xác nằm trong container image. Khi một lỗ hổng nghiêm trọng như Log4Shell nổ ra, doanh nghiệp có SBOM quét biết chính xác dịch vụ nào bị ảnh hưởng trong 30 giây thay vì mò mẫm cả tuần.
@@ -85,7 +85,7 @@ Sự kết hợp giữa định danh khối lượng công việc (workload iden
 <p><strong>Phạm vi trách nhiệm chia sẻ ngày càng mở rộng.</strong> Nhà cung cấp đám mây đảm nhận mã hóa ổ đĩa và bảo mật hạ tầng, nhưng bạn vẫn chịu trách nhiệm bảo vệ tệp khóa thư viện (lockfile), môi trường build và bước xác minh chứng thực (attestation) trước khi triển khai vào cụm.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Trace vụ tráo tag `:latest` bị Admission Controller + Cosign chặn đứng trong 5 bước
+### Giải thích: Trace vụ tráo tag `:latest` bị Admission Controller + Cosign chặn đứng trong 5 bước
 
 Hãy theo dõi từng bước điều gì xảy ra khi kẻ tấn công chiếm được quyền đẩy image lên registry và ghi đè nhãn `registry.iuh.edu/board:latest` bằng một ảnh chứa mã độc đào tiền ảo!
 

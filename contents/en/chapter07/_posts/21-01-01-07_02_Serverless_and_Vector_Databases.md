@@ -20,7 +20,7 @@ The required lesson covers CAP, BASE vs ACID, and the four NoSQL families. This 
 
 Between 2022 and 2026, two forces reshaped the database landscape so sharply that the classic "SQL vs. NoSQL" dichotomy is no longer enough. First, teams got tired of paying for idle primary databases at 3:00 AM and demanded **Serverless** and **Distributed SQL** engines (Aurora Serverless, CockroachDB, Spanner) that auto-scale cleanly while keeping ACID transactions. Second, generative AI and **RAG (Retrieval-Augmented Generation)** introduced a brand-new query type: *"find the 5 documents whose meaning is closest to this 1,536-dimensional embedding vector!"*—giving rise to **Vector Indexes** (HNSW, IVF).
 
-## Background Knowledge Map: Serverless Elasticity, Distributed SQL, and Vector Search
+## Key ideas: Serverless Elasticity, Distributed SQL, and Vector Search
 
 1. **Serverless Databases (Decoupled Storage & Compute):** Separates stateless SQL compute nodes from a shared, auto-expanding distributed log/storage tier—allowing compute to scale smoothly from 0.5 ACUs to 128 ACUs (or scale to zero) in seconds.
 2. **Distributed SQL (Raft/Paxos + Multi-Region ACID):** Systems like Spanner and CockroachDB shard relational tables horizontally like NoSQL while running **Raft/Paxos consensus** per shard and synchronized clocks (TrueTime/HLC) to preserve strict serializable SQL transactions!
@@ -42,7 +42,7 @@ $$
 - **Brute-force scan** computes $$10^7 	imes 1{,}536 pprox 1.54 	imes 10^{10}$$ multiply-adds per query (hundreds of milliseconds on CPU).
 - **HNSW graph index** navigates layered skip-list-like neighborhoods in $$O(\log N)$$ hops—visiting only **~200–500 candidate vectors** and answering in **< 5 ms**!
 
-### Deep-Dive Explanation: Placing 2022–2026 Databases Inside Your Architecture (Read Slowly)
+### Explanation: Placing 2022–2026 Databases Inside Your Architecture
 
 1. **Treat a vector index as a secondary access path, not your system of record:** keep authoritative text, permissions, and ACID billing in PostgreSQL (often using `pgvector` for < 10M vectors) or a dedicated store synchronized cleanly with your source of truth.
 2. **Watch cold-start and cross-region consensus costs:** serverless databases save huge money on dev/spiky workloads but can incur brief wake-up latency; Distributed SQL gives global ACID at the cost of cross-AZ Raft round trips on every write.

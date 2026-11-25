@@ -14,7 +14,7 @@ Big Data has become a cornerstone of modern computing, enabling organizations to
 
 When your dataset is 500 MB, a single laptop with Python and SQLite finishes an aggregation before your coffee cools. When your dataset hits **50 terabytes** of clickstreams, IoT telemetry, or financial transactions, the bottleneck is no longer CPU clock speed—it is the physical speed of moving bytes off disk and across a network cable. **Big Data platforms** (Hadoop/HDFS, MapReduce, Apache Spark, and distributed streaming engines) were invented around one revolutionary inversion: *stop moving massive data to the compute server; instead, ship tiny compute code directly to the machines already holding the data blocks*.
 
-## Background Knowledge Map: Distributed Storage, Data Locality, and Parallel Compute
+## Key ideas: Distributed Storage, Data Locality, and Parallel Compute
 
 ### 1. The 5 Vs and Distributed File Systems (HDFS / Object Storage)
 Volume, Velocity, Variety, Veracity, and Value break vertical scaling (buying a bigger single server). Distributed file systems like **HDFS** slice giant files into large contiguous blocks (typically **128 MB** each) and replicate every block across multiple racks (default replication factor **3**) for fault tolerance and parallel sequential disk reads. Modern cloud architectures often decouple storage into object stores (S3/GCS/ADLS) while preserving the same partitioned, immutable-file layout.
@@ -25,7 +25,7 @@ Classic **MapReduce** forced every stage to write intermediate results back to d
 ### 3. The Shuffle Bottleneck: Why Network I/O Dominates Distributed Jobs
 In any distributed compute engine, local filtering and projection scale almost linearly as you add workers. The moment a query requires a **shuffle** (re-partitioning keys across nodes), every executor must serialize, compress, transmit over the network, and re-sort gigabytes of data. Tuning Big Data jobs is largely the art of minimizing shuffle volume.
 
-### Deep-Dive Explanation: Hand-Calculating HDFS Storage Footprint, Block Parallelism, and Shuffle Time (Read Slowly)
+### Explanation: Hand-Calculating HDFS Storage Footprint, Block Parallelism, and Shuffle Time
 
 Suppose an e-commerce platform stores **10 TB ($$10{,}240\text{ GiB}$$)** of raw clickstream logs in an HDFS cluster with block size **128 MiB** and replication factor **3**:
 

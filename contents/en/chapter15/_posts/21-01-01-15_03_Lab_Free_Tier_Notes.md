@@ -22,7 +22,7 @@ Lab C is your practical **IUH Cloud Hygiene & FinOps Survival Guide**: how to se
 
 ---
 
-## Background Knowledge Map: Four Cloud FinOps & Account-Hygiene Fundamentals
+## Key ideas: Four Cloud FinOps & Account-Hygiene Fundamentals
 
 1. **Free Tier ≠ Unlimited Free:** Free tiers have strict monthly ceilings (e.g., 750 hours of `t2.micro`/`t3.micro`, 20 GB storage) and **exclude** many networking resources like NAT Gateways, Application Load Balancers, and cross-AZ data transfer!
 2. **Zero-Trust Account Hygiene:** Never use the AWS/GCP **root account** for daily labs—enable MFA on root immediately, create a least-privilege IAM user/role, and never commit access keys to GitHub (automated bots scrape leaked keys in under 60 seconds!).
@@ -109,7 +109,7 @@ Calculate what happens if a student leaves just 3 tiny "invisible" AWS resources
 
 That single table is why **zero-spend IaC teardown (`tofu destroy`) + a $1 billing alarm** is mandatory before any student deploys to a real cloud account!
 
-### Deep-Dive Explanation: Four Cloud Hygiene Rules Every Student Engineer Should Follow (Read Slowly)
+### Explanation: Four Cloud Hygiene Rules Every Student Engineer Should Follow
 
 1. **Create the $1 billing alert *before* creating your first VM:** It takes 2 minutes and protects your credit card permanently.
 2. **Work in ONE single cloud region (e.g., `ap-southeast-1` Singapore):** Switching regions randomly hides running resources in another region’s console view!

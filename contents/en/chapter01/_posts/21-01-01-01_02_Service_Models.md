@@ -12,7 +12,7 @@ lesson_type: required
 
 Every engineering team faces the same recurring trade-off: *how much of the stack do we want to control, and how much undifferentiated heavy lifting are we happy to hand off?* Renting raw virtual machines (IaaS) lets you tune Linux kernel parameters at 2:00 AM, while adopting a managed platform (PaaS) or turnkey application (SaaS) frees those hours for shipping product features. Choosing between **IaaS, PaaS, and SaaS** is really choosing where to draw the **Shared Responsibility** line.
 
-## Background Knowledge Map: Abstraction Layers and the Shared Responsibility Boundary
+## Key ideas: Abstraction Layers and the Shared Responsibility Boundary
 
 Think of the cloud stack as nine concentric layers—from physical racks and networking up through OS, runtime, middleware, and application code:
 
@@ -32,7 +32,7 @@ Compare running a backend API for 1 month on raw VMs (**IaaS**) versus a managed
 
 Even though the PaaS cloud invoice is **73% higher** than raw IaaS ($$\$520$$ vs. $$\$300$$), factoring in engineering operations makes PaaS **46.7% cheaper** overall—and returns 13 hours/month of feature development!
 
-### Deep-Dive Explanation: Choosing Your Layer Along the Control–Velocity Curve (Read Slowly)
+### Explanation: Choosing Your Layer Along the Control–Velocity Curve
 
 1. **Never confuse cloud bill with total cost:** raw IaaS looks cheapest on a pricing calculator because it hides OS patching, backup verification, and on-call incident hours.
 2. **Move down the stack only when constraints demand it:** drop from PaaS to IaaS when you need custom kernel modules, specialized GPU drivers, or strict network-level compliance controls.

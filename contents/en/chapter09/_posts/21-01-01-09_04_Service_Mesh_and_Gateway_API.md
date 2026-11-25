@@ -14,7 +14,7 @@ The required chapter explains Pods, Services, and Deployments. This optional les
 
 Once an organization grows from five microservices to fifty, every team starts reinventing the exact same networking plumbing in five different programming languages: mutual TLS (mTLS) certificates, retries with exponential backoff, circuit breakers, canary traffic splitting, and distributed tracing headers. A **Service Mesh** pulls that cross-cutting L4/L7 reliability and security logic out of application code and into the infrastructure layer. Between 2022 and 2026, two major shifts reshaped how teams adopt this stack: the Kubernetes **Gateway API** replaced fragmented Ingress annotations with a role-oriented standard, and **sidecarless / eBPF data planes** began eliminating the heavy memory tax of running an Envoy proxy inside every single Pod.
 
-## Background Knowledge Map: Data Planes, Control Planes, and Kernel-Level Networking
+## Key ideas: Data Planes, Control Planes, and Kernel-Level Networking
 
 ### 1. Sidecar Proxies and Zero-Trust mTLS
 In the classic service mesh model (Istio sidecar, Linkerd), an admission webhook injects a lightweight proxy container (e.g., Envoy) into every application Pod and redirects all inbound/outbound TCP traffic through it via `iptables`. The control plane issues short-lived **SPIFFE/SPIRE X.509 certificates** so every Pod-to-Pod call is automatically encrypted and mutually authenticated—turning a flat cluster network into a **zero-trust** fabric without touching application code.
@@ -25,7 +25,7 @@ The legacy `Ingress` resource crammed TLS certificates, routing rules, and vendo
 ### 3. eBPF and Sidecarless (Ambient) Data Planes
 Traditional `iptables` evaluates linear rule chains and forces every packet through multiple TCP/IP stack traversals between the app container and its sidecar. **eBPF (Extended Berkeley Packet Filter)** lets verified, sandboxed programs run directly inside the Linux kernel socket layer—short-circuiting socket-to-socket traffic and enabling node-level L4 encryption daemons (like Istio Ambient `ztunnel` or Cilium) that serve all Pods on a node without injecting a proxy into each one.
 
-### Deep-Dive Explanation: Hand-Calculating Sidecar Memory & Latency Tax vs. Per-Node eBPF/Ambient Mesh (Read Slowly)
+### Explanation: Hand-Calculating Sidecar Memory & Latency Tax vs. Per-Node eBPF/Ambient Mesh
 
 Consider a medium-sized production cluster running **500 microservices** with **2 replicas each** (**1,000 Pods** total) distributed across **20 worker nodes**.
 

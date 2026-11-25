@@ -12,7 +12,7 @@ lesson_type: required
 
 For thirty years, every web application started the exact same way: spin up one relational database (MySQL or PostgreSQL), normalize tables, and rely on ACID transactions. Then the internet hit a billion concurrent users—and a single primary SQL server simply could not absorb millions of writes per second or stay online across continent-wide network splits! **Distributed Databases and NoSQL** emerged to trade rigid single-node schemas for horizontal sharding, high write throughput, and explicit **CAP / BASE** consistency choices.
 
-## Background Knowledge Map: CAP, Quorums, and the Four NoSQL Data Models
+## Key ideas: CAP, Quorums, and the Four NoSQL Data Models
 
 1. **CAP Theorem & BASE vs. ACID:** During a **Network Partition (P)**—which *will* happen in any real distributed network—a replicated database must choose between **Consistency (C)** (rejecting writes/reads that might be stale) and **Availability (A)** (returning a possibly stale response). BASE embraces *Basic Availability, Soft state, and Eventual consistency* to keep latency low at scale.
 2. **Quorum Replication ($$R + W > N$$):** On $$N$$ replicas, requiring each write to acknowledge $$W$$ replicas and each read to consult $$R$$ replicas guarantees strong overlap whenever $$R + W > N$$—turning consistency into a tunable per-query dial!
@@ -30,7 +30,7 @@ Suppose a distributed Key-Value store replicates every key across **$$N = 3$$** 
 
 Trace a concrete failure with $$W = 2, R = 2$$: a client writes `balance = $500` (version 2) to `Node A` and `Node B` (`Node C` is lagging with `$100` v1). Any subsequent read hitting *any* 2 nodes—whether `{A, B}`, `{A, C}`, or `{B, C}`—is mathematically guaranteed to see version 2 (`$500`), and picks the higher version!
 
-### Deep-Dive Explanation: Picking Between ACID RDBMS and NoSQL Without Dogma (Read Slowly)
+### Explanation: Picking Between ACID RDBMS and NoSQL Without Dogma
 
 1. **Never pick NoSQL just because "SQL doesn't scale":** a modern single PostgreSQL node easily handles tens of thousands of reads/sec; adopt distributed NoSQL when your *write volume*, *multi-region availability*, or *flexible access pattern* genuinely demands horizontal sharding.
 2. **Design NoSQL schemas around *queries*, not normalization:** in Cassandra or DynamoDB, you avoid distributed joins by denormalizing data into partition keys that serve each query in a single hop.

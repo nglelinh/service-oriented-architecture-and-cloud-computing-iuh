@@ -11,7 +11,7 @@ categories:
 
 Cách đây hơn một thế kỷ, mỗi nhà máy dệt hay xưởng cơ khí muốn có điện đều phải tự mua máy phát, tự trữ than và thuê đội thợ máy túc trực ngày đêm. Mãi đến khi lưới điện công cộng ra đời, doanh nghiệp mới chỉ cần cắm phích vào ổ điện và trả tiền theo số kilowatt-giờ thực dùng. Điện toán đám mây (cloud computing) tạo ra đúng bước ngoặt lịch sử đó cho ngành công nghệ thông tin: biến năng lực tính toán từ tài sản phần cứng phải tự mua sắm và bảo trì thành một dịch vụ tiện ích cấp phát theo nhu cầu.
 
-## Bản đồ kiến thức nền: Bốn trụ cột của Chương 01 — Nền tảng điện toán đám mây
+## Kiến thức cần nhớ: Bốn trụ cột của Chương 01 — Nền tảng điện toán đám mây
 
 Để không bị lạc giữa hàng trăm tên dịch vụ thương mại, hãy nhìn toàn bộ Chương 01 qua bốn trụ cột kiến thức nền gắn kết chặt chẽ với nhau:
 
@@ -77,7 +77,7 @@ Tạm dịch: *Một mô hình cho phép truy cập mạng thuận tiện, mọi
 - **Tính đa dạng công nghệ:** Hỗ trợ nhiều ngôn ngữ lập trình, khung làm việc và dịch vụ quản lý sẵn có.
 - **Rút ngắn thời gian ra thị trường (speed to market):** Tăng tốc chu kỳ phát triển, thử nghiệm và phát hành sản phẩm.
 
-### Khung giải thích (nên đọc chậm): Tính tay bài toán kinh tế CapEx so với OpEx cho cổng đăng ký học phần
+### Giải thích: Tính tay bài toán kinh tế CapEx so với OpEx cho cổng đăng ký học phần
 
 Giả sử một trường đại học cần vận hành **Cổng đăng ký học phần** với đặc thù tải cực kỳ lệch: trong **10 ngày cao điểm mỗi năm** (2 kỳ đăng ký, mỗi kỳ 5 ngày), hệ thống cần tới **20 máy chủ** hoạt động hết công suất; còn **355 ngày còn lại** chỉ cần đúng **2 máy chủ** là dư sức phục vụ tra cứu điểm và lịch học. Hãy đặt lên bàn cân hai phương án bằng phép tính tay:
 

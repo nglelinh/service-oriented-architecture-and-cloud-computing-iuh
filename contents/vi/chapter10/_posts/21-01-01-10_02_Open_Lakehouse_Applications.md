@@ -14,7 +14,7 @@ Suốt hơn một thập kỷ, các doanh nghiệp dữ liệu lớn bị kẹt 
 
 Kiến trúc **Open Lakehouse**—với các định dạng bảng mở như **Apache Iceberg**, **Delta Lake** và **Apache Hudi**—đã phá vỡ ranh giới đó. Thay vì nhốt dữ liệu trong định dạng độc quyền của một kho dữ liệu duy nhất, hợp đồng nền tảng nay dịch chuyển xuống chính **tầng bảng mở** nằm ngay trên Object Storage giá rẻ, cho phép Spark, Trino, DuckDB, Snowflake và BigQuery cùng đọc ghi an toàn trên một bản dữ liệu duy nhất.
 
-## Bản đồ kiến thức nền: Bốn viên gạch công nghệ tạo nên Open Lakehouse
+## Kiến thức cần nhớ: Bốn viên gạch công nghệ tạo nên Open Lakehouse
 
 Để hiểu vì sao các định dạng bảng mở lại thay đổi toàn bộ ngành kỹ thuật dữ liệu giai đoạn 2022–2026, hãy nắm bốn trụ cột sau:
 
@@ -77,7 +77,7 @@ Kiến trúc Kappa xem dòng sự kiện là nguồn sự thật duy nhất. Tro
 <p><strong>Dữ liệu như một sản phẩm (Data as a Product).</strong> Một bảng Iceberg có đơn vị sở hữu rõ ràng, có SLO và nhật ký thay đổi lược đồ mang tính chất gần với một <em>dịch vụ</em> trong SOA hơn là một thư mục xuất dữ liệu rời rạc; khi đó catalog đóng vai trò tương đương service registry.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Tính tay lượng dữ liệu quét và chi phí đọc nhờ Partition Pruning + Thống kê Min/Max trên bảng Iceberg 10 TB
+### Giải thích: Tính tay lượng dữ liệu quét và chi phí đọc nhờ Partition Pruning + Thống kê Min/Max trên bảng Iceberg 10 TB
 
 Tại sao một câu truy vấn SQL chạy trên bảng Lakehouse nặng **10 TB** lại có thể trả kết quả chỉ trong vài giây với chi phí vài xu, thay vì đọc hết 10 TB rồi treo hệ thống? Hãy tính tay từng bước cắt tỉa (pruning) của tầng metadata Iceberg!
 

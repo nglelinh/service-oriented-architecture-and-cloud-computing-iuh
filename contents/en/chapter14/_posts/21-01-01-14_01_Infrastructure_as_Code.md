@@ -18,7 +18,7 @@ Every engineering team has lived through *"ClickOps"* horror: six months ago, so
 
 ---
 
-## Background Knowledge Map: Declarative State, DAGs, and Drift Management
+## Key ideas: Declarative State, DAGs, and Drift Management
 
 Four core concepts make Terraform (and OpenTofu, Pulumi, CDK) click immediately:
 
@@ -219,7 +219,7 @@ Suppose you change a single line in your Terraform configuration—changing an R
 
 Always scan the `plan` summary line (`Plan: 1 to add, 1 to change, 1 to destroy`)—catching a single unintended `-/+` on a production database before typing `yes` saves entire companies!
 
-### Deep-Dive Explanation: Four Rules for Safe Infrastructure as Code (Read Slowly)
+### Explanation: Four Rules for Safe Infrastructure as Code
 
 1. **Never commit `terraform.tfstate` to Git:** State files frequently contain plaintext database passwords and API tokens—always store them in encrypted remote state with state locking enabled.
 2. **Treat `plan` as a mandatory PR review artifact:** Run `terraform plan` automatically in CI on every pull request so teammates inspect every `+`, `~`, and `-` before merging.

@@ -16,7 +16,7 @@ Phần lý thuyết bắt buộc so sánh các mô hình client–server, ngang 
 
 > Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
-## Bản đồ kiến thức nền: Ba trụ cột của giao tiếp dịch vụ và lập lịch cụm hiện đại
+## Kiến thức cần nhớ: Ba trụ cột của giao tiếp dịch vụ và lập lịch cụm hiện đại
 
 Để đặt đúng gRPC, CloudEvents và Kubernetes vào bức tranh lớn của hệ phân tán, hãy nắm ba trụ cột sau:
 
@@ -91,7 +91,7 @@ YARN vẫn được duy trì trong nhiều nền tảng dữ liệu lớn hiện
 <p><strong>Mô hình cần tránh (anti-pattern).</strong> Sử dụng hàng đợi thông điệp như cơ chế RPC đồng bộ ("gửi tin rồi ngồi chờ sự kiện phản hồi") mà không thiết lập timeout thực chất chỉ là tái tạo mô hình client–server nhưng khó gỡ lỗi hơn. Khi bài toán cần RPC đồng bộ, hãy dùng thẳng RPC.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Tính tay lưu lượng JSON so với Protobuf và bài toán làm phẳng đỉnh tải bằng Broker
+### Giải thích: Tính tay lưu lượng JSON so với Protobuf và bài toán làm phẳng đỉnh tải bằng Broker
 
 #### Bước 1: So sánh băng thông giữa REST/JSON và gRPC/Protobuf ở quy mô 10.000 lời gọi/giây
 

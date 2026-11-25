@@ -15,7 +15,7 @@ Trong kiến trúc dịch vụ, tầng ứng dụng có thể dễ dàng nhân b
 
 ---
 
-## Bản đồ kiến thức nền: Bức tranh chọn lựa tầng Lưu trữ Đám mây
+## Kiến thức cần nhớ: Bức tranh chọn lựa tầng Lưu trữ Đám mây
 
 1. **Tách Tính toán khỏi Lưu trữ (Storage–Compute Disaggregation):** Cho phép mở rộng dung lượng đĩa và sức mạnh CPU theo hai trục độc lập, mở đường cho CSDL serverless tự ngủ đông khi không có tải.
 2. **Định lý CAP & Đồng thuận Phân tán:** Khi dữ liệu trải rộng nhiều máy chủ và mạng có thể chia cắt (Partition), bạn phải chọn rõ đánh đổi giữa nhất quán mạnh (CP — Distributed SQL dùng Raft) và sẵn sàng tối đa (AP — NoSQL nhất quán cuối cùng).
@@ -23,7 +23,7 @@ Trong kiến trúc dịch vụ, tầng ứng dụng có thể dễ dàng nhân b
 
 ---
 
-## Bản đồ kiến thức nền: Ba trụ cột của Chương 07 — Cơ sở dữ liệu phân tán & NoSQL
+## Kiến thức cần nhớ: Ba trụ cột của Chương 07 — Cơ sở dữ liệu phân tán & NoSQL
 
 1. **Định lý CAP & Đánh đổi ACID vs. BASE**:
    Hiểu giới hạn vật lý khi xảy ra chia cắt mạng (*Partition tolerance* là điều tất yếu trong hệ phân tán): khi nào hệ thống bắt buộc phải chọn nhất quán mạnh (ACID/CP như ngân hàng, đăng ký tín chỉ) và khi nào có thể chấp nhận nhất quán cuối cùng (BASE/AP như giỏ hàng, lượt thích).
@@ -32,7 +32,7 @@ Trong kiến trúc dịch vụ, tầng ứng dụng có thể dễ dàng nhân b
 3. **Thế hệ mới 2022–2026 (Serverless, Distributed SQL & Vector DB)**:
    Kết nối lý thuyết CAP kinh điển với ba bước tiến hiện đại: cơ sở dữ liệu tự co giãn serverless, SQL phân tán dùng đồng thuận Raft/Paxos, và chỉ mục vector phục vụ tìm kiếm ngữ nghĩa cho AI.
 
-### Khung giải thích (nên đọc chậm): Kiểm tra nhanh quy tắc Quorum $$R + W > N$$ bằng tay
+### Giải thích: Kiểm tra nhanh quy tắc Quorum $$R + W > N$$ bằng tay
 
 Giả sử một cơ sở dữ liệu phân tán lưu mỗi bản ghi thành **$$N = 3$$ bản sao** trên 3 máy chủ độc lập. Ta chọn số bản sao phải xác nhận khi ghi là $$W$$ và số bản sao phải hỏi khi đọc là $$R$$:
 
@@ -51,7 +51,7 @@ Chỉ một bất đẳng thức đơn giản $$R + W > N$$ đã cho bạn thấ
 
 ---
 
-### Ví dụ thực tế cầm tay chỉ việc: Bản đồ quyết định nhanh cho 3 kịch bản lưu trữ
+### Ví dụ thực tế làm từng bước: Bản đồ quyết định nhanh cho 3 kịch bản lưu trữ
 
 | Kịch bản hệ thống | Nhu cầu cốt lõi | Lựa chọn CSDL tối ưu |
 | :--- | :--- | :--- |
@@ -59,7 +59,7 @@ Chỉ một bất đẳng thức đơn giản $$R + W > N$$ đã cho bạn thấ
 | **Web app khởi nghiệp tải thất thường** | Tiết kiệm chi phí lúc vắng khách, cần SQL | Serverless PostgreSQL (Neon / Aurora Serverless) |
 | **Trợ lý AI tìm kiếm 5 triệu đoạn tài liệu** | Tìm tương đồng ngữ nghĩa < 20 ms | `pgvector` (HNSW) hoặc Qdrant / Milvus |
 
-### Khung giải thích: Ba câu hỏi vàng trước khi chọn CSDL đám mây (nên đọc chậm)
+### Giải thích: Ba câu hỏi vàng trước khi chọn CSDL đám mây
 
 1. **Tỷ lệ Đọc / Ghi và mô hình truy cập của bạn là gì?** Thiết kế chỉ mục và kiến trúc replica luôn bắt đầu từ truy vấn nóng nhất, không phải từ sơ đồ ER trên giấy.
 2. **Bạn thực sự cần đa vùng ghi (multi-region write) không?** Nếu 95% người dùng ở một khu vực, một cụm đơn vùng có read-replica rẻ hơn và nhanh hơn nhiều so với Distributed SQL toàn cầu.

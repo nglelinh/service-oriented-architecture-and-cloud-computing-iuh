@@ -14,7 +14,7 @@ Trong các buổi thuyết trình chiến lược, khẩu hiệu *"Đa đám mâ
 
 Bài học này bóc tách thực tế **đa đám mây** giai đoạn 2022–2026: khi nào doanh nghiệp thực sự cần chạy trên cả AWS, Azure và GCP (ví dụ thuê GPU/LLM chuyên biệt hoặc tuân thủ chủ quyền dữ liệu quốc gia), và làm sao thiết kế biên giới tích hợp thông minh mà không tự đốt ngân sách.
 
-## Bản đồ kiến thức nền: Bốn trụ cột quyết định kiến trúc Đa đám mây & Dịch vụ AI
+## Kiến thức cần nhớ: Bốn trụ cột quyết định kiến trúc Đa đám mây & Dịch vụ AI
 
 1. **Trọng lực dữ liệu (Data Gravity) & Kinh tế học Egress**:
    Trên các đám mây lớn, đẩy dữ liệu **vào (ingress)** thường miễn phí (`$0/GB`), lưu trữ khá rẻ (`~$0,023/GB/tháng`), nhưng kéo dữ liệu **ra ngoài Internet hoặc sang đám mây khác (egress)** có thể tốn `$0,08–$0,09/GB`. Vì thế, kéo hàng chục TB dữ liệu qua lại giữa hai đám mây mỗi tuần là một cái bẫy tài chính nghiêm trọng.
@@ -90,7 +90,7 @@ Với các hệ thống quy mô trường đại học như IUH, những câu h�
 
 Trong nhiều trường hợp, lời giải phù hợp là kết hợp **một** nhà cung cấp đám mây lớn với hạ tầng tại chỗ hoặc đám mây trong nước cho phần dữ liệu chịu điều tiết, thay vì dàn trải trên ba đám mây công cộng cùng lúc.
 
-### Khung giải thích (nên đọc chậm): Tính tay cái bẫy Egress khi chạy Multi-Cloud (dữ liệu ở AWS, huấn luyện AI ở GCP)
+### Giải thích: Tính tay cái bẫy Egress khi chạy Multi-Cloud (dữ liệu ở AWS, huấn luyện AI ở GCP)
 
 Giả sử công ty bạn lưu **5 TB** (`5.120 GB`) kho ảnh y tế trên **AWS S3 (`ap-southeast-1`)**, nhưng đội AI muốn dùng cụm GPU/TPU bên **GCP** để huấn luyện lại mô hình **mỗi tuần 1 lần** (4 lần/tháng) bằng cách tải toàn bộ 5 TB qua Internet công cộng. Hãy tính hóa đơn truyền tải thuần túy trong 1 tháng:
 

@@ -16,7 +16,7 @@ Khi điện toán đám mây mới phổ biến, nhiều doanh nghiệp vội v�
 
 ---
 
-## Bản đồ kiến thức nền: Kinh tế học, Bảo mật & Rủi ro của Đám mây
+## Kiến thức cần nhớ: Kinh tế học, Bảo mật & Rủi ro của Đám mây
 
 ### 1. Kinh tế học CapEx vs. OpEx & Bẫy hóa đơn đám mây
 Đám mây xóa bỏ chi phí đầu tư ban đầu (**CapEx**) và đổi sang chi phí theo mức dùng (**OpEx**). Tuy nhiên, OpEx chỉ rẻ hơn CapEx khi bạn **tận dụng độ đàn hồi** (tắt máy ngoài giờ, chọn đúng kích thước instance, tránh phí truyền dữ liệu egress và máy chủ nhàn rỗi).
@@ -103,9 +103,9 @@ Chương tiếp theo sẽ đi vào các công nghệ và dịch vụ đám mây 
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: Hóa đơn "chảy máu" từ 3 lỗi quên dọn tài nguyên kinh điển
+### Ví dụ làm từng bước 1: Hóa đơn "chảy máu" từ 3 lỗi quên dọn tài nguyên kinh điển
 
 Một đội 5 lập trình viên dựng môi trường staging trên đám mây và quên tối ưu trong 1 tháng (720 giờ):
 
@@ -117,13 +117,13 @@ Một đội 5 lập trình viên dựng môi trường staging trên đám mây
 
 Chỉ 3 thao tác vệ sinh kiến trúc cơ bản đã kéo hóa đơn từ **$$1{,}307$$ USD** xuống còn **$$96$$ USD/tháng**!
 
-### Ví dụ cầm tay chỉ việc 2: Tính nhanh độ khả dụng khi chuyển từ 1 AZ sang 2 AZ (Multi-AZ)
+### Ví dụ làm từng bước 2: Tính nhanh độ khả dụng khi chuyển từ 1 AZ sang 2 AZ (Multi-AZ)
 
 Giả sử một vùng khả dụng (Availability Zone — cụm trung tâm dữ liệu có nguồn điện & mạng riêng) có độ khả dụng $$99.95\%$$ (xác suất sự cố $$p = 0.0005$$):
 - **Chạy 1 AZ duy nhất:** Downtime kỳ vọng $$= 0.0005 	imes 525{,}600	ext{ phút/năm} pprox \mathbf{263	ext{ phút/năm}}$$ (~4.4 giờ).
 - **Chạy chủ động trên 2 AZ độc lập** (với bộ cân bằng tải tự chuyển hướng khi 1 AZ sập): xác suất cả 2 AZ sập cùng lúc là $$0.0005^2 = 2.5 	imes 10^{-7}$$, tương đương độ khả dụng **$$99.999975\%$$** — giảm rủi ro gián đoạn hạ tầng xuống dưới **8 giây/năm**!
 
-### Khung giải thích: 4 nguyên tắc kiểm soát rủi ro trước khi bấm nút "Deploy" (nên đọc chậm)
+### Giải thích: 4 nguyên tắc kiểm soát rủi ro trước khi bấm nút "Deploy"
 
 #### Bước 1: Không bao giờ cấp quyền quản trị rộng (`AdministratorAccess`) cho ứng dụng
 Mỗi dịch vụ chỉ được cấp đúng quyền tối thiểu trên đúng tài nguyên nó cần (ví dụ: chỉ `s3:PutObject` vào đúng 1 bucket `uploads-prod`). Nếu dịch vụ bị xâm nhập, bán kính sát thương bị khóa chặt.

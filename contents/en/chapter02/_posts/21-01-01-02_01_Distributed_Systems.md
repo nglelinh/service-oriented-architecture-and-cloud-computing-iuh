@@ -12,7 +12,7 @@ lesson_type: required
 
 On a single laptop, calling a function `chargeCard()` is simple: either it returns a value or the entire program crashes together. Split that same workflow across five networked servers, and reality turns eerie: a packet can vanish silently in the network, leaving you unable to tell whether the payment server crashed *before* charging the customer, crashed *after* charging, or is merely running slow! Mastering those exact three realities—**concurrency, no global clock, and independent failures**—is what separates a single-machine programmer from a distributed-systems engineer.
 
-## Background Knowledge Map: What Distributed Systems Theory Studies
+## Key ideas: What Distributed Systems Theory Studies
 
 Three foundational pillars govern every multi-machine architecture from Hadoop to Kubernetes:
 
@@ -36,7 +36,7 @@ That drops your storefront from ~1.8 days/year of downtime per service to **over
 3. Node B (currently at $$L_B = 0$$) receives $$m$$ (event $$b_1$$): $$L_B = \max(0, 2) + 1 = \mathbf{3}$$.
 Even if Node B's physical wall clock was 5 seconds behind Node A's, Lamport's rule guarantees $$L(a_2) = 2 < L(b_1) = 3$$—preserving causality!
 
-### Deep-Dive Explanation: Designing Around the Eight Fallacies of Distributed Computing (Read Slowly)
+### Explanation: Designing Around the Eight Fallacies of Distributed Computing
 
 1. **Never assume the network is reliable or zero-latency:** every remote call needs explicit **timeouts**, bounded **retries with exponential backoff + jitter**, and **idempotency keys** so retrying `chargeCard()` never double-bills a user.
 2. **Shorten synchronous call chains:** as Part A proved, multiplying 99.5% across 5 hops destroys SLAs; use caching, circuit breakers, and asynchronous message brokers where eventual consistency is acceptable.

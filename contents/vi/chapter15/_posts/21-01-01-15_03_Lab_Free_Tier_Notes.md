@@ -20,7 +20,7 @@ Chữ **"Free Tier" (Gói miễn phí)** trên trang chủ các nhà cung cấp 
 
 Bài thực hành này trang bị cho bạn bộ kỹ năng phòng vệ tài chính tối thiểu trước khi tạo bất kỳ tài nguyên đám mây thật nào: phân biệt các loại free-tier, thiết lập cảnh báo ngân sách, khóa quyền tài khoản gốc (root MFA), và xây dựng thói quen dọn dẹp tài nguyên sạch sẽ sau mỗi buổi học.
 
-## Bản đồ kiến thức nền: Bốn nguyên tắc an toàn khi dùng Cloud Free Tier
+## Kiến thức cần nhớ: Bốn nguyên tắc an toàn khi dùng Cloud Free Tier
 
 1. **Ba loại hình Free Tier hoàn toàn khác nhau**:
    - **Always Free (Miễn phí vĩnh viễn theo hạn mức tháng)**: áp dụng lâu dài nhưng rất nhỏ (ví dụ 1 VM siêu nhỏ, hạn mức serverless hàng tháng).
@@ -91,7 +91,7 @@ Không cần tự dựng VPC ba tầng hoàn chỉnh trên tài khoản cá nhâ
 - Không chia sẻ mật khẩu tài khoản root cho nhiều người.
 - Nếu vô tình khởi tạo tài nguyên phát sinh chi phí ngoài dự kiến, cần báo ngay cho giảng viên trong ngày để xử lý kịp thời.
 
-### Khung giải thích (nên đọc chậm): Tính tay 2 cái bẫy Free Tier phổ biến nhất khiến sinh viên bị trừ tiền oan
+### Giải thích: Tính tay 2 cái bẫy Free Tier phổ biến nhất khiến sinh viên bị trừ tiền oan
 
 #### Bẫy 1: Hạn mức `750 giờ/tháng` khi bật nhầm 2 máy ảo song song
 

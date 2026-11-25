@@ -14,7 +14,7 @@ Có một câu chuyện có thật xảy ra với vô số sinh viên và kỹ s
 
 Trên đám mây, **mọi quyết định kiến trúc đều là một quyết định tài chính**. **FinOps (Cloud Financial Operations)** không phải là việc kế toán cắt giảm chi tiêu mù quáng, mà là năng lực đọc hiểu đơn vị tính phí, dự báo chi phí trước khi bấm *Deploy*, và thiết lập vòng phản hồi tự động để mỗi đồng chi ra đều mang lại giá trị kỹ thuật rõ ràng.
 
-## Bản đồ kiến thức nền: Bốn trục tư duy đọc hiểu hóa đơn đám mây (FinOps)
+## Kiến thức cần nhớ: Bốn trục tư duy đọc hiểu hóa đơn đám mây (FinOps)
 
 1. **Bốn đơn vị đo lường cốt lõi của Cloud Billing**:
    Hóa đơn đám mây quy mọi tài nguyên về bốn nhóm đồng hồ đếm: **Tính toán** (`vCPU-giờ`, `GB-RAM-giờ`, `GB-giây` cho serverless), **Lưu trữ** (`GB-tháng` + số lượng thao tác `IOPS`/`PUT`/`GET`), **Mạng** (`GB` truyền ra ngoài *egress*, truyền xuyên Availability Zone, và phí giữ IP công khai/NAT Gateway theo giờ), và **Dịch vụ quản lý** (Managed DB, Load Balancer, kho log).
@@ -128,7 +128,7 @@ Nguyên tắc đơn giản: bất kỳ mục tính phí nào không phục vụ 
 - Luôn thao tác đúng trong project hoặc subscription được cấp.
 - Ghi rõ bảng ước lượng chi phí trong báo cáo đồ án, kể cả khi chi phí thực tế bằng $$0$$ do chạy hoàn toàn trên máy cục bộ.
 
-### Khung giải thích (nên đọc chậm): Tính tay hóa đơn 1 tháng của đồ án sinh viên — Kiến trúc "quên tối ưu" vs. Kiến trúc FinOps
+### Giải thích: Tính tay hóa đơn 1 tháng của đồ án sinh viên — Kiến trúc "quên tối ưu" vs. Kiến trúc FinOps
 
 Giả sử nhóm hai sinh viên triển khai ứng dụng web Bảng tin học phần có khoảng **200 lượt truy cập/ngày** trong suốt 1 tháng (`730 giờ`). Hãy so sánh hai cấu hình chạy cùng một ứng dụng trên đám mây (đơn giá minh họa sát thực tế AWS/GCP/Azure):
 

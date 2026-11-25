@@ -18,7 +18,7 @@ Tài liệu được biên soạn độc lập cho IUH, không sử dụng tài 
 
 Bạn không cần thẻ tín dụng hay tài khoản AWS/GCP để học bản chất của Infrastructure as Code. Nhờ kiến trúc **Provider dạng plugin** của OpenTofu, bạn có thể luyện tập trọn vẹn vòng đời `init → fmt → validate → plan → apply → destroy` hoàn toàn ngoại tuyến ngay trên máy cá nhân bằng các provider cục bộ (`local`, `random`), hiểu tận gốc tệp State và đồ thị phụ thuộc mà rủi ro phát sinh hóa đơn bằng **đúng 0 đồng**.
 
-## Bản đồ kiến thức nền: Bốn bước vòng đời bắt buộc của mọi dự án OpenTofu
+## Kiến thức cần nhớ: Bốn bước vòng đời bắt buộc của mọi dự án OpenTofu
 
 1. **Khởi tạo & Khóa phiên bản (`tofu init` + `.terraform.lock.hcl`)**:
    Lệnh `tofu init` tải các binary provider cần thiết và ghi mã băm SHA-256 của chúng vào tệp `.terraform.lock.hcl`. Tệp khóa này **phải được commit vào Git** để đồng đội và CI dùng chính xác cùng một phiên bản provider.
@@ -75,7 +75,7 @@ Chỉ thực hiện khi lớp đã được cấp tài khoản **và** nhóm đ�
 3. Nêu một nhận xét ngắn về CDK hoặc Pulumi dựa trên [mục so sánh trong bài 14-01]({{ site.baseurl }}{% multilang_post_url contents/chapter14/21-01-01-14_01_Infrastructure_as_Code %}).
 4. Liệt kê những loại thông tin **tuyệt đối không** lưu trực tiếp ở dạng rõ trong tệp state (như mật khẩu hay dữ liệu sinh viên chưa mã hóa).
 
-### Khung giải thích (nên đọc chậm): Trace vòng đời 2 tài nguyên cục bộ (`random_id` → `local_file`) qua `plan`, `apply` và đổi biến
+### Giải thích: Trace vòng đời 2 tài nguyên cục bộ (`random_id` → `local_file`) qua `plan`, `apply` và đổi biến
 
 Giả sử trong bài lab cục bộ, tệp `main.tf` khai báo 2 tài nguyên nối nhau theo quan hệ phụ thuộc:
 ```hcl

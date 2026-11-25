@@ -11,9 +11,9 @@ categories:
 
 Viết xong tính năng mới trên máy cá nhân mới chỉ đi được nửa chặng đường. Nửa chặng đường còn lại—làm sao đưa mã nguồn đó lên hệ thống đang có hàng nghìn người dùng mà **không làm gián đoạn dịch vụ**, bảo vệ dữ liệu bằng phân quyền tối thiểu và mã hóa, đồng thời phát hiện sự cố trong vài giây trước khi khách hàng kịp gọi điện báo lỗi—mới là thước đo của một kỹ sư hệ thống đám mây thực thụ.
 
-Chương 13 kết nối ba trụ cột sống còn của vận hành hiện đại: **Bảo mật (IAM, mã hóa, chuỗi cung ứng)**, **Triển khai an toàn (CI/CD, Blue/Green, Canary)** và **Khả năng quan sát (Observability)**.
+Chương 13 kết nối ba trụ cột quan trọng của vận hành hiện đại: **Bảo mật (IAM, mã hóa, chuỗi cung ứng)**, **Triển khai an toàn (CI/CD, Blue/Green, Canary)** và **Khả năng quan sát (Observability)**.
 
-## Bản đồ kiến thức nền: Bốn lá chắn của triển khai và bảo mật đám mây
+## Kiến thức cần nhớ: Bốn lá chắn của triển khai và bảo mật đám mây
 
 1. **Nguyên tắc Đặc quyền tối thiểu (Least Privilege) & IAM**:
    Mỗi con người và mỗi microservice chỉ được cấp đúng quyền tối thiểu cần thiết để làm nhiệm vụ của nó (ví dụ dịch vụ đọc ảnh chỉ có quyền `s3:GetObject` trên đúng 1 bucket, tuyệt đối không cấp `AdministratorAccess` hay `s3:*`).
@@ -27,7 +27,7 @@ Chương 13 kết nối ba trụ cột sống còn của vận hành hiện đ�
 4. **Vòng phản hồi Giám sát → Cảnh báo → Quay lui (Rollback)**:
    Triển khai chỉ thực sự an toàn khi gắn với ngưỡng cảnh báo rõ ràng (tỷ lệ lỗi `5xx`, độ trễ `p99`) và khả năng quay lui về phiên bản cũ chỉ bằng một cú bấm trong dưới 60 giây.
 
-### Khung giải thích (nên đọc chậm): So sánh số request bị lỗi khi bản phát hành `v2` chứa lỗi cấu hình trên 3 chiến lược triển khai
+### Giải thích: So sánh số request bị lỗi khi bản phát hành `v2` chứa lỗi cấu hình trên 3 chiến lược triển khai
 
 Giả sử ứng dụng đang phục vụ ổn định **`100 request/giây`** trên **4 Pod `v1`**. Vô tình bản `v2` có một lỗi thiếu biến môi trường làm 100% request rơi vào `v2` trả về `500 Internal Server Error`, và hệ thống phát hiện + rollback sau đúng **`10 giây`**. Hãy tính số request bị ảnh hưởng ở từng chiến lược:
 

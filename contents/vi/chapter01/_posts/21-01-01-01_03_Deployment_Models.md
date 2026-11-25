@@ -16,7 +16,7 @@ Một ngân hàng thương mại lớn tại Việt Nam vừa muốn ứng dụn
 
 ---
 
-## Bản đồ kiến thức nền: Ba lực kéo định hình mô hình triển khai
+## Kiến thức cần nhớ: Ba lực kéo định hình mô hình triển khai
 
 ### 1. Cô lập vật lý & Chủ quyền dữ liệu (Tenancy & Data Sovereignty)
 Trên **Public Cloud**, nhiều tổ chức chia sẻ chung phần cứng vật lý qua lớp ảo hóa (multi-tenant). Trên **Private Cloud**, phần cứng dành riêng cho một tổ chức (single-tenant) — đáp ứng các quy định chủ quyền dữ liệu (data residency) trong tài chính, y tế và quốc phòng.
@@ -142,16 +142,16 @@ Bài tiếp theo sẽ phân tích sâu hơn các lợi ích và thách thức đ
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: Tính độ trễ chí tử trong kiến trúc Hybrid Cloud (Bài toán N+1 qua WAN)
+### Ví dụ làm từng bước 1: Tính độ trễ chí tử trong kiến trúc Hybrid Cloud (Bài toán N+1 qua WAN)
 
 Giả sử ứng dụng đặt hàng chạy trên Public Cloud (Singapore) cần gọi về CSDL kho hàng đặt tại Private Cloud (TP.HCM) qua đường truyền riêng có độ trễ khứ hồi **RTT = 18 ms**:
 
 - **Thiết kế ngây thơ (N+1 truy vấn qua WAN):** Để hiển thị 1 giỏ hàng 20 sản phẩm, API gọi 1 truy vấn lấy danh sách + 20 truy vấn kiểm tra tồn kho tuần tự → tổng độ trễ mạng: $$21 	imes 18	ext{ ms} = \mathbf{378	ext{ ms}}$$ (chưa kể thời gian xử lý SQL!).
 - **Thiết kế chuẩn Hybrid (Gom lô + Bản sao đọc):** Dùng 1 truy vấn lô (`WHERE id IN (...)`) hoặc đồng bộ bất đồng bộ bản sao tồn kho (read-replica/cache) lên Public Cloud → độ trễ mạng giảm xuống **18 ms** (hoặc **< 2 ms** nếu đọc từ cache tại chỗ), nhanh hơn **20 lần**!
 
-### Ví dụ cầm tay chỉ việc 2: Ma trận quyết định nhanh cho 4 hệ thống thực tế
+### Ví dụ làm từng bước 2: Ma trận quyết định nhanh cho 4 hệ thống thực tế
 
 | Hệ thống | Ràng buộc cốt lõi | Mô hình triển khai tối ưu | Lý do |
 |---|---|---|---|
@@ -160,7 +160,7 @@ Giả sử ứng dụng đặt hàng chạy trên Public Cloud (Singapore) cần
 | Ngân hàng số chạy mùa Tết | CSDL lõi giữ nội bộ, mặt tiền web tăng tải 10× | **Hybrid Cloud** | Giữ dữ liệu nhạy cảm tại Private, xả tải web lên Public |
 | Mạng chia sẻ dữ liệu nghiên cứu 15 bệnh viện | Chuẩn HIPAA chung, cần chia sẻ chi phí hạ tầng | **Community Cloud** | Chung tiêu chuẩn tuân thủ và chia đều ngân sách vận hành |
 
-### Khung giải thích: 4 bước thiết kế chiến lược triển khai thực tế (nên đọc chậm)
+### Giải thích: 4 bước thiết kế chiến lược triển khai thực tế
 
 #### Bước 1: Phân loại dữ liệu trước khi chọn đám mây
 Đừng chuyển toàn bộ doanh nghiệp lên một mô hình duy nhất. Hãy gắn nhãn dữ liệu thành 3 mức: *Công khai*, *Nội bộ*, và *Nhạy cảm/Chịu luật* — thường chỉ 10–20% dữ liệu thực sự bắt buộc phải ở Private.

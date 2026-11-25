@@ -23,7 +23,7 @@ In this chapter, we will:
 
 Every time you tap "Place Order" on a shopping app, your phone triggers an invisible orchestra of dozens of independent machines across multiple data centers—any one of which can stall, reboot, or drop a packet mid-flight. Chapter 02 strips away the illusion of a single giant computer and introduces the exact laws of **Distributed Systems** and **Modern Observability** that keep global services alive despite constant partial failures.
 
-## Background Knowledge Map: Core Pillars of Distributed Systems
+## Key ideas: Core Pillars of Distributed Systems
 
 1. **Concurrency & Independent Failures:** Unlike a single server where components live or die together, distributed nodes fail independently—making timeouts, retries, idempotency, and circuit breakers mandatory architectural building blocks.
 2. **Time, Ordering, and Consistency (CAP / PACELC):** Without a shared hardware clock, systems rely on logical clocks and consensus protocols, continuously balancing *strong consistency* against *low-latency availability* across network partitions.
@@ -36,7 +36,7 @@ Suppose a global e-commerce database runs two replicas—one in Singapore and on
 - **Cross-region synchronous write (strong consistency):** Singapore must forward the write to Frankfurt and wait for an `ACK` before replying → total write latency jumps to $$2 + 120 + 2 = \mathbf{124	ext{ ms}}$$ (**62× slower**!).
 That single 62× gap explains why modern cloud architects reserve strong cross-region consistency for ledgers/inventory while letting product catalogs and session caches use fast eventual consistency.
 
-### Deep-Dive Explanation: How Chapter 02 Prepares You for the Rest of the Course (Read Slowly)
+### Explanation: How Chapter 02 Prepares You for the Rest of the Course
 
 1. **Master the three defining traits (`02-01`):** concurrency, lack of a global clock, and independent failures reappear in YARN, MapReduce, Spark, Kafka, and NoSQL.
 2. **Treat network latency as a physical law:** light in fiber travels at ~200,000 km/s, so cross-ocean round trips always cost 100–250 ms regardless of how fast your CPU is.

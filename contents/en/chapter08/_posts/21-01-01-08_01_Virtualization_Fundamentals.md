@@ -12,7 +12,7 @@ lesson_type: required
 
 Before virtualization went mainstream in the early 2000s, enterprise data centers suffered from a shocking inefficiency: because teams refused to install two applications on the same OS for fear of library conflicts, thousands of expensive servers sat running at **10–15% CPU utilization**! **Hardware virtualization**—led by the **hypervisor**—broke the 1-to-1 bond between physical silicon and operating systems, creating the foundational isolation layer that made public cloud computing (EC2, Azure VMs, GCE) possible.
 
-## Background Knowledge Map: Hypervisors, Hardware Assist, and Isolation
+## Key ideas: Hypervisors, Hardware Assist, and Isolation
 
 1. **The Hypervisor (Virtual Machine Monitor — VMM):** Software or firmware that multiplexes physical CPU, RAM, disk, and NICs across multiple independent Guest Operating Systems while enforcing strict hardware isolation.
 2. **Type-1 (Bare-Metal) vs. Type-2 (Hosted) Hypervisors:** Type-1 (KVM, VMware ESXi, Xen, Hyper-V) runs directly on physical hardware with minimal overhead for production clouds; Type-2 (VirtualBox, VMware Workstation) runs as an app atop a host OS for local development.
@@ -28,7 +28,7 @@ Suppose a company operates **10 legacy physical servers**, each with **16 GB RAM
   - All 10 VMs consume $$10 	imes 3	ext{ GB} = \mathbf{30	ext{ GB RAM}}$$ (leaving 98 GB headroom for traffic spikes and hypervisor overhead!).
   - Hardware count drops **10×** (10 servers → 1 server), and power drops from **2,500 W → 400 W** (**84% energy reduction**)—while every application still believes it owns its own dedicated OS and kernel!
 
-### Deep-Dive Explanation: Why VMs Remain the Bedrock of Multi-Tenant Cloud Security (Read Slowly)
+### Explanation: Why VMs Remain the Bedrock of Multi-Tenant Cloud Security
 
 1. **Strong kernel-level isolation:** because every VM runs its own guest kernel behind hardware-enforced VT-x/EPT memory tables, a kernel panic or root exploit inside Tenant A's VM cannot trivially jump into Tenant B's memory.
 2. **Live migration without downtime:** by copying dirty RAM pages iteratively over the network and pausing the VM for milliseconds, Type-1 hypervisors move running workloads off failing hosts seamlessly.

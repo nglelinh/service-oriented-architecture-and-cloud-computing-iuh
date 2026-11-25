@@ -13,7 +13,7 @@ Mỗi lần bạn mở ứng dụng gọi xe, quét mã QR thanh toán hay nhấ
 
 ---
 
-## Bản đồ kiến thức nền: Toàn cảnh khóa học SOA & Điện toán đám mây
+## Kiến thức cần nhớ: Toàn cảnh khóa học SOA & Điện toán đám mây
 
 ### 1. Hạ tầng đám mây & Mạng phân tán (Chương 1–2)
 Điện toán đám mây biến máy chủ vật lý, mạng và lưu trữ thành tài nguyên lập trình được qua API (VPC, subnet, TLS, autoscaling), đi kèm hệ thống **quan sát (observability)** bằng logs, metrics và distributed traces để nhìn xuyên suốt hành trình của một yêu cầu.
@@ -41,9 +41,9 @@ Hiện nay, **Chương 01 — Nền tảng điện toán đám mây** đã hoàn
 
 ---
 
-## Ví dụ cầm tay chỉ việc & Khung giải thích
+## Ví dụ làm từng bước & Giải thích
 
-### Ví dụ cầm tay chỉ việc 1: Tính nhanh độ khả dụng (Availability) của chuỗi dịch vụ nối tiếp
+### Ví dụ làm từng bước 1: Tính nhanh độ khả dụng (Availability) của chuỗi dịch vụ nối tiếp
 
 Giả sử một yêu cầu "Thanh toán" phải gọi nối tiếp **3 dịch vụ độc lập**: Cổng API ($$99.9\%$$), Dịch vụ Đơn hàng ($$99.9\%$$) và Cổng Thanh toán ($$99.9\%$$). Độ khả dụng tổng của toàn chuỗi là tích xác suất cả 3 cùng sống:
 
@@ -53,7 +53,7 @@ $$A_{	ext{tổng}} = 0.999 	imes 0.999 	imes 0.999 = 0.997003 pprox 99.7\%$$
 - Chuỗi 3 dịch vụ nối tiếp tụt xuống $$99.7\%$$, tức gián đoạn tới **~2.16 giờ/tháng** (gấp 3 lần!).
 - **Ngược lại**, nếu bạn chạy **2 bản sao dự phòng song song** cho cùng một dịch vụ $$99.9\%$$, xác suất cả 2 cùng chết chỉ còn $$(1 - 0.999)^2 = 10^{-6}$$, đẩy độ khả dụng lên **$$99.9999\%$$** (31 giây/năm)!
 
-### Ví dụ cầm tay chỉ việc 2: Trace ngân sách độ trễ 200 ms của một yêu cầu đặt hàng
+### Ví dụ làm từng bước 2: Trace ngân sách độ trễ 200 ms của một yêu cầu đặt hàng
 
 | Chặng xử lý | Giao thức / Thành phần | Độ trễ (ms) | Tỷ trọng |
 |---|---|---|---|
@@ -66,7 +66,7 @@ $$A_{	ext{tổng}} = 0.999 	imes 0.999 	imes 0.999 = 0.997003 pprox 99.7\%$$
 
 *(Lưu ý: Gửi email hóa đơn và cập nhật điểm thưởng mất 400 ms nhưng được tách sang consumer bất đồng bộ sau bước 5 nên người dùng không phải chờ!)*
 
-### Khung giải thích: Cách đọc khóa học SOA & Cloud theo tư duy kiến trúc sư (nên đọc chậm)
+### Giải thích: Cách đọc khóa học SOA & Cloud theo tư duy kiến trúc sư
 
 #### Bước 1: Luôn bắt đầu từ yêu cầu phi chức năng (SLA, độ trễ, chi phí)
 Mọi quyết định kiến trúc đều trả lời câu hỏi định lượng: hệ thống chịu bao nhiêu yêu cầu/giây (RPS), chấp nhận độ trễ p99 bao nhiêu mili-giây, và chi phí tháng tối đa là bao nhiêu?

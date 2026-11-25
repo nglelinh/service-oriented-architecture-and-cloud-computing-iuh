@@ -14,7 +14,7 @@ The required lesson is sourcing, cleaning, and validation. This optional note is
 
 Picture an upstream backend team quietly renaming a JSON field from `price_cents` to `price_dollars` on a Friday afternoon. Their unit tests pass, the microservice deploys cleanly—and silently poisons every downstream BI dashboard, recommendation model, and RAG vector index for the next three weeks. **Data Contracts** and **Quality Gates** bring the rigor of API versioning to data engineering: treating every dataset as a formal, machine-verifiable interface between producers and consumers so broken data is caught at the gate before it ever corrupts an AI pipeline.
 
-## Background Knowledge Map: Contracts, Quality Gates, and Trustworthy AI Data
+## Key ideas: Contracts, Quality Gates, and Trustworthy AI Data
 
 ### 1. What Makes a Data Contract Enforceable?
 A real **Data Contract** is not a forgotten Wiki page—it is a versioned specification (JSON Schema, Avro, Protobuf, or YAML) checked in CI/CD and at runtime. It locks down four guarantees: **schema** (field names, types, nullability), **semantics** (units, allowed enums, business invariants like `amount >= 0`), **SLAs** (freshness, completeness), and **ownership** (which producer team gets paged when the contract breaks).
@@ -25,7 +25,7 @@ Instead of writing raw batches straight into production analytics tables, mature
 ### 3. Why AI and RAG Pipelines Magnify Silent Data Bugs
 In classical SQL reporting, a broken column causes an obvious chart spike. In **machine learning and RAG (Retrieval-Augmented Generation)** pipelines, stale documents, duplicate embeddings, or leaky future labels degrade model accuracy silently without throwing a single HTTP 500 error—making lineage tracking and automated contract gates non-negotiable.
 
-### Deep-Dive Explanation: Hand-Evaluating a Write–Audit–Publish Quality Gate on a Daily Batch (Read Slowly)
+### Explanation: Hand-Evaluating a Write–Audit–Publish Quality Gate on a Daily Batch
 
 Suppose an AI feature store ingests **1,000,000 customer-interaction records** every night under a Data Contract with three hard gates:
 - **Gate 1 (Schema):** `0` unparseable or missing required fields (`100%` valid).

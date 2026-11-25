@@ -11,7 +11,7 @@ categories:
 
 Nếu từng nghe câu nói kinh điển *"Trên máy em chạy bình thường mà thầy!"*, bạn đã chạm vào nỗi đau lớn nhất từng hành hạ ngành phần mềm suốt hàng thập kỷ. Sự khác biệt nhỏ giữa phiên bản Python, thư viện C (`glibc`), biến môi trường hay cấu hình hệ điều hành giữa máy sinh viên và máy chủ sản xuất có thể đánh sập cả một hệ thống ngay giờ cao điểm. **Ảo hóa (Virtualization)** và đặc biệt là **Container** ra đời để đóng gói trọn vẹn môi trường thực thi thành một đơn vị bất biến, di động từ laptop lên bất kỳ đám mây nào.
 
-## Bản đồ kiến thức nền: Ảo hóa và Container đứng trên những trụ cột hệ điều hành nào?
+## Kiến thức cần nhớ: Ảo hóa và Container đứng trên những trụ cột hệ điều hành nào?
 
 Để hiểu sâu sự khác biệt giữa máy ảo (VM) và container thay vì chỉ thuộc lòng vài câu lệnh `docker run`, bạn cần nắm bốn trụ cột cốt lõi:
 
@@ -27,7 +27,7 @@ Nếu từng nghe câu nói kinh điển *"Trên máy em chạy bình thường 
 4. **Hạ tầng bất biến (Immutable Infrastructure)**:
    Thay vì SSH vào máy chủ để cài vá từng gói (dễ gây *configuration drift*), kiến trúc đám mây hiện đại xây dựng lại ảnh container mới cho mỗi bản sửa lỗi, kiểm thử đúng ảnh đó và thay thế toàn bộ container cũ.
 
-### Khung giải thích (nên đọc chậm): Tính tay bài toán gom 20 microservice lên máy chủ 16 GB RAM — VM hay Container?
+### Giải thích: Tính tay bài toán gom 20 microservice lên máy chủ 16 GB RAM — VM hay Container?
 
 Giả sử nhóm bạn cần triển khai **20 microservice** nhẹ (mỗi dịch vụ thực tế chỉ cần `250 MB` RAM cho mã ứng dụng và `120 MB` tệp ứng dụng) lên một máy chủ vật lý có **16 GB RAM** (`16.384 MB`) và nhân Linux chủ tiêu tốn sẵn `1.024 MB` RAM. Hãy đặt lên bàn cân hai phương án bằng con số cụ thể:
 

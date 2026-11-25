@@ -22,7 +22,7 @@ Apache Spark is a unified analytics engine for large-scale data processing, offe
 
 Apache Spark transformed big data from a slow, disk-bound overnight batch chore into a unified, interactive analytics engine capable of running SQL, streaming, machine learning, and graph processing at in-memory speeds. Chapter 05 unpacks how Spark works from the inside out—starting with **RDDs, DAGs, and lazy evaluation**, then stepping directly into **Spark Connect, Spark 4.0, and Kubernetes** for modern cloud-native deployments.
 
-## Background Knowledge Map: The Spark Execution Stack
+## Key ideas: The Spark Execution Stack
 
 1. **In-Memory Resilient Computing (RDDs & Lineage):** Keeps hot working sets in distributed RAM while recovering lost partitions deterministically through lineage graphs rather than costly disk replication.
 2. **DAG Scheduling & Catalyst Optimization:** Compiles high-level transformations into pipelined stages separated only by necessary wide shuffles, fusing operations to eliminate redundant scans.
@@ -39,7 +39,7 @@ Trace two ways of writing Word Count on 100 million log lines across 10 partitio
    - **Stage 1 (Narrow + Map-side combine):** each partition locally sums duplicate words (say 10,000 unique words/partition → only $$10 	imes 10{,}000 = \mathbf{100{,}000	ext{ pairs}}$$ enter the network—**1,000× less shuffle traffic!**).
    - **Stage 2:** final merge across 10 partitions finishes in milliseconds!
 
-### Deep-Dive Explanation: How to Study Chapter 05 Effectively (Read Slowly)
+### Explanation: How to Study Chapter 05 Effectively
 
 1. **Think in partitions, not rows (`05-01`):** every Spark performance puzzle comes down to partition count, skew, and how much data crosses a wide shuffle boundary.
 2. **Distinguish Transformations from Actions:** nothing executes until an Action fires—use this mental model to read Spark UI DAG visualizations effortlessly.

@@ -20,7 +20,7 @@ Instead of jumping blindly into a complex cloud console, this track builds your 
 
 ---
 
-## Background Knowledge Map: The Four-Stage Deploy Track Progression
+## Key ideas: The Four-Stage Deploy Track Progression
 
 1. **Stage 1 — Local Reproducibility (Docker Compose):** Master service DNS, named volumes, healthchecks, and environment separation with zero cloud cost.
 2. **Stage 2 — Declarative Provisioning (OpenTofu):** Practice `init / plan / apply / destroy` and drift detection safely before touching billed APIs.
@@ -95,7 +95,7 @@ New Deploy Track lessons have Vietnamese mirrors (`lang: vi`, same `chapter` + `
 | **Lab C (`15-03`)** | MFA + IAM + $1 billing alarm | `$0.00` | Cloud security & FinOps hygiene |
 | **Capstone (`15-04`)** | IUH Course Board (pair deploy) | Controlled | End-to-end SOA + CI + Observability |
 
-### Deep-Dive Explanation: Three Habits That Make the Deploy Track Smooth (Read Slowly)
+### Explanation: Three Habits That Make the Deploy Track Smooth
 
 1. **Complete Labs A, B, and C strictly in order:** Every bug you fix locally in Lab A saves an hour of slow remote debugging in the Capstone.
 2. **Treat your repo README like a runbook:** A teammate (or instructor) should be able to clone your repo and run your stack in two commands without asking you for missing steps.

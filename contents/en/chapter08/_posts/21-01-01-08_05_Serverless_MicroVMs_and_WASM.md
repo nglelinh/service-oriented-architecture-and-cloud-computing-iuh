@@ -14,7 +14,7 @@ The required lessons already cover hypervisors, Linux namespaces/cgroups, Docker
 
 For a decade, cloud engineers lived with an uncomfortable fork in the road: full virtual machines gave you ironclad hardware isolation but took tens of seconds to boot and burned gigabytes of RAM, while Linux containers booted in milliseconds but shared a single host kernel—meaning one kernel bug could break multi-tenant isolation. Between 2022 and 2026, two new execution layers broke that trade-off wide open: **MicroVMs** (like AWS Firecracker) stripped virtual machines down to a minimal hardware-enforced hypervisor, while **WebAssembly (WASM/WASI)** brought millisecond, language-level sandboxing straight to the network edge.
 
-## Background Knowledge Map: The Modern Isolation Spectrum
+## Key ideas: The Modern Isolation Spectrum
 
 ### 1. Hardware Virtualization and Minimalist MicroVMs
 Traditional hypervisors emulate legacy PC hardware (BIOS, floppy controllers, PCI buses) that cloud workloads never touch. A **MicroVM** uses Linux KVM hardware virtualization (Intel VT-x / AMD-V) with a tiny, purpose-built virtual machine monitor (VMM) exposing only virtio network and block devices. Each tenant still gets its own guest kernel—preserving VM-grade security—while slashing boot times from ~20 seconds down to ~125 milliseconds.
@@ -25,7 +25,7 @@ Standard containers rely on Linux namespaces (visibility isolation) and cgroups 
 ### 3. Matching Isolation Overhead to Workload Lifetimes
 A long-lived database cares little about a 15-second boot time, whereas an edge authentication filter running for 3 milliseconds cannot afford even a 100 ms cold start. Modern cloud platforms therefore stack all three layers: VMs for infrastructure nodes, MicroVMs for multi-tenant serverless functions, and WASM isolates for ultra-low-latency edge compute.
 
-### Deep-Dive Explanation: Hand-Calculating Host Density and Startup Overhead Across Three Runtimes (Read Slowly)
+### Explanation: Hand-Calculating Host Density and Startup Overhead Across Three Runtimes
 
 Suppose you operate a bare-metal host with **64 GiB (65,536 MiB)** of usable RAM dedicated to running idle-ready multi-tenant function sandboxes. Compare the theoretical packing density and cold-start penalty of three isolation technologies:
 

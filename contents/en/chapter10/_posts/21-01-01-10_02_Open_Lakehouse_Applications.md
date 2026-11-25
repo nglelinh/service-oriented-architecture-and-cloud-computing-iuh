@@ -14,7 +14,7 @@ The required chapter defines platforms, pipelines, and Lambda/Kappa processing. 
 
 For years, data teams lived in a split-brain world: cheap **data lakes** (raw files dumped into S3 or GCS) handled unstructured data and machine learning but lacked ACID transactions and routinely turned into untrustworthy "data swamps," while proprietary **data warehouses** delivered crisp SQL governance and fast BI dashboards at steep storage-and-compute lock-in costs. The **Open Lakehouse** architecture (2022–2026) merges both worlds by layering an open transactional metadata log (**Apache Iceberg**, **Delta Lake**, or **Apache Hudi**) directly over open columnar files (**Apache Parquet**) in cheap cloud object storage—letting Spark, Trino, DuckDB, and Python ML frameworks all query the exact same single source of truth safely.
 
-## Background Knowledge Map: Columnar Storage, Open Table Formats, and Multi-Engine Interoperability
+## Key ideas: Columnar Storage, Open Table Formats, and Multi-Engine Interoperability
 
 ### 1. Columnar Files (Apache Parquet) and Vectorized Scanning
 Row-oriented formats (CSV, JSON) force an analytics engine to read every single column of every row just to average one `price` field. **Apache Parquet** stores values column by column in compressed row groups along with **min/max statistics** in the file footer. Queries skip unneeded columns (**column projection**) and skip entire row groups whose min/max bounds cannot match the `WHERE` filter (**predicate pushdown**).
@@ -25,7 +25,7 @@ Cloud object stores like S3 only guarantee atomic single-object puts, not multi-
 ### 3. Decoupled Multi-Engine Compute
 Because table metadata and Parquet files follow open specifications, no single vendor holds your data hostage. A batch ETL pipeline can write with **Spark**, an interactive dashboard can query with **Trino**, and a data scientist can prototype locally on a laptop with **DuckDB**—all reading the exact same Iceberg/Delta snapshot with zero ETL duplication.
 
-### Deep-Dive Explanation: Hand-Calculating How Partition Pruning + Columnar Projection Slash Query I/O by 869× (Read Slowly)
+### Explanation: Hand-Calculating How Partition Pruning + Columnar Projection Slash Query I/O by 869×
 
 Imagine an Open Lakehouse sales table totaling **1,000 GB (1 TB)** stored in Parquet, spanning **365 daily partitions** (1 full year) and **50 equally sized columns**. An analyst runs a weekly revenue report filtering to the **last 7 days** and selecting only **3 columns** (`order_date`, `region`, `amount`).
 

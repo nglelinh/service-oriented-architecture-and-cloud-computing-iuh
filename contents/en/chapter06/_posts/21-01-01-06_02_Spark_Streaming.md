@@ -11,7 +11,7 @@ categories:
 
 A credit-card fraud detector that runs once a night at 2:00 AM is useless—by sunrise, stolen cards have already been maxed out across ten continents. **Stream processing** flips batch analytics on its head: instead of waiting for a dataset to end, **Spark Streaming / Structured Streaming** treats an unbounded live event feed as a continuously appending table, slicing time into fast micro-batches while preserving Spark's exact fault-tolerance guarantees.
 
-## Background Knowledge Map: Real-Time Stream Processing Primitives
+## Key ideas: Real-Time Stream Processing Primitives
 
 1. **Micro-Batch Architecture & Backpressure:** Spark Streaming groups incoming events from Kafka/Kinesis every $$T$$ seconds into an RDD/DataFrame batch. For stability, per-batch processing time must stay strictly below batch interval $$T$$—otherwise queues grow without bound!
 2. **Event Time vs. Processing Time & Watermarks:** Mobile devices go offline in tunnels and upload events 8 minutes late. **Event time** (when the click happened) differs from **processing time** (when the server received it); a **watermark** sets a bounded lateness window so stateful aggregations can eventually evict old state from RAM.
@@ -32,7 +32,7 @@ $$
 - Late event A arrives stamped **`12:22`** ($$12{:}22 \ge 12{:}20$$) → **accepted** and updates its window!
 - Late event B arrives stamped **`12:15`** ($$12{:}15 < 12{:}20$$) → **dropped**, allowing Spark to safely free state for windows ending before `12:20`!
 
-### Deep-Dive Explanation: Designing Production Streaming Pipelines Without Blowing Up RAM (Read Slowly)
+### Explanation: Designing Production Streaming Pipelines Without Blowing Up RAM
 
 1. **Always bound stateful operators with watermarks:** an unwatermarked `groupBy(user_id).count()` over an infinite stream eventually exhausts executor memory as unique users grow forever.
 2. **Separate tumbling windows from sliding windows:** a 10-minute tumbling window assigns each event to 1 bucket; a 10-minute window sliding every 1 minute duplicates each event across **10 buckets**—multiplying state size 10×!

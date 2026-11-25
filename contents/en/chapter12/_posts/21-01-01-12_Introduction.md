@@ -13,7 +13,7 @@ This chapter compares the major public cloud providers—AWS, Azure, and Google 
 
 Choosing a cloud provider is rarely just a technical checklist—it is a long-term architectural and financial commitment that shapes how fast your team ships, where your users' data legally resides, and how your operating bill scales from ten users to ten million. Chapter 12 demystifies the cloud landscape across **AWS, Azure, and GCP**, exploring multi-cloud realities, managed AI services, and the FinOps literacy every modern engineer needs to read a cloud invoice with confidence.
 
-## Background Knowledge Map: Cloud Economics and Strategic Architecture
+## Key ideas: Cloud Economics and Strategic Architecture
 
 ### 1. CapEx vs. OpEx and Elasticity Economics
 On-premise infrastructure requires large upfront **Capital Expenditure (CapEx)** sized for your *peak* day of the year—meaning servers sit mostly idle the other 360 days. Cloud converts compute into variable **Operational Expenditure (OpEx)** that tracks actual demand.
@@ -24,7 +24,7 @@ Managed cloud services accelerate time-to-market dramatically, while open standa
 ### 3. Cost Awareness as an Architectural Constraint
 Every architectural diagram has an implicit dollar sign attached to each arrow (compute, storage, cross-AZ bandwidth, managed NAT, API calls). Reading pricing calculators early prevents painful re-architectures later.
 
-### Deep-Dive Explanation: Hand-Calculating CapEx vs. OpEx Break-Even for Steady vs. Bursty Workloads (Read Slowly)
+### Explanation: Hand-Calculating CapEx vs. OpEx Break-Even for Steady vs. Bursty Workloads
 
 Compare buying an on-premise server (**12,000 USD upfront** + **200 USD/month** for power, cooling, and rack space) against renting an equivalent cloud VM at **500 USD/month** On-Demand:
 

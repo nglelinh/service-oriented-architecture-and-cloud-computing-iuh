@@ -20,7 +20,7 @@ The required lesson defines a distributed system by concurrency, no global clock
 
 At 3:00 AM an alert fires: checkout error rates just spiked to 4%, yet every single server's CPU and RAM dashboard is glowing calm green! In a monolith, you opened one log file and found the stack trace in thirty seconds. In a modern distributed system spanning ten microservices, a single user click fans out across gateways, caches, gRPC stubs, and message queues—making **distributed tracing, structured logs, metrics (OpenTelemetry)**, and **SLO error budgets** the only way to see inside the machine.
 
-## Background Knowledge Map: The Three Pillars of Observability and SLO Engineering
+## Key ideas: The Three Pillars of Observability and SLO Engineering
 
 1. **Correlated Telemetry Signals (Metrics, Logs, Traces):** *Metrics* tell you **that** something is slow (p99 latency jumped); *Traces* (`trace_id` + tree of `span_id`s) tell you **where** along the distributed call graph the time went; *Logs* linked by `trace_id` tell you **why** that exact span threw an exception.
 2. **OpenTelemetry (OTel — CNCF Graduated May 2026):** Standardizes context propagation (W3C `traceparent` HTTP header) and wire protocols (OTLP) so services written in Go, Python, and Java emit unified telemetry without vendor lock-in.
@@ -47,7 +47,7 @@ $$
 
 If a bad deploy causes a 30-minute outage on Day 5, you have burned $$30 / 43.2 = \mathbf{69.4\%}$$ of the entire month's budget—triggering an automatic freeze on risky feature launches in favor of reliability work!
 
-### Deep-Dive Explanation: Turning Telemetry into Faster Incident Resolution (Read Slowly)
+### Explanation: Turning Telemetry into Faster Incident Resolution
 
 1. **Propagate `traceparent` across every hop (including queues):** if even one microservice or Kafka consumer forgets to forward the W3C trace header, your trace breaks into disconnected fragments right where you need it most.
 2. **Track tail latency (p95 / p99), never just averages:** an average latency of 40 ms can hide a p99 of 2,500 ms—and in a fan-out service calling 20 backends, **18% of users** will hit a p99 tail delay ($$1 - 0.99^{20} pprox 18.2\%$$)!

@@ -18,7 +18,7 @@ Hãy sử dụng trang tổng hợp này khi bạn muốn **tự thiết kế v�
 
 Chương 15 là **xưởng thực hành tổng hợp** thiết kế riêng cho sinh viên IUH: mọi bài lab đều được sắp xếp theo nguyên tắc **"cục bộ trước, đám mây sau — an toàn tài chính tuyệt đối"**, dẫn dắt bạn đi từng bước chắc chắn từ chiếc laptop cá nhân đến một đồ án Capstone hoàn chỉnh hai người.
 
-## Bản đồ kiến thức nền: Bốn năng lực thực chiến bạn rèn luyện xuyên suốt Chương 15
+## Kiến thức cần nhớ: Bốn năng lực thực chiến bạn rèn luyện xuyên suốt Chương 15
 
 1. **Tự chủ môi trường cục bộ (Local-First Cloud Engineering)**:
    Hơn $85\%$ kỹ năng Cloud-Native (đóng gói container, mạng nhiều dịch vụ, kiểm thử sức khỏe, viết IaC khai báo, ghi log cấu trúc và chạy CI cơ bản) có thể luyện tập nhanh hơn, lặp lại vô hạn lần và **hoàn toàn miễn phí (`$0`)** ngay trên máy cá nhân trước khi chạm tới đám mây thật.
@@ -76,7 +76,7 @@ Các phần bổ sung liên kết nằm *ngay trong* bài bắt buộc bản ti�
 
 Nếu CS 40 là môn học chuyên biệt về *triển khai*, thì môn học tại IUH vẫn giữ trọng tâm *nền tảng đám mây và dữ liệu* kết hợp nhánh thực hành tùy chọn này. Bạn vẫn có thể nắm phần lý thuyết cốt lõi mà không cần Chương 15, nhưng để thực sự tự tin triển khai một dịch vụ hoàn chỉnh thì không thể chỉ dựa vào slide bài giảng.
 
-### Khung giải thích (nên đọc chậm): Lộ trình 4 chặng thực hành và ma trận Thời gian – Rủi ro chi phí
+### Giải thích: Lộ trình 4 chặng thực hành và ma trận Thời gian – Rủi ro chi phí
 
 Trước khi bắt tay vào Lab 15-01, hãy nhìn toàn cảnh 4 chặng của Chương 15 như một dây chuyền tích lũy kỹ năng—mỗi bài lab phía trước tạo trực tiếp nền móng (và mã nguồn tái sử dụng được!) cho đồ án Capstone 15-04:
 

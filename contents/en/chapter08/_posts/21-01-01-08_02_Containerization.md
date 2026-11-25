@@ -12,7 +12,7 @@ lesson_type: required
 
 Here is one of the best-kept secrets in systems engineering: **there is no such thing as a "container" inside the Linux kernel!** What developers call a container is actually an ordinary Linux process wrapped in two clever kernel primitives—**Namespaces** (controlling *what the process can see*: its own PID tree, network interface, and filesystem mount) and **Control Groups / cgroups** (controlling *how much CPU and RAM it can consume*). By sharing the single host kernel instead of booting twenty duplicate guest OSes, containers deliver VM-like portability at near-bare-metal density and sub-second startup.
 
-## Background Knowledge Map: Linux Primitives Behind Every Container
+## Key ideas: Linux Primitives Behind Every Container
 
 1. **Shared Kernel Architecture:** Unlike VMs that virtualize hardware and boot a full guest OS per instance, containers run directly on the host Linux kernel—eliminating gigabytes of duplicate OS memory and slashing boot times from ~30 seconds to < 500 milliseconds.
 2. **Linux Namespaces (Isolation of View):** Give each process its own private illusion of the system: `pid` (sees itself as PID 1), `net` (own IP, ports, routing table), `mnt` (own root filesystem `/`), `uts` (hostname), `ipc`, and `user` (root inside container ≠ root on host).
@@ -29,7 +29,7 @@ Suppose you need to pack **20 identical microservices**, each requiring **500 MB
 
 Sharing the host kernel saves **28.5 GB of RAM** (**3.5× higher density**)—meaning the same 64 GB host can actually run over **120 containers** instead of capping out around 30 VMs!
 
-### Deep-Dive Explanation: Understanding Container Isolation Boundaries Honestly (Read Slowly)
+### Explanation: Understanding Container Isolation Boundaries Honestly
 
 1. **Remember the kernel-compatibility rule:** because containers share the host kernel, a Linux container cannot run natively on a Windows kernel without a thin hidden Linux VM (which is what Docker Desktop runs under WSL2/HyperKit).
 2. **Enforce cgroup memory limits on every production container:** without `memory.max`, a single container leak can trigger the host kernel's OOM killer against critical system daemons.

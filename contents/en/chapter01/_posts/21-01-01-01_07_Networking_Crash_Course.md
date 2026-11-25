@@ -23,7 +23,7 @@ Read this after the required Chapter 01 lessons, and again before you start the 
 
 Ask any seasoned cloud engineer what caused their longest production outage, and half the time the answer is a single networking rule: a misconfigured subnet route, a missing port in a security group, or an expired TLS certificate. Until you can trace an actual IP packet from a user's browser through DNS, TLS, a public load balancer, and a private database subnet, "the cloud" feels like a mysterious black box.
 
-## Background Knowledge Map: The Five Cloud Networking Primitives
+## Key ideas: The Five Cloud Networking Primitives
 
 Every major cloud (AWS, Azure, GCP) builds isolated environments out of the exact same five objects:
 
@@ -43,7 +43,7 @@ Now trace a browser request `https://api.shop.example/orders` across 4 hops:
 3. **App Tier (`10.0.2.20:8080`):** App Security Group allows inbound TCP `8080` **only from ALB-SG** (not `0.0.0.0/0`!).
 4. **Database Tier (`10.0.2.50:5432`):** DB Security Group allows inbound TCP `5432` **only from App-SG**—so even if an attacker scans the public internet, the database has zero public IP and zero inbound route!
 
-### Deep-Dive Explanation: Debugging Cloud Connectivity in Four Steps (Read Slowly)
+### Explanation: Debugging Cloud Connectivity in Four Steps
 
 1. **Check the route table first:** "public" vs. "private" is not a checkbox—it is whether `0.0.0.0/0` points to an Internet Gateway (public) or a NAT Gateway / nothing (private).
 2. **Chain security groups by ID, not IP:** referencing `App-SG` inside `DB-SG` means auto-scaled containers gain database access automatically without hardcoding ephemeral IPs.

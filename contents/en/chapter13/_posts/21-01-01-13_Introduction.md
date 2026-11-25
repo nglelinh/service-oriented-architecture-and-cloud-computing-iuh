@@ -15,7 +15,7 @@ Writing clean microservice code on `localhost` is only half of cloud engineering
 
 ---
 
-## Background Knowledge Map: Three Pillars of Cloud Operations & Security
+## Key ideas: Three Pillars of Cloud Operations & Security
 
 1. **Defense in Depth & Least Privilege:** Assume any single layer can fail—combine TLS in transit, short-lived IAM roles, network security groups, and secret managers so no credential lives in Git.
 2. **Observability Over Blind Monitoring:** Instrument RED metrics, structured logs, and distributed traces so unknown failure modes can be diagnosed in minutes.
@@ -47,7 +47,7 @@ Suppose an unauthenticated endpoint leak is discovered in `v1.8`:
 - **Security (Least Privilege)** limits damage because the service’s IAM role has read-only access to one S3 prefix—not the entire AWS account.
 - **CI/CD** ships the patched `v1.8.1` image through automated tests and rolls it out across all replicas in under 4 minutes!
 
-### Deep-Dive Explanation: Three Questions to Carry Through Chapter 13 (Read Slowly)
+### Explanation: Three Questions to Carry Through Chapter 13
 
 1. **If a secret leaks today, how fast can you rotate it with zero downtime?**
 2. **If p99 latency triples at 3 AM, can you pinpoint the exact failing microservice in under 2 minutes?**

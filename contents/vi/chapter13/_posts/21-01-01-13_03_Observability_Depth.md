@@ -14,7 +14,7 @@ Một hệ thống chạy trên đám mây hiếm khi hỏng theo kiểu "tắt 
 
 **Khả năng quan sát (Observability)**—nâng cấp tư duy từ *monitoring* truyền thống (chỉ biết hệ thống có đang lỗi những gì ta đoán trước hay không) sang năng lực đặt bất kỳ câu hỏi mới nào về trạng thái bên trong hệ thống chỉ từ dữ liệu nó phát ra—là đôi mắt không thể thiếu của mọi hệ phân tán.
 
-## Bản đồ kiến thức nền: Bốn trụ cột kỹ thuật của Observability hiện đại
+## Kiến thức cần nhớ: Bốn trụ cột kỹ thuật của Observability hiện đại
 
 1. **Ba tín hiệu bổ trợ nhau: Metrics, Logs và Traces**:
    - **Metrics** (số đo chuỗi thời gian như `http_requests_total`, `p99_latency`): cực rẻ để lưu trữ và vẽ biểu đồ xu hướng, cảnh báo nhanh *có chuyện gì đó bất thường*.
@@ -151,7 +151,7 @@ Mỗi cảnh báo khẩn nên đi kèm một **quy trình xử lý nhanh (runboo
 <p><strong>Kiểm chứng thực tế trong bài lab.</strong> Một bảng điều khiển luôn hiển thị màu xanh khi chưa từng thử nghiệm lỗi không chứng minh được hệ thống quan sát hoạt động đúng. Hãy chủ động tiêm lỗi để kiểm tra tín hiệu phản hồi.</p>
 </div>
 
-### Khung giải thích (nên đọc chậm): Tính tay thảm họa "Bùng nổ Cardinality" trong Prometheus và cách sửa đúng
+### Giải thích: Tính tay thảm họa "Bùng nổ Cardinality" trong Prometheus và cách sửa đúng
 
 Một trong những lỗi kinh điển nhất khiến hệ thống giám sát (Prometheus) đột ngột hết RAM và sập giữa giờ cao điểm là gắn `user_id` vào nhãn của một HTTP counter:
 
@@ -175,7 +175,7 @@ Hãy tính chính xác số lượng **chuỗi thời gian (active time series)*
   $$\text{Số chuỗi} = 10\text{ endpoints} \times 3\text{ status\_class} = \mathbf{30\text{ chuỗi thời gian}}!$$
   $$\text{RAM tiêu thụ} = 30 \times 3\text{ KB} = \mathbf{90\text{ KB}} \quad (\text{giảm } \mathbf{133.333\times}\text{!}).$$
 
-#### Bước 2: Quy tắc phân công tín hiệu cầm tay chỉ việc
+#### Bước 2: Quy tắc phân công tín hiệu làm từng bước
 
 | Câu hỏi cần trả lời | Dùng tín hiệu nào? | Tại sao? |
 | :--- | :--- | :--- |

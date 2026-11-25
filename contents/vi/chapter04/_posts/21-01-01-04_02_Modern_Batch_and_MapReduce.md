@@ -16,7 +16,7 @@ Mô hình tư duy của MapReduce (map, shuffle, reduce và chạy lại khi g�
 
 > Lý thuyết bắt buộc hiện ở bản tiếng Anh. Đây là bài ứng dụng tùy chọn bằng tiếng Việt.
 
-## Bản đồ kiến thức nền: Bốn trụ cột của xử lý lô hiện đại
+## Kiến thức cần nhớ: Bốn trụ cột của xử lý lô hiện đại
 
 1. **Ba pha kinh điển (Map – Shuffle – Reduce) dưới lớp vỏ SQL**:
    Mọi truy vấn tổng hợp trên dữ liệu terabyte đều phải trải qua bước lọc/biến đổi cục bộ (Map), trao đổi dữ liệu qua mạng theo khóa (Shuffle — pha tốn kém nhất) và cộng gộp kết quả cuối (Reduce).
@@ -86,7 +86,7 @@ Khảo sát cộng đồng Iceberg năm 2025 (công bố đầu năm 2026) ghi n
 
 Đây chính là cơ chế chạy lại an toàn của MapReduce trong phần lý thuyết, được áp dụng vào bài toán tuân thủ pháp lý hiện đại.
 
-### Khung giải thích (nên đọc chậm): Tính tay chi phí Shuffle và sức mạnh của Combiner / Broadcast Join
+### Giải thích: Tính tay chi phí Shuffle và sức mạnh của Combiner / Broadcast Join
 
 Giả sử bạn có bảng nhật ký truy cập `events` nặng **1 TB** ($$10^{12}\text{ byte}$$, khoảng 10 tỷ dòng) trải trên **100 máy worker** (mỗi máy giữ 10 GB), và cần chạy câu lệnh `SELECT country, COUNT(*) FROM events GROUP BY country` với tổng cộng **200 quốc gia**.
 

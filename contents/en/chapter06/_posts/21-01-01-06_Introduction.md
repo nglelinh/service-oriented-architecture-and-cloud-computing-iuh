@@ -20,7 +20,7 @@ This chapter moves beyond the core Spark engine to explore the powerful librarie
 
 Once a company adopts Apache Spark, it quickly discovers why Spark is called a **unified analytics engine**: instead of maintaining four separate clusters with four incompatible storage formats—one for SQL reports, one for real-time alerts, one for ML training, and one for graph analytics—all of them run on **one shared DataFrame abstraction** and **one distributed execution engine**. Chapter 06 explores that entire ecosystem: **Spark Streaming**, **Spark SQL**, **MLlib**, and how they plug into modern **event-driven ML serving**.
 
-## Background Knowledge Map: The Unified Spark Ecosystem
+## Key ideas: The Unified Spark Ecosystem
 
 1. **Spark SQL & DataFrames:** Provides relational queries, schema enforcement, Catalyst query optimization, and columnar Parquet/Iceberg integration.
 2. **Spark Streaming / Structured Streaming:** Extends the exact same DataFrame API to unbounded live event feeds with watermarks, windowing, and fault-tolerant checkpointing.
@@ -33,7 +33,7 @@ Follow a single e-commerce click event `{"user_id": 42, "item_id": 99, "price": 
 2. **Spark SQL (Minutes):** an analyst runs `SELECT item_id, SUM(price) FROM events_silver WHERE ts >= '10:00' GROUP BY item_id`; Catalyst pushes the timestamp filter into Iceberg partitions and returns results in seconds.
 3. **Spark MLlib (Nightly):** reads 90 days of `events_silver` directly via the same DataFrame schema, trains a recommendation/churn pipeline, and publishes updated scores to the online serving tier.
 
-### Deep-Dive Explanation: Mastering the Spark Ecosystem in Four Steps (Read Slowly)
+### Explanation: Mastering the Spark Ecosystem in Four Steps
 
 1. **Learn the shared DataFrame core first:** every library in Chapter 06—SQL, Structured Streaming, and MLlib—speaks DataFrames, so mastering schemas and transformations pays triple dividends.
 2. **Inspect Catalyst plans (`06-03`) before optimizing code:** understanding broadcast joins and predicate pushdown often yields 10× speedups with zero extra hardware.

@@ -11,7 +11,7 @@ categories:
 
 A century ago, every factory had to build its own steam generator or power plant just to run its looms—until the electrical grid turned power into a reliable utility behind a wall socket. Cloud computing did the exact same thing for computation, storage, and networking: turning racks of depreciating hardware into programmable infrastructure available on demand. This chapter builds the conceptual vocabulary—NIST characteristics, service models, deployment models, economics, data centers, and networking—that every later chapter in SOA and distributed systems rests upon.
 
-## Background Knowledge Map: The Architecture of Cloud Computing in Three Lenses
+## Key ideas: The Architecture of Cloud Computing in Three Lenses
 
 1. **The Utility Lens (NIST Characteristics & Economics):** Cloud computing replaces rigid upfront hardware (CapEx) with elastic, API-driven, pay-as-you-go resource pools (OpEx), governed by availability SLAs ("the nines").
 2. **The Responsibility Lens (IaaS / PaaS / SaaS & Deployment Models):** Every cloud design decides two boundaries—*how high up the stack* the provider manages (IaaS → PaaS → SaaS) and *who shares the physical tenancy* (Public, Private, Hybrid, Community).
@@ -33,7 +33,7 @@ $$
 A_{	ext{parallel}} = 1 - (1 - 0.99)^2 = 1 - (0.01)^2 = 1 - 0.0001 = \mathbf{99.99\%}!
 $$
 
-### Deep-Dive Explanation: How to Navigate Chapter 01 Like a Cloud Architect (Read Slowly)
+### Explanation: How to Navigate Chapter 01 Like a Cloud Architect
 
 1. **Master the NIST checklist first (`01-01`):** use the five characteristics to separate genuine elastic cloud platforms from rebranded legacy hosting.
 2. **Pair service models (`01-02`) with deployment models (`01-03`):** they are orthogonal axes—you can run PaaS in a Private Cloud or IaaS in a Public Cloud.

@@ -13,7 +13,7 @@ Mở trang quản trị của AWS, Microsoft Azure hay Google Cloud Platform l�
 
 Chương 12 giúp bạn xây dựng "từ điển ánh xạ" giữa AWS, Azure và GCP, hiểu rõ ý nghĩa thực sự của các cam kết mức độ sẵn sàng (SLA) và rèn tư duy quản trị chi phí FinOps ngay từ khi còn ngồi trên ghế nhà trường.
 
-## Bản đồ kiến thức nền: Bốn khái niệm phổ quát trên mọi nhà cung cấp đám mây
+## Kiến thức cần nhớ: Bốn khái niệm phổ quát trên mọi nhà cung cấp đám mây
 
 1. **Vùng địa lý (Region) & Vùng sẵn sàng (Availability Zone — AZ)**:
    Một **Region** (ví dụ Singapore `ap-southeast-1`) là một khu vực địa lý chứa từ 3 **Availability Zone (AZ)** trở lên. Mỗi AZ là một hoặc nhiều trung tâm dữ liệu vật lý độc lập hoàn toàn về nguồn điện, hệ thống làm mát và đường cáp quang, nối với nhau bằng mạng sợi quang tốc độ cao độ trễ $< 2\text{ ms}$ để nhân bản dữ liệu đồng bộ.
@@ -30,7 +30,7 @@ Chương 12 giúp bạn xây dựng "từ điển ánh xạ" giữa AWS, Azure v
 4. **Toán học của Độ sẵn sàng (SLA & "Số chín")**:
    Một hệ thống gồm nhiều thành phần mắc nối tiếp có độ sẵn sàng tổng hợp là **tích** của các thành phần; còn các thành phần dự phòng song song (Multi-AZ) giúp tăng độ sẵn sàng lên vượt bậc.
 
-### Khung giải thích (nên đọc chậm): Tính tay SLA tổng hợp và số phút ngừng hoạt động (downtime) mỗi năm
+### Giải thích: Tính tay SLA tổng hợp và số phút ngừng hoạt động (downtime) mỗi năm
 
 Giả sử ứng dụng thương mại điện tử của bạn cần đi qua **3 tầng mắc nối tiếp**:
 1. **Load Balancer** (SLA $99{,}99\% = 0{,}9999$)

@@ -13,7 +13,7 @@ Khi cơ sở dữ liệu PostgreSQL của bạn có 5 triệu dòng, một câu 
 
 **Nền tảng dữ liệu lớn (Big Data Platforms)** ra đời từ một tư duy đảo ngược: *thay vì kéo dữ liệu khổng lồ về nơi có CPU, hãy gửi mã tính toán đến thẳng các máy đang chứa dữ liệu*, chia nhỏ công việc lên hàng chục hoặc hàng trăm máy phổ thông chạy song song và chịu được việc một vài máy hỏng giữa chừng.
 
-## Bản đồ kiến thức nền: Bốn trụ cột tư duy của hệ thống dữ liệu lớn phân tán
+## Kiến thức cần nhớ: Bốn trụ cột tư duy của hệ thống dữ liệu lớn phân tán
 
 Trước khi đi sâu vào Spark, Kafka hay kiến trúc Lakehouse, bạn cần nắm vững bốn khái niệm nền tảng:
 
@@ -29,7 +29,7 @@ Trước khi đi sâu vào Spark, Kafka hay kiến trúc Lakehouse, bạn cần 
 4. **Khả năng chịu lỗi bằng Dòng dõi (Lineage)**:
    Nếu một máy trong cụm 50 máy đột ngột mất điện ở phút thứ 15 của tác vụ, hệ thống không cần chạy lại toàn bộ 100% công việc—nhờ ghi nhớ đồ thị biến đổi (DAG lineage), Spark chỉ cần tính lại đúng các phân vùng bị mất trên một máy khác.
 
-### Khung giải thích (nên đọc chậm): Trace một tác vụ đếm đơn hàng trên 100 GB dữ liệu — Vì sao Combiner giảm 99% lưu lượng Shuffle?
+### Giải thích: Trace một tác vụ đếm đơn hàng trên 100 GB dữ liệu — Vì sao Combiner giảm 99% lưu lượng Shuffle?
 
 Giả sử bạn có **100 GB** log đơn hàng (tổng cộng $1\text{ tỷ}$ dòng, mỗi dòng `100 B`) phân bố đều trên **10 máy chủ** (`10 GB/máy`) và cần tính tổng số đơn theo **63 tỉnh/thành phố** trên mạng nội bộ `1 Gbps` ($\approx 125\text{ MB/s}$ mỗi máy).
 

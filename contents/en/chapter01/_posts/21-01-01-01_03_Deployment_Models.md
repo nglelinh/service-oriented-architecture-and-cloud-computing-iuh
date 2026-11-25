@@ -12,7 +12,7 @@ lesson_type: required
 
 A hospital storing patient MRIs under national privacy law and an e-commerce site bracing for a 10× holiday traffic spike cannot share the exact same hosting blueprint. **Deployment models**—Public, Private, Hybrid, and Community—answer a deceptively simple architectural question: *who owns the physical hardware, who shares it, and where are your data legally allowed to live?*
 
-## Background Knowledge Map: Isolation, Compliance, and Network Topology Across Deployment Models
+## Key ideas: Isolation, Compliance, and Network Topology Across Deployment Models
 
 1. **Multi-Tenancy vs. Single-Tenancy (Public vs. Private):** Public clouds pool hardware across millions of customers using logical isolation (hypervisors, VPCs, KMS encryption); Private clouds dedicate physical racks to a single organization for deterministic performance and strict regulatory audits.
 2. **Hybrid Cloud & Cloud Bursting:** Connects an on-premises private cluster to a public cloud via encrypted VPN or dedicated fiber (Direct Connect / ExpressRoute), keeping sensitive state local while bursting stateless compute to the public cloud during spikes.
@@ -26,7 +26,7 @@ A regional bank runs a core ledger database (**200 GB** of regulated PII) that m
 2. **Tax-week surge (5,000 req/s):** capacity needed is $$5{,}000 / 125 = \mathbf{40}$$ containers. Instead of buying 36 extra physical servers for 1 week/year, the load balancer bursts **36 stateless containers** into the Public Cloud over a dedicated $$10	ext{ Gbps}$$ private link ($$8	ext{ ms}$$ RTT).
 3. **Latency & compliance budget check:** each burst request pays $$8	ext{ ms}$$ extra network RTT to query tokenized records from the on-premises ledger—well under a $$200	ext{ ms}$$ SLA—while **0 bytes of raw PII** are stored persistently in the public cloud!
 
-### Deep-Dive Explanation: Matching Workload Constraints to Deployment Topology (Read Slowly)
+### Explanation: Matching Workload Constraints to Deployment Topology
 
 1. **Classify data before picking a cloud:** split your system into *stateful regulated data* and *stateless compute*—most "we must stay 100% private" mandates actually apply only to the regulated data tier.
 2. **Account for the hidden cost of hybrid:** connecting two environments introduces cross-cloud latency, split identity systems, and data egress fees that can erase naive compute savings.

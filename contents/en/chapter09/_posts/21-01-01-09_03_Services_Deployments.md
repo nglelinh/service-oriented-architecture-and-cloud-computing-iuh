@@ -14,7 +14,7 @@ While Pods are the fundamental unit in Kubernetes, they are ephemeral and can be
 
 In Kubernetes, Pod IP addresses are as temporary as hotel room numbers: the moment a Pod crashes, scales, or gets replaced during an upgrade, a brand-new Pod appears with a completely different IP. Hard-coding Pod IPs into a frontend configuration would break within minutes. **Services** and **Deployments** are the twin pillars that turn ephemeral Pods into stable, zero-downtime production systems: Services give callers a permanent virtual IP and DNS name, while Deployments orchestrate safe, gradual rollouts from version `v1` to `v2`.
 
-## Background Knowledge Map: Service Discovery, Virtual IPs, and Rolling Updates
+## Key ideas: Service Discovery, Virtual IPs, and Rolling Updates
 
 ### 1. Label Selectors, Services, and EndpointSlices
 A Kubernetes **Service** decouples *who you want to talk to* from *where those Pods currently live*. Using a label selector (such as `app: checkout`), the control plane continuously maintains an **EndpointSlice** listing the IP addresses of all Pods that pass their **readiness probe**. `kube-proxy` translates the Service's stable `ClusterIP` into load-balanced forwarding rules across those ready endpoints, while **CoreDNS** resolves `checkout.default.svc.cluster.local` straight to that `ClusterIP`.
@@ -28,7 +28,7 @@ A Kubernetes **Service** decouples *who you want to talk to* from *where those P
 ### 3. ReplicaSets and Rolling-Update Surge Math
 A Deployment never manages Pods directly—it creates a **ReplicaSet** for each version (`v1`, `v2`) and gradually scales the new ReplicaSet up while scaling the old one down. Two parameters control the speed and safety of that transition: **`maxSurge`** (how many extra Pods above desired count may exist temporarily) and **`maxUnavailable`** (how many Pods may be down during the switch).
 
-### Deep-Dive Explanation: Hand-Tracing a Rolling Update's Pod Count and Per-Pod Load Spike (Read Slowly)
+### Explanation: Hand-Tracing a Rolling Update's Pod Count and Per-Pod Load Spike
 
 Suppose your checkout API runs a Deployment with **`replicas: 10`**, **`maxUnavailable: 2`**, and **`maxSurge: 3`**, serving a steady **1,000 requests/second (RPS)** through a `ClusterIP` Service.
 

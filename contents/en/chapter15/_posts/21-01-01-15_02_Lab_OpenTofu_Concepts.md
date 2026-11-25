@@ -22,7 +22,7 @@ Lab B lets you master the full `init` $$	o$$ `plan` $$	o$$ `apply` $$	o$$ drift-
 
 ---
 
-## Background Knowledge Map: Learning the IaC Lifecycle With Zero Cloud Spend
+## Key ideas: Learning the IaC Lifecycle With Zero Cloud Spend
 
 1. **Provider Abstraction:** OpenTofu’s core graph engine doesn’t care whether a provider manages AWS EC2 instances or local files/Docker containers—the exact same HCL syntax, state diffing, and DAG scheduling apply.
 2. **The Four-Command Loop (`init` $$	o$$ `plan` $$	o$$ `apply` $$	o$$ `destroy`):** `init` downloads providers; `plan` computes the dry-run diff; `apply` reconciles reality to code; `destroy` cleanly removes every tracked resource.
@@ -103,7 +103,7 @@ Imagine a minimal OpenTofu config creating a local config file `app.conf` via `l
 | 3 | Manually edit `app.conf` to `"port=9999"` | `"port=8080"` | `"port=9999"` (Drift!) | `plan` shows **`-/+ replace`** to heal drift! |
 | 4 | `tofu destroy` | Empty | `"port=8080"` | **`- destroy`** removes `app.conf` cleanly |
 
-### Deep-Dive Explanation: Four Safeguards Before Moving From Local Labs to Real Cloud (Read Slowly)
+### Explanation: Four Safeguards Before Moving From Local Labs to Real Cloud
 
 1. **Never skip `tofu plan`:** Reading the diff habit on local files becomes muscle memory that protects real cloud databases later.
 2. **Add `.terraform/` and `*.tfstate*` to `.gitignore` from minute one:** Prevent provider binaries and sensitive state files from polluting Git.

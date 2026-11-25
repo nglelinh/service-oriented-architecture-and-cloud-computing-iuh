@@ -14,7 +14,7 @@ Welcome to Chapter 09: **Kubernetes and Container Orchestration**.
 
 Shipping a single container is a packaging milestone; keeping hundreds of containers healthy, discoverable, and resilient across failing cloud VMs is an **orchestration** problem. Chapter 09 walks you through **Kubernetes**, the industry-standard operating system for distributed cloud workloads—showing how its architecture transforms raw compute nodes into a self-healing platform capable of rolling upgrades, autoscaling, and zero-downtime service networking.
 
-## Background Knowledge Map: Why Orchestration Is a Distributed-Systems Discipline
+## Key ideas: Why Orchestration Is a Distributed-Systems Discipline
 
 ### 1. Automated Failure Detection and Self-Healing
 Hardware fails continuously at cloud scale. Instead of paging a human at 2:00 AM to restart a dead process, an orchestrator pairs **liveness/readiness probes** with reconciliation loops that detect dead containers or unreachable nodes and automatically reschedule replacement workloads onto healthy capacity within seconds.
@@ -25,7 +25,7 @@ In an elastic cluster where replicas scale from 2 to 20 and back down based on l
 ### 3. Availability Mathematics: Series vs. Parallel Redundancy
 Understanding *why* Kubernetes defaults to multi-replica Deployments comes straight from reliability engineering: components wired in **series** multiply their availabilities (making the whole chain weaker than its weakest link), while redundant replicas in **parallel** multiply their *unavailabilities* (making simultaneous failure exponentially rarer).
 
-### Deep-Dive Explanation: Hand-Calculating End-to-End Availability Before and After Kubernetes Replication (Read Slowly)
+### Explanation: Hand-Calculating End-to-End Availability Before and After Kubernetes Replication
 
 Consider a typical 3-tier cloud application where a user request must pass through **three components in series**:
 - **API Gateway:** $$A_1 = 99.95\% = 0.9995$$
